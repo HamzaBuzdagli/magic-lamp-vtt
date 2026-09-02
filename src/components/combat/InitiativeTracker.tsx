@@ -186,10 +186,10 @@ export const InitiativeTracker: React.FC = () => {
                     )}
                   </div>
 
-                                    <div className="truncate flex-1">
+                                                      <div className="truncate flex-1">
                     <div className="font-bold text-slate-100 truncate text-[11px]">{combatant.name}</div>
                     <div className="flex items-center gap-1 font-mono text-[9px] text-amber-400 font-bold mt-0.5">
-                      <span>İnisiyatif:</span>
+                      <span>Skor:</span>
                       {!isStreamerMode ? (
                         <input
                           type="number"
@@ -199,11 +199,20 @@ export const InitiativeTracker: React.FC = () => {
                             const updated = initiativeList.map((c) => c.id === combatant.id ? { ...c, score: val } : c);
                             setInitiativeList(updated);
                           }}
-                          className="w-9 px-1 py-0.2 bg-slate-900 border border-slate-700 rounded text-center text-[10px] text-amber-300 font-black focus:outline-none focus:border-amber-400"
+                          className="w-8 px-1 py-0.2 bg-slate-900 border border-slate-700 rounded text-center text-[10px] text-amber-300 font-black focus:outline-none focus:border-amber-400"
                         />
                       ) : (
                         <span className="text-amber-300 font-black">{combatant.score}</span>
                       )}
+                      {(() => {
+                        const token = (tokens || []).find((t) => t.id === combatant.tokenId);
+                        const base = token?.initiativeBonus ?? 5;
+                        return (
+                          <span className="text-[8px] text-slate-300 bg-slate-950 px-1 py-0.2 rounded border border-slate-800 font-mono" title="Temel İnisiyatif Statı / DEX">
+                            İns:{base >= 0 ? `+${base}` : base}
+                          </span>
+                        );
+                      })()}
                     </div>
                   </div>
 

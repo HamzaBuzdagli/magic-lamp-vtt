@@ -85,6 +85,7 @@ export const DoodleToAssetModal: React.FC = () => {
   const [isCustomSize, setIsCustomSize] = useState<boolean>(false);
   const [hasHp] = useState(true);
   const [assetHp, setAssetHp] = useState<number>(20);
+  const [assetInitiative, setAssetInitiative] = useState<number>(5);
   const [assetNotes, setAssetNotes] = useState('');
   const [sendTo, setSendTo] = useState<'map' | 'backstage'>('backstage');
   const [isTemplate, setIsTemplate] = useState<boolean>(false);
@@ -778,6 +779,7 @@ export const DoodleToAssetModal: React.FC = () => {
       image: dataUrl,
       color: brushColor,
       hp: hasHp ? { current: assetHp, max: assetHp } : undefined,
+      initiativeBonus: assetInitiative,
       notes: assetNotes.trim() || undefined,
       statuses: [],
       statusEffects: [],
@@ -1257,6 +1259,16 @@ export const DoodleToAssetModal: React.FC = () => {
                       value={assetHp}
                       onChange={(e) => setAssetHp(Number(e.target.value))}
                       className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 text-center font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">⚔️ İnisiyatif (DEX)</label>
+                    <input
+                      type="number"
+                      value={assetInitiative}
+                      onChange={(e) => setAssetInitiative(Number(e.target.value) || 0)}
+                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-bold text-center font-mono"
                     />
                   </div>
                 </div>

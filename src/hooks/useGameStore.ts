@@ -872,6 +872,7 @@ export const useGameStore = create<GameState>()(
           npcProfiles: stateUpdates.npcProfiles || get().npcProfiles,
           rulebookNotes: stateUpdates.rulebookNotes || get().rulebookNotes,
           initiativeList: stateUpdates.initiativeList !== undefined ? stateUpdates.initiativeList : get().initiativeList,
+          isInitiativeOpen: stateUpdates.isInitiativeOpen !== undefined ? stateUpdates.isInitiativeOpen : get().isInitiativeOpen,
           currentTurnIndex: stateUpdates.currentTurnIndex !== undefined ? stateUpdates.currentTurnIndex : get().currentTurnIndex,
           roundNumber: stateUpdates.roundNumber !== undefined ? stateUpdates.roundNumber : get().roundNumber,
           chatMessages: stateUpdates.chatMessages !== undefined ? stateUpdates.chatMessages : get().chatMessages,
@@ -920,6 +921,29 @@ export const useGameStore = create<GameState>()(
       };
 
       
+      
+      // Listen for actions from connected player clients
+      peerSyncService.onActionReceived((action: string, payload: any) => {
+        if (!payload) return;
+        if (action === 'CHAT_MESSAGE') {
+          const currentChats = get().chatMessages || [];
+          const updated = [...currentChats, payload];
+          set({ chatMessages: updated });
+          notifyChannel({ chatMessages: updated });
+        } else if (action === 'PLAYER_JOIN') {
+          const players = get().connectedPlayers || [];
+          const existing = players.find((p) => p.id === payload.id);
+          let updated: ConnectedPlayer[];
+          if (existing) {
+            updated = players.map((p) => p.id === payload.id ? { ...p, name: payload.name } : p);
+          } else {
+            updated = [...players, { id: payload.id, name: payload.name, canDrawWhiteboard: false, isDm: false, joinedAt: Date.now() }];
+          }
+          set({ connectedPlayers: updated });
+          notifyChannel({ connectedPlayers: updated });
+        }
+      });
+
       peerSyncService.onStateReceived((payload: any) => {
         if (!payload) return;
         set({
@@ -952,6 +976,7 @@ export const useGameStore = create<GameState>()(
           npcProfiles: payload.npcProfiles !== undefined ? payload.npcProfiles : get().npcProfiles,
           rulebookNotes: payload.rulebookNotes !== undefined ? payload.rulebookNotes : get().rulebookNotes,
           initiativeList: payload.initiativeList !== undefined ? payload.initiativeList : get().initiativeList,
+          isInitiativeOpen: payload.isInitiativeOpen !== undefined ? payload.isInitiativeOpen : get().isInitiativeOpen,
           currentTurnIndex: payload.currentTurnIndex !== undefined ? payload.currentTurnIndex : get().currentTurnIndex,
           roundNumber: payload.roundNumber !== undefined ? payload.roundNumber : get().roundNumber,
           chatMessages: payload.chatMessages !== undefined ? payload.chatMessages : get().chatMessages,
@@ -2425,6 +2450,7 @@ export const useGameStore = create<GameState>()(
         addChatMessage: (msg: ChatMessage) => set((state) => {
           const nextState = { chatMessages: [...state.chatMessages, msg] };
           notifyChannel(nextState);
+          peerSyncService.sendActionToHost('CHAT_MESSAGE', msg);
           return nextState;
         }),
         setChatOpen: (open: boolean) => set({ isChatOpen: open }),

@@ -111,20 +111,7 @@ export const PartyChatDrawer: React.FC = () => {
     setMessageText('');
   };
 
-  if (!isChatOpen) {
-    return (
-      <button
-        onClick={() => setChatOpen(true)}
-        className="fixed bottom-5 right-5 z-40 px-3.5 py-2.5 bg-slate-900/95 hover:bg-slate-800 text-amber-400 border border-amber-500/60 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-2 font-bold text-xs cursor-pointer transition-all hover:scale-105 select-none"
-      >
-        <MessageSquare className="w-4 h-4" />
-        <span>Sohbet & Fısılda</span>
-        {chatMessages.length > 0 && (
-          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-        )}
-      </button>
-    );
-  }
+  if (!isChatOpen) return null;
 
   const isDm = !isStreamerMode;
   const filteredMessages = chatMessages.filter((msg) => {
