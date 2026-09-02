@@ -15,7 +15,11 @@ import {
   Palette,
   RotateCw,
   Scroll,
-  ChevronDown
+  ChevronDown,
+  Swords,
+  Volume2,
+  MessageSquare,
+  Lock as LockIcon
 } from 'lucide-react';
 import { useGameStore } from '../../hooks/useGameStore';
 import { peerSyncService } from '../../services/peerSyncService';
@@ -40,6 +44,14 @@ export const TopNavbar: React.FC = () => {
     activeSessionId,
     setSessionModalOpen,
     setMultiplayerModalOpen,
+    isInitiativeOpen,
+    setInitiativeOpen,
+    isSoundboardOpen,
+    setSoundboardOpen,
+    isChatOpen,
+    setChatOpen,
+    localPlayerName,
+    isLockedPlayerMode,
   } = useGameStore();
 
   const activeSession = (sessions || []).find((s) => s.id === activeSessionId) || sessions?.[0];
@@ -182,6 +194,51 @@ export const TopNavbar: React.FC = () => {
           <span>Zarlar</span>
         </button>
 
+
+        {/* Initiative Tracker Button */}
+        <button
+          onClick={() => setInitiativeOpen(!isInitiativeOpen)}
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
+            isInitiativeOpen 
+              ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm' 
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+          }`}
+          title="Savaş İnisiyatif Sırası Takipçisi"
+        >
+          <Swords className="w-4 h-4 text-amber-400" />
+          <span>İnisiyatif</span>
+        </button>
+
+        {/* Ambient Soundboard Button */}
+        {!isStreamerMode && (
+          <button
+            onClick={() => setSoundboardOpen(!isSoundboardOpen)}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
+              isSoundboardOpen 
+                ? 'bg-purple-950/80 border-purple-500 text-purple-300 shadow-sm' 
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+            }`}
+            title="Zindan Ambiyansları ve Ses Efektleri"
+          >
+            <Volume2 className="w-4 h-4 text-purple-400" />
+            <span>Ambiyans</span>
+          </button>
+        )}
+
+        {/* Chat Button */}
+        <button
+          onClick={() => setChatOpen(!isChatOpen)}
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
+            isChatOpen 
+              ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm' 
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+          }`}
+          title="Canlı Parti Sohbeti ve DM Fısıldama"
+        >
+          <MessageSquare className="w-4 h-4 text-amber-400" />
+          <span>Sohbet</span>
+        </button>
+
         {/* Rulebook & Notes */}
         <button
           onClick={() => setRulebookOpen(!isRulebookOpen)}
@@ -226,19 +283,26 @@ export const TopNavbar: React.FC = () => {
           </button>
         )}
 
-        {/* Streamer / DM Mode Switch */}
-        <button
-          onClick={() => setStreamerMode(!isStreamerMode)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition-all shadow-md cursor-pointer ${
-            isStreamerMode
-              ? 'bg-emerald-950/80 border-emerald-500 text-emerald-300'
-              : 'bg-indigo-950/80 border-indigo-500 text-indigo-300'
-          }`}
-          title={isStreamerMode ? 'Oyuncu / Discord Görünümü' : 'DM / Yönetici Modu'}
-        >
-          {isStreamerMode ? <Tv className="w-4 h-4 text-emerald-400" /> : <UserCheck className="w-4 h-4 text-indigo-400" />}
-          <span>{isStreamerMode ? '📺 Oyuncu Görünümü' : '🎭 DM Modu'}</span>
-        </button>
+        {/* Streamer / DM Mode Switch OR Locked Player Mode Badge */}
+        {isLockedPlayerMode || (typeof window !== 'undefined' && window.location.search.includes('room=')) ? (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-500/40 bg-amber-950/50 text-amber-300 font-bold text-xs shadow-sm font-mono">
+            <LockIcon className="w-3.5 h-3.5 text-amber-400" />
+            <span>Oyuncu: {localPlayerName}</span>
+          </div>
+        ) : (
+          <button
+            onClick={() => setStreamerMode(!isStreamerMode)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition-all shadow-md cursor-pointer ${
+              isStreamerMode
+                ? 'bg-emerald-950/80 border-emerald-500 text-emerald-300'
+                : 'bg-indigo-950/80 border-indigo-500 text-indigo-300'
+            }`}
+            title={isStreamerMode ? 'Oyuncu / Discord Görünümü' : 'DM / Yönetici Modu'}
+          >
+            {isStreamerMode ? <Tv className="w-4 h-4 text-emerald-400" /> : <UserCheck className="w-4 h-4 text-indigo-400" />}
+            <span>{isStreamerMode ? '📺 Oyuncu Görünümü' : '🎭 DM Modu'}</span>
+          </button>
+        )}
 
         {/* Reset */}
         {!isStreamerMode && (

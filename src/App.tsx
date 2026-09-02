@@ -15,6 +15,9 @@ import { WhiteboardScene } from './components/whiteboard/WhiteboardScene';
 import { WheelOfFortuneModal } from './components/wheel/WheelOfFortuneModal';
 import { SessionManagerModal } from './components/dm/SessionManagerModal';
 import { MultiplayerModal } from './components/network/MultiplayerModal';
+import { InitiativeTracker } from './components/combat/InitiativeTracker';
+import { PartyChatDrawer } from './components/chat/PartyChatDrawer';
+import { SoundboardModal } from './components/audio/SoundboardModal';
 import { peerSyncService } from './services/peerSyncService';
 import { useGameStore } from './hooks/useGameStore';
 
@@ -77,6 +80,9 @@ export function App() {
       <WheelOfFortuneModal />
       <SessionManagerModal />
       <MultiplayerModal />
+      <InitiativeTracker />
+      <PartyChatDrawer />
+      <SoundboardModal />
     </div>
   );
 }

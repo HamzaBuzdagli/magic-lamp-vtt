@@ -5,7 +5,8 @@ export type ToolMode =
   | 'draw' 
   | 'fog_reveal' 
   | 'fog_hide' 
-  | 'laser';
+  | 'laser'
+  | 'ruler';
 
 export type TokenType = 'hero' | 'monster' | 'npc' | 'item' | 'trap';
 
@@ -273,3 +274,37 @@ export interface CampaignSession {
   data: SessionData;
 }
 
+
+export interface ConnectedPlayer {
+  id: string; // Peer ID or unique ID
+  name: string;
+  isDm?: boolean;
+  canDrawWhiteboard: boolean;
+  joinedAt: number;
+}
+
+export interface InitiativeItem {
+  id: string;
+  tokenId?: string;
+  name: string;
+  image?: string;
+  color?: string;
+  score: number; // D20 + DEX/modifier
+  currentHp?: number;
+  maxHp?: number;
+  isMonster?: boolean;
+}
+
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  isDm: boolean;
+  text: string;
+  timestamp: string;
+  isWhisper?: boolean;
+  recipientId?: string; // 'DM' or specific player id
+  recipientName?: string;
+  isDiceRoll?: boolean;
+  diceDetail?: string;
+}

@@ -64,6 +64,8 @@ type TransformMode = 'none' | 'move' | 'rotate' | 'resize-se' | 'resize-sw' | 'r
 
 export const WhiteboardScene: React.FC = () => {
   const { 
+    connectedPlayers,
+    localPlayerName,
     whiteboardDataUrl,
     setWhiteboardDataUrl, 
     whiteboardPages,
@@ -90,6 +92,8 @@ export const WhiteboardScene: React.FC = () => {
 
   // Tools & Settings
   const [activeTool, setActiveTool] = useState<WbTool>('brush');
+  const myPlayer = (connectedPlayers || []).find((p) => p.name === localPlayerName || p.id === localPlayerName);
+  const canDraw = !isStreamerMode || (myPlayer && myPlayer.canDrawWhiteboard);
   const [color, setColor] = useState('#eab308');
   const [lineWidth, setLineWidth] = useState(4);
   const [theme, setTheme] = useState<'dark' | 'grid' | 'parchment'>('dark');
@@ -684,6 +688,7 @@ export const WhiteboardScene: React.FC = () => {
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target !== canvasRef.current) return;
+    if (!canDraw && activeTool !== 'pan') return;
     const { x, y } = getCanvasCoords(e);
 
     if (e.button === 1 || activeTool === 'pan') {

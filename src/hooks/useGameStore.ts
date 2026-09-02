@@ -2,6 +2,9 @@ import { peerSyncService } from '../services/peerSyncService';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { 
+  ConnectedPlayer,
+  InitiativeItem,
+  ChatMessage,
   ToolMode, 
   Token, 
   TokenAttribute, 
@@ -254,6 +257,39 @@ interface GameState {
   // Quick Reset & Sync
   resetScene: () => void;
   broadcastState: () => void;
+
+  // Multiplayer & Permissions
+  connectedPlayers: ConnectedPlayer[];
+  localPlayerName: string;
+  isLockedPlayerMode: boolean;
+  setLocalPlayerName: (name: string) => void;
+  setLockedPlayerMode: (locked: boolean) => void;
+  setConnectedPlayers: (players: ConnectedPlayer[]) => void;
+  togglePlayerDrawingPermission: (playerId: string) => void;
+
+  // Combat Initiative Tracker
+  initiativeList: InitiativeItem[];
+  isInitiativeOpen: boolean;
+  currentTurnIndex: number;
+  roundNumber: number;
+  setInitiativeList: (list: InitiativeItem[]) => void;
+  setInitiativeOpen: (open: boolean) => void;
+  setCurrentTurnIndex: (idx: number) => void;
+  setRoundNumber: (round: number) => void;
+
+  // Live Party Chat & Whisper
+  chatMessages: ChatMessage[];
+  isChatOpen: boolean;
+  addChatMessage: (msg: ChatMessage) => void;
+  setChatOpen: (open: boolean) => void;
+
+  // Ambient & Soundboard
+  isSoundboardOpen: boolean;
+  activeAmbientTrack: string | null;
+  ambientVolume: number;
+  setSoundboardOpen: (open: boolean) => void;
+  setActiveAmbientTrack: (track: string | null) => void;
+  setAmbientVolume: (vol: number) => void;
 }
 
 const DEFAULT_WHITEBOARD_ASSETS: WhiteboardAsset[] = [
@@ -835,6 +871,12 @@ export const useGameStore = create<GameState>()(
           lampChatHistory: stateUpdates.lampChatHistory || get().lampChatHistory,
           npcProfiles: stateUpdates.npcProfiles || get().npcProfiles,
           rulebookNotes: stateUpdates.rulebookNotes || get().rulebookNotes,
+          initiativeList: stateUpdates.initiativeList !== undefined ? stateUpdates.initiativeList : get().initiativeList,
+          currentTurnIndex: stateUpdates.currentTurnIndex !== undefined ? stateUpdates.currentTurnIndex : get().currentTurnIndex,
+          roundNumber: stateUpdates.roundNumber !== undefined ? stateUpdates.roundNumber : get().roundNumber,
+          chatMessages: stateUpdates.chatMessages !== undefined ? stateUpdates.chatMessages : get().chatMessages,
+          connectedPlayers: stateUpdates.connectedPlayers !== undefined ? stateUpdates.connectedPlayers : get().connectedPlayers,
+          activeAmbientTrack: stateUpdates.activeAmbientTrack !== undefined ? stateUpdates.activeAmbientTrack : get().activeAmbientTrack,
           activeNpcProfileId: stateUpdates.activeNpcProfileId || get().activeNpcProfileId,
         };
 
@@ -909,6 +951,12 @@ export const useGameStore = create<GameState>()(
           lampChatHistory: payload.lampChatHistory !== undefined ? payload.lampChatHistory : get().lampChatHistory,
           npcProfiles: payload.npcProfiles !== undefined ? payload.npcProfiles : get().npcProfiles,
           rulebookNotes: payload.rulebookNotes !== undefined ? payload.rulebookNotes : get().rulebookNotes,
+          initiativeList: payload.initiativeList !== undefined ? payload.initiativeList : get().initiativeList,
+          currentTurnIndex: payload.currentTurnIndex !== undefined ? payload.currentTurnIndex : get().currentTurnIndex,
+          roundNumber: payload.roundNumber !== undefined ? payload.roundNumber : get().roundNumber,
+          chatMessages: payload.chatMessages !== undefined ? payload.chatMessages : get().chatMessages,
+          connectedPlayers: payload.connectedPlayers !== undefined ? payload.connectedPlayers : get().connectedPlayers,
+          activeAmbientTrack: payload.activeAmbientTrack !== undefined ? payload.activeAmbientTrack : get().activeAmbientTrack,
           activeNpcProfileId: payload.activeNpcProfileId !== undefined ? payload.activeNpcProfileId : get().activeNpcProfileId,
         });
       });
@@ -2321,6 +2369,77 @@ export const useGameStore = create<GameState>()(
         broadcastState: () => {
           notifyChannel({});
         },
+
+
+        
+
+
+        // Multiplayer & Permissions State
+        connectedPlayers: [],
+        localPlayerName: (typeof window !== 'undefined' && localStorage.getItem('magic_lamp_player_name')) || `Oyuncu-${Math.floor(1000 + Math.random() * 9000)}`,
+        isLockedPlayerMode: false,
+        setLocalPlayerName: (name: string) => {
+          if (typeof window !== 'undefined') localStorage.setItem('magic_lamp_player_name', name.trim());
+          set({ localPlayerName: name.trim() });
+        },
+        setLockedPlayerMode: (locked: boolean) => set({ isLockedPlayerMode: locked }),
+        setConnectedPlayers: (players: ConnectedPlayer[]) => set(() => {
+          const nextState = { connectedPlayers: players };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+        togglePlayerDrawingPermission: (playerId: string) => set((state) => {
+          const updated = state.connectedPlayers.map((p) =>
+            p.id === playerId ? { ...p, canDrawWhiteboard: !p.canDrawWhiteboard } : p
+          );
+          const nextState = { connectedPlayers: updated };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+
+        // Combat Initiative Tracker Implementation
+        initiativeList: [],
+        isInitiativeOpen: false,
+        currentTurnIndex: 0,
+        roundNumber: 1,
+        setInitiativeList: (list: InitiativeItem[]) => set(() => {
+          const nextState = { initiativeList: list };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+        setInitiativeOpen: (open: boolean) => set({ isInitiativeOpen: open }),
+        setCurrentTurnIndex: (idx: number) => set(() => {
+          const nextState = { currentTurnIndex: idx };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+        setRoundNumber: (round: number) => set(() => {
+          const nextState = { roundNumber: round };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+
+        // Party Chat Implementation
+        chatMessages: [],
+        isChatOpen: false,
+        addChatMessage: (msg: ChatMessage) => set((state) => {
+          const nextState = { chatMessages: [...state.chatMessages, msg] };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+        setChatOpen: (open: boolean) => set({ isChatOpen: open }),
+
+        // Soundboard Implementation
+        isSoundboardOpen: false,
+        activeAmbientTrack: null,
+        ambientVolume: 0.5,
+        setSoundboardOpen: (open: boolean) => set({ isSoundboardOpen: open }),
+        setActiveAmbientTrack: (track: string | null) => set(() => {
+          const nextState = { activeAmbientTrack: track };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+        setAmbientVolume: (vol: number) => set({ ambientVolume: vol }),
 
         resetScene: () => set(() => {
           const nextState = {

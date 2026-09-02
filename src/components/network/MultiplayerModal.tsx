@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
-  Wifi, 
   Copy, 
   Check, 
   Radio, 
   Sparkles, 
   X, 
-  LogIn, 
   LogOut,
-  Share2,
-  Tv
+  Palette
 } from 'lucide-react';
 import { useGameStore } from '../../hooks/useGameStore';
 import { peerSyncService } from '../../services/peerSyncService';
@@ -19,6 +16,12 @@ export const MultiplayerModal: React.FC = () => {
   const {
     isMultiplayerModalOpen,
     setMultiplayerModalOpen,
+    localPlayerName,
+    setLocalPlayerName,
+    connectedPlayers,
+    
+    togglePlayerDrawingPermission,
+    isStreamerMode
   } = useGameStore();
 
   const [status, setStatus] = useState(peerSyncService.status);
@@ -27,7 +30,8 @@ export const MultiplayerModal: React.FC = () => {
   const [copiedPlayer, setCopiedPlayer] = useState(false);
   const [inputRoomId, setInputRoomId] = useState('');
   const [isJoining, setIsJoining] = useState(false);
-  const [joinError, setJoinError] = useState<string | null>(null);
+  const [, setJoinError] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState(localPlayerName);
 
   useEffect(() => {
     const unsubStatus = peerSyncService.onStatusChange((s, id) => {
@@ -93,213 +97,221 @@ export const MultiplayerModal: React.FC = () => {
     setPeersCount(0);
   };
 
+  const handleSaveName = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingName.trim()) {
+      setLocalPlayerName(editingName.trim());
+    }
+  };
+
+  const isDm = !isStreamerMode;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-in fade-in select-none">
       <div 
-        className="relative w-full max-w-lg bg-slate-900 border border-amber-500/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full max-w-lg bg-slate-900 border border-amber-500/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-amber-500/20 via-slate-800 to-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-amber-950/60 via-slate-900 to-amber-950/60 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-inner">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 shadow-lg text-lg">
               <Radio className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <h2 className="text-base font-black text-slate-100 flex items-center gap-2">
+              <h2 className="text-sm font-black text-amber-300 flex items-center gap-2">
                 <span>Canlı Çok Oyunculu Oda</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   WebRTC P2P
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">Arkadaşlarınla anlık senkronize masaüstü oturumu</p>
+              <p className="text-[10px] text-slate-400">
+                Oyuncuları davet edin ve çizim tahtası izinlerini yönetin.
+              </p>
             </div>
           </div>
+
           <button
             onClick={() => setMultiplayerModalOpen(false)}
-            className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl cursor-pointer"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
-          {/* Connection Status Badge */}
-          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={`w-3.5 h-3.5 rounded-full ${
-                status === 'hosting' ? 'bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse' :
-                status === 'connected' ? 'bg-emerald-500 ring-4 ring-emerald-500/20' :
-                status === 'connecting' ? 'bg-amber-500 ring-4 ring-amber-500/20 animate-spin' :
-                'bg-slate-600'
-              }`} />
-              <div>
-                <div className="text-xs font-bold text-slate-200">
-                  {status === 'hosting' ? '🟢 Odayı Sen Yönetiyorsun (DM Host)' :
-                   status === 'connected' ? '🟢 Odaya Canlı Bağlı (Oyuncu)' :
-                   status === 'connecting' ? '🟡 Bağlantı Kuruluyor...' :
-                   '⚪ Çevrimdışı (Bağlantı Yok)'}
-                </div>
-                {roomId && (
-                  <div className="text-[11px] font-mono text-amber-400 mt-0.5">
-                    Oda Kodu: <span className="font-black underline tracking-wider">{roomId}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-            {status === 'hosting' && (
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-800/80 rounded-xl border border-slate-700 text-xs font-bold text-amber-300">
-                <Users className="w-3.5 h-3.5 text-amber-400" />
-                <span>{peersCount} Oyuncu Bağlı</span>
-              </div>
-            )}
-          </div>
+        {/* Content Body */}
+        <div className="p-6 overflow-y-auto space-y-4 text-xs">
 
-          {/* Error Message */}
-          {joinError && (
-            <div className="p-3 bg-rose-950/60 border border-rose-800 rounded-xl text-xs text-rose-300">
-              ⚠️ {joinError}
+          {/* Player Name / Tag Input */}
+          <form onSubmit={handleSaveName} className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
+            <div>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">İsminiz / Karakter Unvanınız</span>
+              <span className="font-black text-slate-200 text-xs">{localPlayerName}</span>
             </div>
-          )}
 
-          {/* If Hosting: Show Share Links */}
-          {status === 'hosting' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold text-amber-300">
-                  <Share2 className="w-4 h-4 text-amber-400" />
-                  <span>Oyunculara Gönderilecek Bağlantı</span>
-                </div>
-                <p className="text-[11px] text-slate-300 leading-relaxed">
-                  Bu linki arkadaşlarına WhatsApp veya Discord'dan at. Sayfayı açtıklarında <strong>otomatik olarak senin odana bağlanırlar</strong> ve tüm token hareketlerini, sis açılışlarını canlı izlerler!
-                </p>
+            <div className="flex items-center gap-1.5">
+              <input
+                type="text"
+                value={editingName}
+                onChange={(e) => setEditingName(e.target.value)}
+                placeholder="İsim değiştir..."
+                className="w-32 px-2.5 py-1 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-500 font-bold"
+              />
+              <button
+                type="submit"
+                className="px-3 py-1 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-amber-400 cursor-pointer shadow-sm"
+              >
+                Kaydet
+              </button>
+            </div>
+          </form>
+
+          {/* ACTIVE ROOM STATUS */}
+          {status === 'hosting' ? (
+            <div className="bg-gradient-to-b from-amber-950/40 to-slate-950 p-5 rounded-2xl border border-amber-500/40 space-y-4">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                  <span className="font-black text-slate-100 text-sm">Odanız Canlı Yayında!</span>
+                </div>
+                <span className="px-2.5 py-1 bg-slate-900 border border-slate-700 rounded-xl font-mono font-bold text-amber-400 text-xs">
+                  {roomId}
+                </span>
+              </div>
+
+              {/* Invite Link Card */}
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-300">
+                  🔗 Oyuncular İçin Güvenli Davet Linki:
+                </label>
+                <div className="flex items-center gap-2 bg-slate-950 p-2 rounded-xl border border-slate-800">
                   <input
                     type="text"
                     readOnly
                     value={playerInviteUrl}
-                    className="flex-1 bg-slate-950 border border-slate-800 px-3 py-2 rounded-xl text-xs font-mono text-slate-200 truncate select-all focus:outline-none focus:border-amber-500"
+                    className="w-full bg-transparent text-[11px] font-mono text-slate-400 focus:outline-none select-all"
                   />
                   <button
                     onClick={handleCopyPlayerUrl}
-                    className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-md transition-transform active:scale-95 shrink-0"
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shrink-0 flex items-center gap-1 cursor-pointer transition-all shadow-md"
                   >
-                    {copiedPlayer ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span>{copiedPlayer ? 'Kopyalandı!' : 'Linki Kopyala'}</span>
+                    {copiedPlayer ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedPlayer ? 'Kopyalandı!' : 'Kopyala'}</span>
                   </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 flex items-start gap-2.5">
-                  <Tv className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold text-slate-200">Savaş Sisi Koruması</span>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Oyuncular yalnızca açtığın odaları ve gizlenmemiş tokenları görür.</p>
-                  </div>
-                </div>
-                <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 flex items-start gap-2.5">
-                  <Sparkles className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold text-slate-200">Sıfır Gecikme</span>
-                    <p className="text-[10px] text-slate-400 mt-0.5">WebRTC Peer-to-Peer ile doğrudan senin tarayıcından oyunculara akar.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center pt-2 border-t border-slate-800">
-                <button
-                  onClick={handleDisconnect}
-                  className="px-3 py-1.5 bg-rose-950/50 hover:bg-rose-900/70 text-rose-300 border border-rose-900 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Oturumu Kapat</span>
-                </button>
-                <button
-                  onClick={handleHostNewRoom}
-                  disabled={isJoining}
-                  className="text-xs text-slate-400 hover:text-amber-400 underline cursor-pointer"
-                >
-                  Yeni Farklı Oda Kodu Al
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* If Connected as Player */}
-          {status === 'connected' && (
-            <div className="space-y-4 text-center py-2">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto">
-                <Wifi className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-100">DM Hostuna Başarıyla Bağlandın!</h3>
-                <p className="text-xs text-slate-400 mt-1">Harita ve çizim tahtası DM'in hareketlerine göre anlık senkronize ediliyor.</p>
-              </div>
-              <button
-                onClick={handleDisconnect}
-                className="px-4 py-2 bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-800 rounded-xl text-xs font-bold inline-flex items-center gap-2 cursor-pointer transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Odadan Ayrıl</span>
-              </button>
-            </div>
-          )}
-
-          {/* If Disconnected: Offer to Host or Join */}
-          {status === 'disconnected' && (
-            <div className="space-y-5">
-              <div className="p-4 bg-slate-950/80 border border-amber-500/30 rounded-2xl space-y-3">
+              {/* Connected Players & Drawing Permissions */}
+              <div className="space-y-2 pt-2 border-t border-slate-800/80">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 font-bold text-xs text-amber-300">
-                    <Radio className="w-4 h-4 text-amber-400" />
-                    <span>Yeni Canlı Masa / Oda Başlat (DM)</span>
-                  </div>
-                  <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-full">
-                    Önerilen
+                  <span className="font-bold text-slate-300 flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-amber-400" />
+                    <span>Bağlı Oyuncular & İzinler ({peersCount})</span>
                   </span>
                 </div>
-                <p className="text-xs text-slate-400">
-                  Kendi oyun masanı aç ve arkadaşlarına tek tıkla davet linki gönder.
-                </p>
+
+                {peersCount === 0 ? (
+                  <div className="text-center py-4 text-slate-500 text-xs bg-slate-950 rounded-xl border border-slate-800">
+                    Henüz odaya katılan oyuncu yok. Yukarıdaki linki arkadaşlarınıza gönderin!
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    {connectedPlayers.map((player) => (
+                      <div
+                        key={player.id}
+                        className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2 truncate mr-2">
+                          <div className="w-6 h-6 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-[10px]">
+                            {player.name.charAt(0)}
+                          </div>
+                          <span className="font-bold text-slate-200 truncate">{player.name}</span>
+                        </div>
+
+                        {/* Drawing Permission Toggle Button for DM */}
+                        {isDm && (
+                          <button
+                            onClick={() => togglePlayerDrawingPermission(player.id)}
+                            className={`px-2.5 py-1 rounded-lg font-bold text-[10px] flex items-center gap-1 transition-all cursor-pointer ${
+                              player.canDrawWhiteboard
+                                ? 'bg-emerald-950/80 border border-emerald-500 text-emerald-300 shadow-sm'
+                                : 'bg-slate-900 border border-slate-700 text-slate-500 hover:text-slate-300'
+                            }`}
+                            title="Oyuncunun Çizim Tahtasını kullanabilmesini sağlar"
+                          >
+                            <Palette className="w-3 h-3" />
+                            <span>{player.canDrawWhiteboard ? '✏️ Çizim İzni Açık' : '🔒 Çizim İzni Kapalı'}</span>
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* End Room Button */}
+              <div className="pt-2">
                 <button
-                  onClick={handleHostNewRoom}
-                  disabled={isJoining}
-                  className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer transition-transform active:scale-98"
+                  onClick={handleDisconnect}
+                  className="w-full py-2 bg-rose-950/60 hover:bg-rose-900 text-rose-300 font-bold rounded-xl border border-rose-800 flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  <span>{isJoining ? 'Oda Başlatılıyor...' : 'Oda Oluştur & Davet Linki Al'}</span>
+                  <LogOut className="w-4 h-4" />
+                  <span>Odayı Kapat & Yayını Sonlandır</span>
                 </button>
               </div>
 
-              <div className="flex items-center gap-3 text-slate-600 text-xs">
-                <div className="flex-1 h-px bg-slate-800" />
-                <span>veya başka bir odaya katıl</span>
-                <div className="flex-1 h-px bg-slate-800" />
+            </div>
+          ) : status === 'connected' ? (
+            <div className="bg-slate-950 p-5 rounded-2xl border border-emerald-500/50 space-y-3">
+              <div className="flex items-center gap-2 text-emerald-400 font-black text-sm">
+                <Check className="w-5 h-5" />
+                <span>DM'in Odasına Bağlandınız ({roomId})</span>
               </div>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Zindan Efendisinin (DM) yaptığı tüm hareketler, sis açılışları ve can barları anlık olarak ekranınıza yansıyor.
+              </p>
+              <button
+                onClick={handleDisconnect}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl cursor-pointer"
+              >
+                Odadan Ayrıl
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Host button */}
+              <button
+                onClick={handleHostNewRoom}
+                disabled={isJoining}
+                className="w-full py-3.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-2xl shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-101 disabled:opacity-50"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>{isJoining ? 'Oda Başlatılıyor...' : '🚀 Yeni Çok Oyunculu Oda Başlat (DM)'}</span>
+              </button>
 
-              <form onSubmit={handleJoinCustomRoom} className="space-y-3">
-                <div className="flex gap-2">
+              {/* Or join with code */}
+              <form onSubmit={handleJoinCustomRoom} className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2.5">
+                <span className="font-bold text-slate-300 text-xs">Veya Bir Odaya Katıl:</span>
+                <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    placeholder="Örn: lamba-4829"
+                    placeholder="Oda Kodu (Örn: lamba-4829)"
                     value={inputRoomId}
                     onChange={(e) => setInputRoomId(e.target.value)}
-                    className="flex-1 bg-slate-950 border border-slate-800 focus:border-amber-500 px-3 py-2 rounded-xl text-xs font-mono text-slate-200 focus:outline-none"
+                    className="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-500 font-mono"
                   />
                   <button
                     type="submit"
-                    disabled={isJoining || !inputRoomId.trim()}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-amber-300 font-bold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                    disabled={!inputRoomId.trim() || isJoining}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-slate-700 cursor-pointer disabled:opacity-50"
                   >
-                    <LogIn className="w-4 h-4" />
-                    <span>{isJoining ? 'Bağlanıyor...' : 'Odaya Katıl'}</span>
+                    Katıl
                   </button>
                 </div>
               </form>
             </div>
           )}
+
         </div>
       </div>
     </div>

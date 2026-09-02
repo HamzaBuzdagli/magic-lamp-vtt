@@ -1,5 +1,6 @@
 import React from 'react';
 import { 
+  Ruler,
   MousePointer, 
   Hand, 
   Paintbrush, 
@@ -38,6 +39,7 @@ export const Toolbar: React.FC = () => {
     { id: 'fog_hide', label: 'Savaş Sisi Kapat', subLabel: 'Odayı karart (Sis Getir)', icon: EyeOff },
     { id: 'room_edit', label: 'Oda Düzenle & Bağla', subLabel: 'Odaları taşı, Shift ile çoklu seç & sağ tıkla bağla', icon: Boxes, dmOnly: true },
     { id: 'pan', label: 'Haritayı Kaydır', subLabel: 'Görünümü taşı (Pan)', icon: Hand },
+    { id: 'ruler', label: 'Cetvel / Menzil Ölçer', subLabel: 'Mesafe ve kare ölç (ft / metre)', icon: Ruler },
     { id: 'draw', label: 'Haritaya Çiz', subLabel: 'Canlı kalem', icon: Paintbrush, dmOnly: true },
     { id: 'laser', label: 'Lazer İşaretleyici', subLabel: 'Yayında dikkat çek', icon: Flame, dmOnly: true },
   ];

@@ -101,6 +101,8 @@ export const GameCanvas: React.FC = () => {
 
   // Popups / Modals
   const [activeTokenInspectorId, setActiveTokenInspectorId] = useState<string | null>(null);
+  const [rulerStart, setRulerStart] = useState<{ x: number; y: number } | null>(null);
+  const [rulerCurrent, setRulerCurrent] = useState<{ x: number; y: number } | null>(null);
   const [playerViewTokenId, setPlayerViewTokenId] = useState<string | null>(null);
   const [roomContextMenu, setRoomContextMenu] = useState<{ x: number; y: number; clickedRoomId?: string } | null>(null);
   const [tokenContextMenu, setTokenContextMenu] = useState<{ x: number; y: number; token: Token } | null>(null);
@@ -422,8 +424,60 @@ export const GameCanvas: React.FC = () => {
       ctx.setLineDash([]);
     }
 
+    // 7. Render Ruler Measurement
+    if (rulerStart && rulerCurrent) {
+      const startX = rulerStart.x * cell;
+      const startY = rulerStart.y * cell;
+      const endX = rulerCurrent.x * cell;
+      const endY = rulerCurrent.y * cell;
+
+      const dx = rulerCurrent.x - rulerStart.x;
+      const dy = rulerCurrent.y - rulerStart.y;
+      const gridDist = Math.hypot(dx, dy);
+      const feetDist = Math.round(gridDist * 5);
+      const cellsCount = gridDist.toFixed(1);
+
+      ctx.beginPath();
+      ctx.setLineDash([8 / zoom, 6 / zoom]);
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3 / zoom;
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.beginPath();
+      ctx.fillStyle = '#f59e0b';
+      ctx.arc(startX, startY, 5 / zoom, 0, Math.PI * 2);
+      ctx.arc(endX, endY, 5 / zoom, 0, Math.PI * 2);
+      ctx.fill();
+
+      const midX = (startX + endX) / 2;
+      const midY = (startY + endY) / 2 - (15 / zoom);
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.5 / zoom;
+      const text = `📏 ${feetDist} ft (${cellsCount} Kare)`;
+      ctx.font = `bold ${Math.max(12, 14 / zoom)}px monospace`;
+      const textWidth = ctx.measureText(text).width;
+      const padding = 6 / zoom;
+      
+      ctx.beginPath();
+      ctx.roundRect(midX - textWidth / 2 - padding, midY - (14 / zoom), textWidth + padding * 2, 20 / zoom, 6 / zoom);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#fef08a';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, midX, midY - (4 / zoom));
+      ctx.restore();
+    }
+
     ctx.restore();
-  }, [rooms, connections, drawings, activeRooms, activeConnections, activeDrawings, activeLayerId, isDrawingLive, currentStroke, zoom, panOffset, showGrid, gridSize, isStreamerMode, activeTool, brushColor, brushWidth, selectedRoomIds, activeRoomInspectorId, isMarqueeActive, marqueeStart, marqueeCurrent]);
+  }, [rooms, connections, drawings, activeRooms, activeConnections, activeDrawings, activeLayerId, isDrawingLive, currentStroke, zoom, panOffset, showGrid, gridSize, isStreamerMode, activeTool, brushColor, brushWidth, selectedRoomIds, activeRoomInspectorId, isMarqueeActive, marqueeStart, marqueeCurrent, rulerStart, rulerCurrent]);
 
   // Coordinate Helpers
   const screenToWorld = useCallback((screenX: number, screenY: number) => {
@@ -449,6 +503,13 @@ export const GameCanvas: React.FC = () => {
     const screenY = e.clientY - rect.top;
     const world = screenToWorld(screenX, screenY);
     const { gx, gy } = worldToGrid(world.x, world.y);
+
+    // Ruler Tool
+    if (activeTool === 'ruler') {
+      setRulerStart({ x: gx, y: gy });
+      setRulerCurrent({ x: gx, y: gy });
+      return;
+    }
 
     // Pan
     if (e.button === 1 || activeTool === 'pan') {
@@ -517,6 +578,16 @@ export const GameCanvas: React.FC = () => {
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
+        if (activeTool === 'ruler' && rulerStart) {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const gx = Math.round((e.clientX - rect.left - panOffset.x) / zoom / gridSize);
+        const gy = Math.round((e.clientY - rect.top - panOffset.y) / zoom / gridSize);
+        setRulerCurrent({ x: gx, y: gy });
+      }
+      return;
+    }
     if (isPanning) {
       setPanOffset({
         x: e.clientX - startPanPos.x,
@@ -557,6 +628,9 @@ export const GameCanvas: React.FC = () => {
 
   const handleMouseUp = () => {
     if (isPanning) setIsPanning(false);
+    if (activeTool === 'ruler') {
+      // Keep ruler visible or reset on next click
+    }
     if (isDraggingRooms) setIsDraggingRooms(false);
 
     if (isMarqueeActive) {
