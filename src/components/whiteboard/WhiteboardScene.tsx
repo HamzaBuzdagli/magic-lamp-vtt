@@ -1242,7 +1242,7 @@ export const WhiteboardScene: React.FC = () => {
         <div 
           onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-3 left-3 z-40 max-w-[calc(100vw-24px)] flex flex-wrap items-center gap-1.5 bg-slate-900/95 border border-slate-700/80 p-1.5 rounded-2xl shadow-2xl backdrop-blur-md text-xs"
+          className="absolute top-3 left-3 z-30 max-w-[calc(100vw-24px)] flex flex-wrap items-center gap-1.5 bg-slate-900/95 border border-slate-700/80 p-1.5 rounded-2xl shadow-2xl backdrop-blur-md text-xs"
         >
           {/* Main Drawing Tools Group */}
           <div className="flex items-center gap-0.5 bg-slate-950/70 p-0.5 rounded-xl border border-slate-800/80">

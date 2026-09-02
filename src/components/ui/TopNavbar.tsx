@@ -74,7 +74,7 @@ export const TopNavbar: React.FC = () => {
   };
 
   return (
-    <header className="h-13 px-3 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between z-40 backdrop-blur-md select-none shrink-0 shadow-lg gap-1.5 max-w-full">
+    <header className="h-13 px-3 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between z-50 backdrop-blur-md select-none shrink-0 shadow-lg gap-1.5 max-w-full">
       
       {/* Left: Brand & Scene Switcher Dropdown */}
       <div className="flex items-center gap-1.5 shrink-0">
@@ -123,7 +123,7 @@ export const TopNavbar: React.FC = () => {
 
           {sceneDropdownOpen && (
             <div 
-              className="absolute left-0 top-full mt-1.5 w-40 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-50 p-1 flex flex-col gap-0.5 animate-in fade-in"
+              className="absolute left-0 top-full mt-1.5 w-44 bg-slate-900 border border-amber-500/60 rounded-2xl shadow-2xl overflow-hidden z-[100] p-1 flex flex-col gap-0.5 animate-in fade-in"
               onClick={() => setSceneDropdownOpen(false)}
             >
               <button
