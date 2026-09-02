@@ -1,3 +1,77 @@
+// Helper to render procedural backgrounds for layers
+function renderLayerBackground(
+  ctx: CanvasRenderingContext2D, 
+  texture: string, 
+  color: string | undefined, 
+  imageUrl: string | undefined, 
+  opacity: number,
+  viewLeft: number, 
+  viewTop: number, 
+  viewWidth: number, 
+  viewHeight: number, 
+  gridSize: number
+) {
+  // 1. Fill base color
+  ctx.save();
+  ctx.fillStyle = color || (texture === 'grass-forest' ? '#064e3b' : texture === 'wood-planks' ? '#3b1d07' : texture === 'parchment' ? '#451a03' : texture === 'water-sea' ? '#082f49' : texture === 'cave-rock' ? '#180d24' : texture === 'dungeon-stone' ? '#0f172a' : '#020617');
+  ctx.fillRect(viewLeft - 100, viewTop - 100, viewWidth + 200, viewHeight + 200);
+
+  // 2. Procedural Textures
+  if (texture === 'dungeon-stone') {
+    ctx.strokeStyle = 'rgba(71, 85, 105, 0.25)';
+    ctx.lineWidth = 2;
+    const startX = Math.floor(viewLeft / gridSize) * gridSize;
+    const startY = Math.floor(viewTop / gridSize) * gridSize;
+    for (let x = startX; x < viewLeft + viewWidth + gridSize; x += gridSize) {
+      for (let y = startY; y < viewTop + viewHeight + gridSize; y += gridSize) {
+        ctx.strokeRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
+      }
+    }
+  } else if (texture === 'grass-forest') {
+    ctx.fillStyle = 'rgba(34, 197, 94, 0.08)';
+    const startX = Math.floor(viewLeft / (gridSize * 2)) * (gridSize * 2);
+    const startY = Math.floor(viewTop / (gridSize * 2)) * (gridSize * 2);
+    for (let x = startX; x < viewLeft + viewWidth + gridSize * 2; x += gridSize * 2) {
+      for (let y = startY; y < viewTop + viewHeight + gridSize * 2; y += gridSize * 2) {
+        ctx.beginPath();
+        ctx.arc(x + gridSize, y + gridSize, gridSize * 0.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  } else if (texture === 'wood-planks') {
+    ctx.strokeStyle = 'rgba(180, 83, 9, 0.2)';
+    ctx.lineWidth = 1.5;
+    const startY = Math.floor(viewTop / (gridSize / 2)) * (gridSize / 2);
+    for (let y = startY; y < viewTop + viewHeight + gridSize; y += gridSize / 2) {
+      ctx.beginPath();
+      ctx.moveTo(viewLeft - 100, y);
+      ctx.lineTo(viewLeft + viewWidth + 100, y);
+      ctx.stroke();
+    }
+  } else if (texture === 'space-stars') {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    const startX = Math.floor(viewLeft / 120) * 120;
+    const startY = Math.floor(viewTop / 120) * 120;
+    for (let x = startX; x < viewLeft + viewWidth + 120; x += 120) {
+      for (let y = startY; y < viewTop + viewHeight + 120; y += 120) {
+        ctx.fillRect(x + ((x * 13) % 100), y + ((y * 17) % 100), 2, 2);
+      }
+    }
+  }
+
+  // 3. Custom Battlemap Image
+  if (imageUrl) {
+    const img = new Image();
+    img.src = imageUrl;
+    if (img.complete && img.naturalWidth > 0) {
+      ctx.globalAlpha = opacity || 1;
+      ctx.drawImage(img, 0, 0);
+      ctx.globalAlpha = 1;
+    }
+  }
+  ctx.restore();
+}
+
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { 
   FolderOpen,
@@ -60,6 +134,7 @@ export const GameCanvas: React.FC = () => {
     moveToken,
     updateToken,
     deleteToken,
+    transferTokenToWhiteboard,
     sendToBackstage,
     selectedTokenId,
     selectToken,
@@ -214,6 +289,27 @@ export const GameCanvas: React.FC = () => {
     ctx.scale(zoom, zoom);
 
     const cell = gridSize;
+
+    // 0. Render Layer Background (Dungeon Stone, Forest Grass, Custom Battlemap Image)
+    const currentLayer = layers.find((l) => l.id === activeLayerId);
+    if (currentLayer) {
+      const viewLeft = -panOffset.x / zoom;
+      const viewTop = -panOffset.y / zoom;
+      const viewWidth = canvas.width / zoom;
+      const viewHeight = canvas.height / zoom;
+      renderLayerBackground(
+        ctx,
+        currentLayer.backgroundTexture || 'none',
+        currentLayer.backgroundColor,
+        currentLayer.backgroundImageUrl,
+        currentLayer.backgroundImageOpacity ?? 1,
+        viewLeft,
+        viewTop,
+        viewWidth,
+        viewHeight,
+        gridSize
+      );
+    }
 
     // 1. Render Grid
     if (showGrid) {
@@ -1483,6 +1579,19 @@ export const GameCanvas: React.FC = () => {
           >
             <Swords className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span>⚔️ Savaş Sırasına Ekle</span>
+          </button>
+
+                    {/* Transfer to Whiteboard */}
+          <button
+            onClick={() => {
+              transferTokenToWhiteboard(tokenContextMenu.token.id);
+              setTokenContextMenu(null);
+            }}
+            className="w-full px-2 py-1.5 text-left text-indigo-300 hover:bg-indigo-950/80 hover:text-white rounded-lg flex items-center gap-2 transition-colors font-bold cursor-pointer"
+            title="Token görselini Çizim Tahtasına aktarır"
+          >
+            <Palette className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+            <span>🎨 Çizim Tahtasına Aktar</span>
           </button>
 
           {/* Send to Backstage Vault */}

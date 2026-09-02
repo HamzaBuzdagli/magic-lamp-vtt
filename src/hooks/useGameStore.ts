@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { 
   ConnectedPlayer,
+  CustomSoundTrack,
   InitiativeItem,
   ChatMessage,
   ToolMode, 
@@ -97,6 +98,19 @@ interface GameState {
   addLayer: (name: string) => void;
   updateLayer: (id: string, name: string) => void;
   deleteLayer: (id: string) => void;
+  // Layer Backgrounds & Settings
+  updateLayerBackground: (layerId: string, updates: Partial<MapLayer>) => void;
+
+  // Custom Sound Tracks
+  customSoundTracks: CustomSoundTrack[];
+  addCustomSoundTrack: (track: Omit<CustomSoundTrack, 'id'>) => void;
+  deleteCustomSoundTrack: (id: string) => void;
+
+  // Token ↔ Whiteboard Dual Bridge
+  transferTokenToWhiteboard: (tokenId: string) => void;
+  preloadedDoodleImage: string | null;
+  setPreloadedDoodleImage: (img: string | null) => void;
+
   moveTokenToLayer: (tokenId: string, layerId: string) => void;
   moveRoomToLayer: (roomId: string, layerId: string) => void;
 
@@ -879,6 +893,7 @@ export const useGameStore = create<GameState>()(
           chatMessages: stateUpdates.chatMessages !== undefined ? stateUpdates.chatMessages : get().chatMessages,
           connectedPlayers: stateUpdates.connectedPlayers !== undefined ? stateUpdates.connectedPlayers : get().connectedPlayers,
           activeAmbientTrack: stateUpdates.activeAmbientTrack !== undefined ? stateUpdates.activeAmbientTrack : get().activeAmbientTrack,
+          customSoundTracks: stateUpdates.customSoundTracks || get().customSoundTracks,
           activeNpcProfileId: stateUpdates.activeNpcProfileId || get().activeNpcProfileId,
         };
 
@@ -991,6 +1006,7 @@ export const useGameStore = create<GameState>()(
           chatMessages: payload.chatMessages !== undefined ? payload.chatMessages : get().chatMessages,
           connectedPlayers: payload.connectedPlayers !== undefined ? payload.connectedPlayers : get().connectedPlayers,
           activeAmbientTrack: payload.activeAmbientTrack !== undefined ? payload.activeAmbientTrack : get().activeAmbientTrack,
+          customSoundTracks: payload.customSoundTracks !== undefined ? payload.customSoundTracks : get().customSoundTracks,
           activeNpcProfileId: payload.activeNpcProfileId !== undefined ? payload.activeNpcProfileId : get().activeNpcProfileId,
         });
 
@@ -1206,6 +1222,53 @@ export const useGameStore = create<GameState>()(
           notifyChannel(nextState);
           return nextState;
         }),
+
+        
+        // Layer Backgrounds
+        updateLayerBackground: (layerId, updates) => set((state) => {
+          const nextLayers = state.layers.map((l) => l.id === layerId ? { ...l, ...updates } : l);
+          const nextState = { layers: nextLayers };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+
+        // Custom Soundtracks
+        customSoundTracks: [],
+        addCustomSoundTrack: (trackData) => set((state) => {
+          const newTrack: CustomSoundTrack = {
+            ...trackData,
+            id: 'sound-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4)
+          };
+          const nextState = { customSoundTracks: [...state.customSoundTracks, newTrack] };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+        deleteCustomSoundTrack: (id) => set((state) => {
+          const nextState = { customSoundTracks: state.customSoundTracks.filter((s) => s.id !== id) };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+
+        // Token ↔ Whiteboard Dual Bridge
+        transferTokenToWhiteboard: (tokenId) => {
+          const token = get().tokens.find((t) => t.id === tokenId) || get().backstageTokens.find((t) => t.id === tokenId);
+          if (!token) return;
+
+          const newAsset = {
+            id: 'wb-asset-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+            name: token.name,
+            image: token.image || '',
+            category: token.folder || 'Tokenler'
+          };
+
+          const currentAssets = get().whiteboardAssets || [];
+          const updatedAssets = [...currentAssets, newAsset];
+          set({ whiteboardAssets: updatedAssets, activeView: 'whiteboard' });
+          notifyChannel({ whiteboardAssets: updatedAssets, activeView: 'whiteboard' });
+        },
+
+        preloadedDoodleImage: null,
+        setPreloadedDoodleImage: (img) => set({ preloadedDoodleImage: img }),
 
         deleteLayer: (id) => set((state) => {
           if (state.layers.length <= 1) return state;

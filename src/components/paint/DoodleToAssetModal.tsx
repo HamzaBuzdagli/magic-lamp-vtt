@@ -52,10 +52,27 @@ interface FloatingStamp {
 type TransformMode = 'none' | 'move' | 'rotate' | 'resize-se' | 'resize-sw' | 'resize-ne' | 'resize-nw';
 
 export const DoodleToAssetModal: React.FC = () => {
-  const { isPaintModalOpen, setPaintModalOpen, addToken, isStreamerMode } = useGameStore();
+  const { isPaintModalOpen, setPaintModalOpen, addToken, isStreamerMode, preloadedDoodleImage, setPreloadedDoodleImage } = useGameStore();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Load preloaded image from Whiteboard or token export
+  useEffect(() => {
+    if (isPaintModalOpen && preloadedDoodleImage) {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+      img.src = preloadedDoodleImage;
+      setPreloadedDoodleImage(null);
+    }
+  }, [isPaintModalOpen, preloadedDoodleImage, setPreloadedDoodleImage]);
 
   // Paint Tools & States
   const [activeTool, setActiveTool] = useState<PaintTool>('brush');

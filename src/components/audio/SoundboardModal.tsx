@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   X, 
   Volume2, 
-  Play, 
   Square, 
   CloudRain, 
   Beer, 
   Compass, 
   Swords,
   Sparkles,
-  Dices,
   Flame,
   Skull,
-  Trophy
+  Trophy,
+  Plus,
+  Trash2,
+  Music,
+  Upload
 } from 'lucide-react';
 import { useGameStore } from '../../hooks/useGameStore';
 import { soundService } from '../../services/soundService';
@@ -24,30 +26,75 @@ export const SoundboardModal: React.FC = () => {
     activeAmbientTrack,
     setActiveAmbientTrack,
     ambientVolume,
-    setAmbientVolume
+    setAmbientVolume,
+    customSoundTracks,
+    addCustomSoundTrack,
+    deleteCustomSoundTrack,
+    isStreamerMode
   } = useGameStore();
 
+  const [isAddingCustom, setIsAddingCustom] = useState(false);
+  const [customName, setCustomName] = useState('');
+  const [customUrl, setCustomUrl] = useState('');
+
   if (!isSoundboardOpen) return null;
+
+  const isDm = !isStreamerMode;
 
   const handleToggleAmbient = (trackId: string) => {
     if (activeAmbientTrack === trackId) {
       soundService.stopAmbient();
       setActiveAmbientTrack(null);
     } else {
-      if (trackId === 'rain') soundService.playRainAmbient();
-      else if (trackId === 'tavern') soundService.playTavernAmbient();
-      else if (trackId === 'cave') soundService.playCaveAmbient();
-      else if (trackId === 'war') soundService.playWarAmbient();
+      soundService.playTrackById(trackId, customSoundTracks);
       setActiveAmbientTrack(trackId);
     }
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64Url = event.target?.result as string;
+      if (base64Url) {
+        addCustomSoundTrack({
+          name: file.name.replace(/\.[^/.]+$/, ''),
+          category: 'ambient',
+          url: base64Url,
+          icon: '🎵'
+        });
+        setIsAddingCustom(false);
+        setCustomName('');
+        setCustomUrl('');
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddUrlSound = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customName.trim() || !customUrl.trim()) return;
+
+    addCustomSoundTrack({
+      name: customName.trim(),
+      category: 'ambient',
+      url: customUrl.trim(),
+      icon: '🎵'
+    });
+
+    setIsAddingCustom(false);
+    setCustomName('');
+    setCustomUrl('');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in select-none">
-      <div className="w-full max-w-lg bg-slate-900 border-2 border-amber-500/70 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="w-full max-w-lg bg-slate-900 border-2 border-amber-500/70 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 bg-slate-950 border-b border-slate-800">
+        <div className="flex items-center justify-between px-5 py-4 bg-slate-950 border-b border-slate-800 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
               <Volume2 className="w-5 h-5" />
@@ -60,7 +107,7 @@ export const SoundboardModal: React.FC = () => {
                 </span>
               </h2>
               <p className="text-[10px] text-slate-400">
-                Masaüstü FRP oyun atmosferini güçlendiren zindan sesleri ve efektler.
+                Tüm oyuncuların kulaklığında eşzamanlı çalan zindan sesleri ve özel müzikler.
               </p>
             </div>
           </div>
@@ -74,7 +121,7 @@ export const SoundboardModal: React.FC = () => {
         </div>
 
         {/* Content Body */}
-        <div className="p-5 space-y-5 text-xs">
+        <div className="p-5 overflow-y-auto space-y-4 text-xs">
           
           {/* Volume Slider */}
           <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between gap-4">
@@ -148,40 +195,146 @@ export const SoundboardModal: React.FC = () => {
                         <div className="text-[9px] text-slate-500">{t.sub}</div>
                       </div>
                     </div>
-
-                    <div className={'w-6 h-6 rounded-full flex items-center justify-center ' + (isPlaying ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-500')}>
-                      {isPlaying ? <Square className="w-2.5 h-2.5 fill-slate-950" /> : <Play className="w-2.5 h-2.5 fill-slate-500 ml-0.5" />}
-                    </div>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* INSTANT SFX BUTTONS */}
-          <div className="space-y-2">
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-              Anlık Ses Efektleri (SFX)
-            </label>
+          {/* CUSTOM SOUNDS & DM UPLOAD SECTION */}
+          <div className="space-y-2 pt-2 border-t border-slate-800">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Music className="w-3.5 h-3.5" />
+                <span>Özel Sesler & Müzikler (DM)</span>
+              </label>
 
+              {isDm && !isAddingCustom && (
+                <button
+                  onClick={() => setIsAddingCustom(true)}
+                  className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-[10px] flex items-center gap-1 cursor-pointer shadow-sm transition-all"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Yeni Ses Ekle</span>
+                </button>
+              )}
+            </div>
+
+            {/* Custom Sound Adder Form */}
+            {isAddingCustom && (
+              <div className="bg-slate-950 p-3.5 rounded-2xl border border-amber-500/50 space-y-2.5 animate-in fade-in">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-200 text-xs">Yeni Ses veya Müzik Ekle:</span>
+                  <button onClick={() => setIsAddingCustom(false)} className="text-slate-400 hover:text-white">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block p-3 border-2 border-dashed border-slate-700 hover:border-amber-500 rounded-xl text-center cursor-pointer bg-slate-900 transition-colors">
+                    <Upload className="w-5 h-5 mx-auto text-amber-400 mb-1" />
+                    <span className="font-bold text-slate-300 block">Bilgisayarından MP3 / WAV Yükle</span>
+                    <span className="text-[10px] text-slate-500">Ses dosyası seçin</span>
+                    <input type="file" accept="audio/*" onChange={handleFileUpload} className="hidden" />
+                  </label>
+
+                  <div className="text-center text-[10px] text-slate-500 font-bold">- VEYA SES LİNKİ GİRİN -</div>
+
+                  <form onSubmit={handleAddUrlSound} className="space-y-1.5">
+                    <input
+                      type="text"
+                      placeholder="Ses Başlığı (Örn: Boss Savaş Müziği)"
+                      value={customName}
+                      onChange={(e) => setCustomName(e.target.value)}
+                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-200 font-bold"
+                    />
+                    <input
+                      type="url"
+                      placeholder="Ses URL'si (http://...mp3)"
+                      value={customUrl}
+                      onChange={(e) => setCustomUrl(e.target.value)}
+                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-200 font-mono"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!customName.trim() || !customUrl.trim()}
+                      className="w-full py-1.5 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-amber-400 cursor-pointer disabled:opacity-50"
+                    >
+                      Linki Kaydet & Ekle
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* Custom Sound Tracks List */}
+            {customSoundTracks.length > 0 ? (
+              <div className="grid grid-cols-2 gap-2">
+                {customSoundTracks.map((track) => {
+                  const isPlaying = activeAmbientTrack === track.id;
+                  return (
+                    <div
+                      key={track.id}
+                      className={
+                        'p-2.5 rounded-2xl border flex items-center justify-between gap-2 transition-all ' +
+                        (isPlaying
+                          ? 'bg-gradient-to-r from-amber-600/30 to-slate-900 border-amber-500 shadow-md scale-101'
+                          : 'bg-slate-950 border-slate-800')
+                      }
+                    >
+                      <button
+                        onClick={() => handleToggleAmbient(track.id)}
+                        className="flex items-center gap-2 flex-1 min-w-0 text-left cursor-pointer"
+                      >
+                        <div className={'w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ' + (isPlaying ? 'bg-amber-500 text-slate-950' : 'bg-slate-900 text-amber-400')}>
+                          🎵
+                        </div>
+                        <span className="font-bold text-slate-200 truncate text-xs">{track.name}</span>
+                      </button>
+
+                      {isDm && (
+                        <button
+                          onClick={() => deleteCustomSoundTrack(track.id)}
+                          className="text-slate-600 hover:text-rose-400 p-1 rounded-lg cursor-pointer"
+                          title="Sesi Sil"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-3 text-slate-600 text-[11px] bg-slate-950 rounded-xl border border-slate-800">
+                Henüz özel ses eklenmedi. DM dilediği MP3 veya ses efektini ekleyebilir.
+              </div>
+            )}
+          </div>
+
+          {/* ONE-SHOT SFX */}
+          <div className="space-y-2 pt-2 border-t border-slate-800">
+            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              Anlık Zindan Ses Efektleri (SFX)
+            </label>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { name: 'Kılıç Darbesi', icon: Swords, action: () => soundService.playSwordClash(), color: 'bg-rose-950/70 border-rose-800/80 hover:bg-rose-900 text-rose-300' },
-                { name: 'Zar Yuvarla', icon: Dices, action: () => soundService.playDiceRoll(), color: 'bg-amber-950/70 border-amber-800/80 hover:bg-amber-900 text-amber-300' },
-                { name: 'Büyü Patlaması', icon: Sparkles, action: () => soundService.playMagicSpell(), color: 'bg-blue-950/70 border-blue-800/80 hover:bg-blue-900 text-blue-300' },
-                { name: 'Canavar Kükre', icon: Flame, action: () => soundService.playMonsterRoar(), color: 'bg-orange-950/70 border-orange-800/80 hover:bg-orange-900 text-orange-300' },
-                { name: 'Kritik Zafer!', icon: Trophy, action: () => soundService.playVictoryFanfare(), color: 'bg-emerald-950/70 border-emerald-800/80 hover:bg-emerald-900 text-emerald-300' },
-                { name: 'Kritik Kasvet', icon: Skull, action: () => soundService.playDoomGong(), color: 'bg-purple-950/70 border-purple-800/80 hover:bg-purple-900 text-purple-300' },
+                { name: 'Kılıç & Çarpışma', icon: Swords, fn: () => soundService.playSwordSound() },
+                { name: 'Büyü Patlaması', icon: Sparkles, fn: () => soundService.playMagicSound() },
+                { name: 'Meşale Ateşi', icon: Flame, fn: () => soundService.playTorchSound() },
+                { name: 'Canavar Kükremesi', icon: Skull, fn: () => soundService.playMonsterSound() },
+                { name: 'Zafer Fanfarı', icon: Trophy, fn: () => soundService.playVictorySound() },
+                { name: 'Zar Yuvarlanışı', icon: Volume2, fn: () => soundService.playDiceSound() },
               ].map((sfx, idx) => {
                 const Icon = sfx.icon;
                 return (
                   <button
                     key={idx}
-                    onClick={sfx.action}
-                    className={'p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ' + sfx.color}
+                    onClick={sfx.fn}
+                    className="p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-2xl flex flex-col items-center justify-center gap-1.5 text-center transition-all cursor-pointer group"
                   >
-                    <Icon className="w-4 h-4" />
-                    <span className="font-bold text-[10px] text-center">{sfx.name}</span>
+                    <Icon className="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors" />
+                    <span className="font-bold text-slate-300 text-[10px] leading-tight">{sfx.name}</span>
                   </button>
                 );
               })}
@@ -189,7 +342,6 @@ export const SoundboardModal: React.FC = () => {
           </div>
 
         </div>
-
       </div>
     </div>
   );

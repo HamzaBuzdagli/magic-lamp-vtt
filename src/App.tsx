@@ -1,3 +1,4 @@
+import { soundService } from './services/soundService';
 import { useEffect } from 'react';
 import { TopNavbar } from './components/ui/TopNavbar';
 import { Toolbar } from './components/ui/Toolbar';
@@ -22,6 +23,16 @@ import { peerSyncService } from './services/peerSyncService';
 import { useGameStore } from './hooks/useGameStore';
 
 export function App() {
+  // Global ambient audio sync across WebRTC / local
+  const { activeAmbientTrack, customSoundTracks } = useGameStore();
+  useEffect(() => {
+    if (!activeAmbientTrack) {
+      soundService.stopAmbient();
+    } else {
+      soundService.playTrackById(activeAmbientTrack, customSoundTracks);
+    }
+  }, [activeAmbientTrack, customSoundTracks]);
+
   const { 
     activeView, 
     setStreamerMode, 

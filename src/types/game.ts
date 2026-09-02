@@ -24,6 +24,11 @@ export interface MapLayer {
   id: string;
   name: string;
   order: number;
+  backgroundType?: 'texture' | 'image' | 'color';
+  backgroundColor?: string;
+  backgroundTexture?: 'none' | 'dungeon-stone' | 'grass-forest' | 'wood-planks' | 'parchment' | 'cave-rock' | 'water-sea' | 'space-stars';
+  backgroundImageUrl?: string;
+  backgroundImageOpacity?: number;
 }
 
 export interface WhiteboardPage {
@@ -308,4 +313,12 @@ export interface ChatMessage {
   recipientName?: string;
   isDiceRoll?: boolean;
   diceDetail?: string;
+}
+
+export interface CustomSoundTrack {
+  id: string;
+  name: string;
+  category: 'ambient' | 'music' | 'sfx';
+  url: string; // Base64 Data URL or HTTP audio URL
+  icon?: string;
 }

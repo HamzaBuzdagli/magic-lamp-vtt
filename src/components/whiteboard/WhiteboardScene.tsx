@@ -63,6 +63,13 @@ interface FloatingStamp {
 type TransformMode = 'none' | 'move' | 'rotate' | 'resize-se' | 'resize-sw' | 'resize-ne' | 'resize-nw';
 
 export const WhiteboardScene: React.FC = () => {
+  const handleExportToToken = () => {
+    if (!canvasRef.current) return;
+    const dataUrl = canvasRef.current.toDataURL('image/png');
+    setPreloadedDoodleImage(dataUrl);
+    setPaintModalOpen(true);
+  };
+
   const { 
     connectedPlayers,
     localPlayerName,
@@ -82,7 +89,9 @@ export const WhiteboardScene: React.FC = () => {
     addWhiteboardHealthBar,
     updateWhiteboardHealthBar,
     deleteWhiteboardHealthBar,
-    isStreamerMode 
+    isStreamerMode,
+    setPaintModalOpen,
+    setPreloadedDoodleImage
   } = useGameStore();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -1579,6 +1588,17 @@ export const WhiteboardScene: React.FC = () => {
             >
               <Upload className="w-3.5 h-3.5" />
             </button>
+
+            {!isStreamerMode && (
+              <button
+                onClick={handleExportToToken}
+                className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-1 shrink-0"
+                title="Çizim tahtasındaki resmi alıp yeni bir Token / Varlık oluşturun"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Token Yap</span>
+              </button>
+            )}
 
             <button
               onClick={handleExportPNG}
