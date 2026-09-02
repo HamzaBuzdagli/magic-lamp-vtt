@@ -719,11 +719,13 @@ export const GameCanvas: React.FC = () => {
 
   // Token Dragging Handlers
   const handleTokenDragStart = (e: React.DragEvent, tokenId: string) => {
+    if (isStreamerMode) { e.preventDefault(); return; }
     e.dataTransfer.setData('text/plain', tokenId);
   };
 
   const handleContainerDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    if (isStreamerMode) return;
     const tokenId = e.dataTransfer.getData('text/plain');
     if (!tokenId) return;
 
@@ -828,7 +830,7 @@ export const GameCanvas: React.FC = () => {
           return (
             <div
               key={token.id}
-              draggable={activeTool === 'select'}
+              draggable={activeTool === 'select' && !isStreamerMode}
               onDragStart={(e) => handleTokenDragStart(e, token.id)}
               onClick={(e) => { 
                 if (activeTool === 'fog_reveal' || activeTool === 'fog_hide') return;

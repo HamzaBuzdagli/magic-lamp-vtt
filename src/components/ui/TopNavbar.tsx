@@ -235,15 +235,17 @@ export const TopNavbar: React.FC = () => {
           <span className="hidden lg:inline">Çark</span>
         </button>
 
-        {/* Doodle to Asset */}
-        <button
-          onClick={() => setPaintModalOpen(true)}
-          className="flex items-center gap-1 px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs rounded-xl border border-amber-500/30 transition-all cursor-pointer shrink-0"
-          title="Özel Varlık Çizimi"
-        >
-          <Paintbrush className="w-3.5 h-3.5 text-amber-400" />
-          <span className="hidden lg:inline">Varlık</span>
-        </button>
+        {/* Doodle to Asset (DM Only) */}
+        {!isStreamerMode && !isLockedPlayerMode && (
+          <button
+            onClick={() => setPaintModalOpen(true)}
+            className="flex items-center gap-1 px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs rounded-xl border border-amber-500/30 transition-all cursor-pointer shrink-0"
+            title="Özel Varlık Çizimi"
+          >
+            <Paintbrush className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden lg:inline">Varlık</span>
+          </button>
+        )}
 
         {/* Dungeon Room Drawer */}
         {!isStreamerMode && activeView === 'map' && (

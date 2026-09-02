@@ -40,6 +40,7 @@ export function App() {
     if (mode === 'player' || roomParam) {
       setStreamerMode(true);
       setLockedPlayerMode(true);
+      useGameStore.getState().setActiveTool('pan');
       if (roomParam) {
         peerSyncService.connectToHost(roomParam).catch((err) => {
           console.warn('Auto-connect to room failed:', roomParam, err);

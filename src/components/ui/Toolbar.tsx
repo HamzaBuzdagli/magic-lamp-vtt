@@ -35,8 +35,8 @@ export const Toolbar: React.FC = () => {
 
   const TOOLS: { id: ToolMode; label: string; subLabel: string; icon: React.ComponentType<{ className?: string }>; dmOnly?: boolean }[] = [
     { id: 'select', label: 'Token Seç & Taşı', subLabel: 'Karakter ve eşyaları sürükle', icon: MousePointer, dmOnly: true },
-    { id: 'fog_reveal', label: 'Savaş Sisi Aç', subLabel: 'Odayı görünür yap (Sisi Kaldır)', icon: Eye },
-    { id: 'fog_hide', label: 'Savaş Sisi Kapat', subLabel: 'Odayı karart (Sis Getir)', icon: EyeOff },
+    { id: 'fog_reveal', label: 'Savaş Sisi Aç', subLabel: 'Odayı görünür yap (Sisi Kaldır)', icon: Eye, dmOnly: true },
+    { id: 'fog_hide', label: 'Savaş Sisi Kapat', subLabel: 'Odayı karart (Sis Getir)', icon: EyeOff, dmOnly: true },
     { id: 'room_edit', label: 'Oda Düzenle & Bağla', subLabel: 'Odaları taşı, Shift ile çoklu seç & sağ tıkla bağla', icon: Boxes, dmOnly: true },
     { id: 'pan', label: 'Haritayı Kaydır', subLabel: 'Görünümü taşı (Pan)', icon: Hand },
     { id: 'ruler', label: 'Cetvel / Menzil Ölçer', subLabel: 'Mesafe ve kare ölç (ft / metre)', icon: Ruler },

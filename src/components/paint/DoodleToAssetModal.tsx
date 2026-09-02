@@ -52,7 +52,7 @@ interface FloatingStamp {
 type TransformMode = 'none' | 'move' | 'rotate' | 'resize-se' | 'resize-sw' | 'resize-ne' | 'resize-nw';
 
 export const DoodleToAssetModal: React.FC = () => {
-  const { isPaintModalOpen, setPaintModalOpen, addToken } = useGameStore();
+  const { isPaintModalOpen, setPaintModalOpen, addToken, isStreamerMode } = useGameStore();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -793,7 +793,7 @@ export const DoodleToAssetModal: React.FC = () => {
     setPaintModalOpen(false);
   };
 
-  if (!isPaintModalOpen) return null;
+  if (!isPaintModalOpen || isStreamerMode) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in select-none">
