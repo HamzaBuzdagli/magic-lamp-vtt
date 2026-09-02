@@ -67,7 +67,36 @@ export const SessionManagerModal: React.FC = () => {
   };
 
   const handleExportJson = (session: CampaignSession) => {
-    const jsonStr = JSON.stringify(session, null, 2);
+    const isCurrentActive = session.id === activeSessionId;
+    const currentState = useGameStore.getState();
+
+    const sessionToExport: CampaignSession = isCurrentActive
+      ? {
+          ...session,
+          updatedAt: Date.now(),
+          data: {
+            rooms: currentState.rooms,
+            connections: currentState.connections,
+            tokens: currentState.tokens,
+            drawings: currentState.drawings,
+            layers: currentState.layers,
+            activeLayerId: currentState.activeLayerId,
+            whiteboardPages: currentState.whiteboardPages,
+            activeWhiteboardPageId: currentState.activeWhiteboardPageId,
+            whiteboardAssets: currentState.whiteboardAssets,
+            whiteboardHealthBars: currentState.whiteboardHealthBars || [],
+            backstageTokens: currentState.backstageTokens,
+            encounterPresets: currentState.encounterPresets,
+            rulebookNotes: currentState.rulebookNotes,
+            npcProfiles: currentState.npcProfiles,
+            lampChatHistory: currentState.lampChatHistory,
+            handouts: currentState.handouts,
+            activeView: currentState.activeView
+          }
+        }
+      : session;
+
+    const jsonStr = JSON.stringify(sessionToExport, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -75,7 +104,7 @@ export const SessionManagerModal: React.FC = () => {
     link.download = `sihirli_lamba_${session.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    showNotice('"' + session.name + '" oturum yedeği indirildi.');
+    showNotice('"' + session.name + '" oturum yedeği (tüm şablonlar ve referanslarla) indirildi.');
   };
 
   const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
