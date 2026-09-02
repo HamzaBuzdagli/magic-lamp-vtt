@@ -266,6 +266,7 @@ interface GameState {
   setLockedPlayerMode: (locked: boolean) => void;
   setConnectedPlayers: (players: ConnectedPlayer[]) => void;
   togglePlayerDrawingPermission: (playerId: string) => void;
+  renameConnectedPlayer: (playerId: string, newName: string) => void;
 
   // Combat Initiative Tracker
   initiativeList: InitiativeItem[];
@@ -992,6 +993,16 @@ export const useGameStore = create<GameState>()(
           activeAmbientTrack: payload.activeAmbientTrack !== undefined ? payload.activeAmbientTrack : get().activeAmbientTrack,
           activeNpcProfileId: payload.activeNpcProfileId !== undefined ? payload.activeNpcProfileId : get().activeNpcProfileId,
         });
+
+        // Check if DM renamed this player
+        if (payload.connectedPlayers && Array.isArray(payload.connectedPlayers)) {
+          const curName = get().localPlayerName;
+          const myEntry = payload.connectedPlayers.find((p: any) => p.id === curName || p.id === peerSyncService.roomId);
+          if (myEntry && myEntry.name && myEntry.name !== curName) {
+            if (typeof window !== 'undefined') localStorage.setItem('magic_lamp_player_name', myEntry.name);
+            set({ localPlayerName: myEntry.name });
+          }
+        }
       });
 
       // Listen to cross-tab updates
@@ -2418,6 +2429,14 @@ export const useGameStore = create<GameState>()(
         setLockedPlayerMode: (locked: boolean) => set({ isLockedPlayerMode: locked }),
         setConnectedPlayers: (players: ConnectedPlayer[]) => set(() => {
           const nextState = { connectedPlayers: players };
+          notifyChannel(nextState);
+          return nextState;
+        }),
+                renameConnectedPlayer: (playerId: string, newName: string) => set((state) => {
+          const updated = state.connectedPlayers.map((p) =>
+            p.id === playerId ? { ...p, name: newName } : p
+          );
+          const nextState = { connectedPlayers: updated };
           notifyChannel(nextState);
           return nextState;
         }),
