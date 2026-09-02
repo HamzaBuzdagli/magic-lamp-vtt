@@ -39,6 +39,8 @@ const isPlayerUrl = typeof window !== 'undefined' && new URLSearchParams(window.
 interface GameState {
   // View & Mode
   activeView: ActiveView;
+  language: 'tr' | 'en';
+  setLanguage: (lang: 'tr' | 'en') => void;
   isStreamerMode: boolean;
   activeTool: ToolMode;
   gridSize: number;
@@ -1054,6 +1056,11 @@ export const useGameStore = create<GameState>()(
 
       return {
         activeView: 'map',
+        language: (typeof window !== 'undefined' && localStorage.getItem('magic_lamp_vtt_lang') as 'tr' | 'en') || 'tr',
+        setLanguage: (lang: 'tr' | 'en') => {
+          if (typeof window !== 'undefined') localStorage.setItem('magic_lamp_vtt_lang', lang);
+          set({ language: lang });
+        },
         isStreamerMode: isPlayerUrl,
         activeTool: 'select',
         gridSize: 48,

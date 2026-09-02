@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React from 'react';
 import { 
   Ruler,
@@ -17,6 +18,7 @@ import { useGameStore } from '../../hooks/useGameStore';
 import type { ToolMode } from '../../types/game';
 
 export const Toolbar: React.FC = () => {
+  const { t } = useTranslation();
   const {
     activeTool,
     setActiveTool,
@@ -34,14 +36,14 @@ export const Toolbar: React.FC = () => {
   } = useGameStore();
 
   const TOOLS: { id: ToolMode; label: string; subLabel: string; icon: React.ComponentType<{ className?: string }>; dmOnly?: boolean }[] = [
-    { id: 'select', label: 'Token Seç & Taşı', subLabel: 'Karakter ve eşyaları sürükle', icon: MousePointer, dmOnly: true },
-    { id: 'fog_reveal', label: 'Savaş Sisi Aç', subLabel: 'Odayı görünür yap (Sisi Kaldır)', icon: Eye, dmOnly: true },
-    { id: 'fog_hide', label: 'Savaş Sisi Kapat', subLabel: 'Odayı karart (Sis Getir)', icon: EyeOff, dmOnly: true },
-    { id: 'room_edit', label: 'Oda Düzenle & Bağla', subLabel: 'Odaları taşı, Shift ile çoklu seç & sağ tıkla bağla', icon: Boxes, dmOnly: true },
-    { id: 'pan', label: 'Haritayı Kaydır', subLabel: 'Görünümü taşı (Pan)', icon: Hand },
-    { id: 'ruler', label: 'Cetvel / Menzil Ölçer', subLabel: 'Mesafe ve kare ölç (ft / metre)', icon: Ruler },
-    { id: 'draw', label: 'Haritaya Çiz', subLabel: 'Canlı kalem', icon: Paintbrush, dmOnly: true },
-    { id: 'laser', label: 'Lazer İşaretleyici', subLabel: 'Yayında dikkat çek', icon: Flame, dmOnly: true },
+    { id: 'select', label: t('tool.select'), subLabel: t('tool.selectSub'), icon: MousePointer, dmOnly: true },
+    { id: 'fog_reveal', label: t('tool.fogReveal'), subLabel: t('tool.fogRevealSub'), icon: Eye, dmOnly: true },
+    { id: 'fog_hide', label: t('tool.fogHide'), subLabel: t('tool.fogHideSub'), icon: EyeOff, dmOnly: true },
+    { id: 'room_edit', label: t('tool.roomEdit'), subLabel: t('tool.roomEditSub'), icon: Boxes, dmOnly: true },
+    { id: 'pan', label: t('tool.pan'), subLabel: t('tool.panSub'), icon: Hand },
+    { id: 'ruler', label: t('tool.ruler'), subLabel: t('tool.rulerSub'), icon: Ruler },
+    { id: 'draw', label: t('tool.draw'), subLabel: t('tool.drawSub'), icon: Paintbrush, dmOnly: true },
+    { id: 'laser', label: t('tool.laser'), subLabel: t('tool.laserSub'), icon: Flame, dmOnly: true },
   ];
 
   return (
