@@ -66,9 +66,9 @@ export const TopNavbar: React.FC = () => {
       {/* Left: Brand & Scene Switcher */}
       <div className="flex items-center gap-2 shrink-0">
         <div 
-          onClick={() => setLampModalOpen(true)}
-          className="flex items-center gap-1.5 cursor-pointer group shrink-0"
-          title="Sihirli Lambayı Aç"
+          onClick={() => { if (!isStreamerMode && !isLockedPlayerMode) setLampModalOpen(true); }}
+          className={`flex items-center gap-1.5 shrink-0 ${!isStreamerMode && !isLockedPlayerMode ? 'cursor-pointer group' : ''}`}
+          title={!isStreamerMode && !isLockedPlayerMode ? 'Sihirli Lambayı Aç' : 'Sihirli Lamba VTT'}
         >
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-lg shadow-md group-hover:scale-105 transition-transform shadow-amber-500/20">
             🪔
@@ -141,15 +141,17 @@ export const TopNavbar: React.FC = () => {
 
       {/* Center: Tools & Action Buttons */}
       <div className="flex items-center gap-1 shrink-0 overflow-x-auto">
-        {/* Magic Lamp Trigger */}
-        <button
-          onClick={() => setLampModalOpen(true)}
-          className="flex items-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all cursor-pointer shrink-0"
-          title="AI Sihirli Lamba"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span className="hidden lg:inline">Lamba</span>
-        </button>
+        {/* Magic Lamp Trigger (DM Only) */}
+        {!isStreamerMode && !isLockedPlayerMode && (
+          <button
+            onClick={() => setLampModalOpen(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all cursor-pointer shrink-0"
+            title="AI Sihirli Lamba"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Lamba</span>
+          </button>
+        )}
 
         {/* Initiative Tracker Button */}
         <button

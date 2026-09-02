@@ -9,6 +9,18 @@ export interface PeerSyncMessage {
   senderId?: string;
 }
 
+const PEER_CONFIG = {
+  debug: 1,
+  config: {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      { urls: 'stun:global.stun.twilio.com:3478' }
+    ]
+  }
+};
+
 class PeerSyncService {
   private peer: Peer | null = null;
   private connections: Map<string, DataConnection> = new Map();
@@ -17,11 +29,17 @@ class PeerSyncService {
   public isHost: boolean = false;
   public status: PeerConnectionStatus = 'disconnected';
   public connectedPeersCount: number = 0;
+  private snapshotProvider: (() => any) | null = null;
+  private pingInterval: any = null;
 
   private statusListeners: Set<(status: PeerConnectionStatus, roomId?: string) => void> = new Set();
   private peerCountListeners: Set<(count: number) => void> = new Set();
   private stateListeners: Set<(payload: any) => void> = new Set();
   private actionListeners: Set<(action: string, payload: any) => void> = new Set();
+
+  public setSnapshotProvider(provider: () => any) {
+    this.snapshotProvider = provider;
+  }
 
   private setStatus(status: PeerConnectionStatus) {
     this.status = status;
@@ -55,7 +73,6 @@ class PeerSyncService {
     return () => this.actionListeners.delete(cb);
   }
 
-  // Generate a random room code like 'lamba-4829'
   public generateRoomId(): string {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     return `lamba-${randomDigits}`;
@@ -67,6 +84,10 @@ class PeerSyncService {
       this.disconnect();
     }
 
+    if (getFullStateSnapshot) {
+      this.snapshotProvider = getFullStateSnapshot;
+    }
+
     const targetRoomId = customRoomId || this.generateRoomId();
     this.roomId = targetRoomId;
     this.isHost = true;
@@ -74,20 +95,18 @@ class PeerSyncService {
 
     return new Promise((resolve, reject) => {
       try {
-        const peer = new Peer(targetRoomId, {
-          debug: 1,
-        });
-
+        const peer = new Peer(targetRoomId, PEER_CONFIG);
         this.peer = peer;
 
         peer.on('open', (id) => {
           this.roomId = id;
           this.setStatus('hosting');
+          this.startHeartbeat();
           resolve(id);
         });
 
         peer.on('connection', (conn) => {
-          this.setupHostConnection(conn, getFullStateSnapshot);
+          this.setupHostConnection(conn);
         });
 
         peer.on('error', (err: any) => {
@@ -111,17 +130,17 @@ class PeerSyncService {
     });
   }
 
-  private setupHostConnection(conn: DataConnection, getFullStateSnapshot?: () => any) {
+  private setupHostConnection(conn: DataConnection) {
     conn.on('open', () => {
       this.connections.set(conn.peer, conn);
       this.updatePeerCount();
 
-      // Send initial full state snapshot to the newly connected player
-      if (getFullStateSnapshot) {
-        const fullState = getFullStateSnapshot();
+      // Send initial full state snapshot to the newly connected player immediately
+      const state = this.snapshotProvider ? this.snapshotProvider() : null;
+      if (state) {
         conn.send({
           type: 'FULL_STATE',
-          payload: fullState,
+          payload: state,
         } as PeerSyncMessage);
       }
     });
@@ -158,9 +177,7 @@ class PeerSyncService {
 
     return new Promise((resolve, reject) => {
       try {
-        const peer = new Peer({
-          debug: 1,
-        });
+        const peer = new Peer(PEER_CONFIG);
         this.peer = peer;
 
         peer.on('open', () => {
@@ -171,6 +188,22 @@ class PeerSyncService {
 
           conn.on('open', () => {
             this.setStatus('connected');
+            this.startHeartbeat();
+
+            // Send PLAYER_JOIN to host immediately upon connection!
+            const pName = typeof window !== 'undefined' 
+              ? (localStorage.getItem('magic_lamp_player_name') || `Oyuncu-${Math.floor(1000 + Math.random() * 9000)}`)
+              : 'Oyuncu';
+
+            conn.send({
+              type: 'PLAYER_ACTION',
+              action: 'PLAYER_JOIN',
+              payload: {
+                id: conn.peer || pName,
+                name: pName
+              }
+            } as PeerSyncMessage);
+
             resolve();
           });
 
@@ -212,6 +245,19 @@ class PeerSyncService {
     });
   }
 
+  private startHeartbeat() {
+    if (this.pingInterval) clearInterval(this.pingInterval);
+    this.pingInterval = setInterval(() => {
+      if (this.isHost) {
+        this.connections.forEach((conn) => {
+          if (conn.open) conn.send({ type: 'PING' });
+        });
+      } else if (this.hostConnection && this.hostConnection.open) {
+        this.hostConnection.send({ type: 'PING' });
+      }
+    }, 10000);
+  }
+
   // Broadcast state changes from Host to all connected players
   public broadcastToPeers(payload: any) {
     if (!this.isHost || this.connections.size === 0) return;
@@ -243,6 +289,11 @@ class PeerSyncService {
 
   // Disconnect
   public disconnect() {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
+
     this.connections.forEach((conn) => conn.close());
     this.connections.clear();
 

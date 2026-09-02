@@ -96,7 +96,7 @@ export const MagicLampModal: React.FC = () => {
   // Generic Vault Token Picker Modal state: 'monster' | 'trap' | 'loot' | null
   const [vaultPickerTarget, setVaultPickerTarget] = useState<'monster' | 'trap' | 'loot' | null>(null);
 
-  if (!isLampModalOpen) return null;
+  if (!isLampModalOpen || isStreamerMode) return null;
 
   const activePreset = (encounterPresets || []).find((p) => p.id === activeEncounterPresetId) || encounterPresets?.[0];
 

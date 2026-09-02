@@ -22,19 +22,31 @@ import { peerSyncService } from './services/peerSyncService';
 import { useGameStore } from './hooks/useGameStore';
 
 export function App() {
-  const { activeView } = useGameStore();
+  const { 
+    activeView, 
+    setStreamerMode, 
+    setLockedPlayerMode 
+  } = useGameStore();
 
-  // Auto join room on mount
   useEffect(() => {
+    // Provide full state snapshot getter to PeerSyncService
+    peerSyncService.setSnapshotProvider(() => useGameStore.getState());
+
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
     const roomParam = params.get('room');
-    if (roomParam) {
-      peerSyncService.connectToHost(roomParam).catch((err) => {
-        console.warn('Could not auto-connect to room:', roomParam, err);
-      });
+
+    if (mode === 'player' || roomParam) {
+      setStreamerMode(true);
+      setLockedPlayerMode(true);
+      if (roomParam) {
+        peerSyncService.connectToHost(roomParam).catch((err) => {
+          console.warn('Auto-connect to room failed:', roomParam, err);
+        });
+      }
     }
-  }, []);
+  }, [setStreamerMode, setLockedPlayerMode]);
 
   return (
     <div className="relative w-screen h-screen flex flex-col overflow-hidden bg-slate-950 text-slate-100 font-sans select-none">

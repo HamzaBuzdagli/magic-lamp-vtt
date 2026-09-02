@@ -94,6 +94,7 @@ export const PartyChatDrawer: React.FC = () => {
 
     const isWhisper = recipient !== 'all';
     const isDm = !isStreamerMode;
+    const targetPlayer = connectedPlayers.find(p => p.id === recipient || p.name === recipient);
 
     const newMsg: ChatMessage = {
       id: 'chat-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
@@ -104,7 +105,7 @@ export const PartyChatDrawer: React.FC = () => {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       isWhisper,
       recipientId: recipient,
-      recipientName: recipient === 'DM' ? 'DM' : (connectedPlayers.find(p => p.id === recipient)?.name || 'Gizli')
+      recipientName: recipient === 'DM' ? '🛡️ DM' : (targetPlayer?.name || recipient)
     };
 
     addChatMessage(newMsg);
@@ -117,8 +118,8 @@ export const PartyChatDrawer: React.FC = () => {
   const filteredMessages = chatMessages.filter((msg) => {
     if (!msg.isWhisper) return true;
     if (isDm) return true;
-    if (msg.senderId === localPlayerName) return true;
-    if (msg.recipientId === localPlayerName) return true;
+    if (msg.senderId === localPlayerName || msg.senderName === localPlayerName) return true;
+    if (msg.recipientId === localPlayerName || msg.recipientName === localPlayerName) return true;
     return false;
   });
 
