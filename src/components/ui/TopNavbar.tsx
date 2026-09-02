@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Radio,
   Sparkles, 
@@ -54,6 +54,19 @@ export const TopNavbar: React.FC = () => {
     isLockedPlayerMode,
   } = useGameStore();
 
+  const [sceneDropdownOpen, setSceneDropdownOpen] = useState(false);
+  const sceneDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sceneDropdownRef.current && !sceneDropdownRef.current.contains(event.target as Node)) {
+        setSceneDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const activeSession = (sessions || []).find((s) => s.id === activeSessionId) || sessions?.[0];
 
   const handleOpenPlayerWindow = () => {
@@ -61,91 +74,112 @@ export const TopNavbar: React.FC = () => {
   };
 
   return (
-    <header className="h-14 px-3 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between z-40 backdrop-blur-md select-none shrink-0 shadow-lg overflow-x-auto scrollbar-none gap-2">
+    <header className="h-13 px-3 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between z-40 backdrop-blur-md select-none shrink-0 shadow-lg gap-1.5 max-w-full">
       
-      {/* Left: Brand & Scene Switcher */}
-      <div className="flex items-center gap-2 shrink-0">
+      {/* Left: Brand & Scene Switcher Dropdown */}
+      <div className="flex items-center gap-1.5 shrink-0">
         <div 
           onClick={() => { if (!isStreamerMode && !isLockedPlayerMode) setLampModalOpen(true); }}
           className={`flex items-center gap-1.5 shrink-0 ${!isStreamerMode && !isLockedPlayerMode ? 'cursor-pointer group' : ''}`}
           title={!isStreamerMode && !isLockedPlayerMode ? 'Sihirli Lambayı Aç' : 'Sihirli Lamba VTT'}
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-lg shadow-md group-hover:scale-105 transition-transform shadow-amber-500/20">
+          <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition-transform shadow-amber-500/20">
             🪔
           </div>
           <div className="hidden sm:block">
-            <div className="font-black text-[11px] text-slate-100 tracking-wider uppercase leading-none">
+            <div className="font-black text-[10px] text-slate-100 tracking-wider uppercase leading-none">
               SİHİRLİ LAMBA
             </div>
-            <p className="text-[8px] text-slate-400 font-mono leading-tight">VTT</p>
           </div>
         </div>
 
-        <div className="w-px h-5 bg-slate-800 mx-0.5" />
+        <div className="w-px h-4 bg-slate-800 mx-0.5 hidden sm:block" />
 
-        {/* 3 Scene View Tabs */}
-        <div className="flex items-center gap-0.5 bg-slate-950 p-0.5 rounded-xl border border-slate-800 shrink-0">
+        {/* Unified Scene Switcher Dropdown (Harita / Tahta / Görseller) */}
+        <div className="relative" ref={sceneDropdownRef}>
           <button
-            onClick={() => setActiveView('map')}
-            className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
-              activeView === 'map'
-                ? 'bg-amber-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-            title="Harita Sahnesi"
+            onClick={() => setSceneDropdownOpen(!sceneDropdownOpen)}
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-950 hover:bg-slate-800 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm shrink-0"
+            title="Sahne Değiştir (Harita, Çizim Tahtası, Görseller)"
           >
-            <Map className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Harita</span>
+            {activeView === 'map' ? (
+              <>
+                <Map className="w-3.5 h-3.5 text-amber-400" />
+                <span>Harita</span>
+              </>
+            ) : activeView === 'whiteboard' ? (
+              <>
+                <Palette className="w-3.5 h-3.5 text-amber-400" />
+                <span>Tahta</span>
+              </>
+            ) : (
+              <>
+                <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+                <span>Görseller</span>
+              </>
+            )}
+            <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${sceneDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
 
-          <button
-            onClick={() => setActiveView('whiteboard')}
-            className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
-              activeView === 'whiteboard'
-                ? 'bg-amber-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-            title="Çizim Tahtası Sahnesi"
-          >
-            <Palette className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Tahta</span>
-          </button>
+          {sceneDropdownOpen && (
+            <div 
+              className="absolute left-0 top-full mt-1.5 w-40 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-50 p-1 flex flex-col gap-0.5 animate-in fade-in"
+              onClick={() => setSceneDropdownOpen(false)}
+            >
+              <button
+                onClick={() => setActiveView('map')}
+                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeView === 'map' ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-300 hover:bg-slate-800'
+                }`}
+              >
+                <Map className="w-3.5 h-3.5" />
+                <span>🗺️ Harita Sahnesi</span>
+              </button>
 
-          <button
-            onClick={() => setActiveView('roleplay')}
-            className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
-              activeView === 'roleplay'
-                ? 'bg-amber-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-            title="Rol Yapma & Görseller"
-          >
-            <ImageIcon className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Görseller</span>
-          </button>
+              <button
+                onClick={() => setActiveView('whiteboard')}
+                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeView === 'whiteboard' ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-300 hover:bg-slate-800'
+                }`}
+              >
+                <Palette className="w-3.5 h-3.5" />
+                <span>🎨 Çizim Tahtası</span>
+              </button>
+
+              <button
+                onClick={() => setActiveView('roleplay')}
+                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeView === 'roleplay' ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-300 hover:bg-slate-800'
+                }`}
+              >
+                <ImageIcon className="w-3.5 h-3.5" />
+                <span>🎭 Rol & Görseller</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Campaign Session Selector Pill */}
         {!isStreamerMode && (
           <button
             onClick={() => setSessionModalOpen(true)}
-            className="flex items-center gap-1 px-2 py-1 bg-slate-950 hover:bg-slate-800 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
+            className="flex items-center gap-1 px-2 py-1 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 hidden md:flex"
             title="Oturumları Yönet"
           >
             <Scroll className="w-3.5 h-3.5 text-amber-400" />
-            <span className="truncate max-w-[90px] hidden xl:inline">{activeSession?.name || 'Oturumlar'}</span>
+            <span className="truncate max-w-[80px] hidden xl:inline">{activeSession?.name || 'Oturum'}</span>
             <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
         )}
       </div>
 
-      {/* Center: Tools & Action Buttons */}
-      <div className="flex items-center gap-1 shrink-0 overflow-x-auto">
+      {/* Center: Action Tools (Compact & Responsive) */}
+      <div className="flex items-center gap-1 shrink-0">
         {/* Magic Lamp Trigger (DM Only) */}
         {!isStreamerMode && !isLockedPlayerMode && (
           <button
             onClick={() => setLampModalOpen(true)}
-            className="flex items-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all cursor-pointer shrink-0"
+            className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all cursor-pointer shrink-0"
             title="AI Sihirli Lamba"
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -286,7 +320,7 @@ export const TopNavbar: React.FC = () => {
         {!isStreamerMode && (
           <button
             onClick={handleOpenPlayerWindow}
-            className="flex items-center gap-1 px-2 py-1.5 bg-emerald-950/70 hover:bg-emerald-900/90 text-emerald-300 border border-emerald-700 rounded-xl font-bold text-xs transition-all cursor-pointer shrink-0"
+            className="flex items-center gap-1 px-2 py-1.5 bg-emerald-950/70 hover:bg-emerald-900/90 text-emerald-300 border border-emerald-700 rounded-xl font-bold text-xs transition-all cursor-pointer shrink-0 hidden md:flex"
             title="Yayın Penceresi Aç"
           >
             <ExternalLink className="w-3.5 h-3.5" />
@@ -296,14 +330,14 @@ export const TopNavbar: React.FC = () => {
 
         {/* Streamer / DM Mode Switch OR Locked Player Mode Badge */}
         {isLockedPlayerMode || (typeof window !== 'undefined' && window.location.search.includes('room=')) ? (
-          <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-amber-500/40 bg-amber-950/50 text-amber-300 font-bold text-xs font-mono shrink-0">
+          <div className="flex items-center gap-1 px-2 py-1 rounded-xl border border-amber-500/40 bg-amber-950/50 text-amber-300 font-bold text-xs font-mono shrink-0">
             <LockIcon className="w-3.5 h-3.5 text-amber-400" />
-            <span className="truncate max-w-[90px]">{localPlayerName}</span>
+            <span className="truncate max-w-[80px]">{localPlayerName}</span>
           </div>
         ) : (
           <button
             onClick={() => setStreamerMode(!isStreamerMode)}
-            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border font-bold text-xs transition-all shadow-md cursor-pointer shrink-0 ${
+            className={`flex items-center gap-1 px-2 py-1.5 rounded-xl border font-bold text-xs transition-all shadow-md cursor-pointer shrink-0 ${
               isStreamerMode
                 ? 'bg-emerald-950/80 border-emerald-500 text-emerald-300'
                 : 'bg-indigo-950/80 border-indigo-500 text-indigo-300'
