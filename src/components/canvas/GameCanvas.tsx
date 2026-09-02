@@ -848,249 +848,135 @@ export const GameCanvas: React.FC = () => {
         })}
       </div>
 
-      {/* Player View Token Detailed Info Modal (when player double-clicks on token) */}
+      {/* Player View Token Read-Only Stats Inspector Modal (when player double-clicks on token) */}
       {playerViewTokenId && activePlayerToken && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in select-none"
           onClick={() => setPlayerViewTokenId(null)}
         >
           <div 
-            className="w-full max-w-md bg-slate-900 border-2 border-amber-500/70 rounded-3xl shadow-2xl p-5 space-y-4 text-xs max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-md bg-slate-900 border-2 border-amber-500/70 rounded-3xl shadow-2xl p-6 space-y-5 text-xs max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center gap-3.5">
                 <div 
-                  className="w-12 h-12 rounded-2xl border-2 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-950 shadow-md"
+                  className="w-14 h-14 rounded-2xl border-2 border-amber-400 overflow-hidden flex items-center justify-center bg-slate-950 shadow-md shrink-0"
                   style={{ backgroundColor: activePlayerToken.color || '#3b82f6' }}
                 >
                   {activePlayerToken.image ? (
                     <img src={activePlayerToken.image} alt={activePlayerToken.name} className="w-full h-full object-contain" />
                   ) : (
-                    <span className="text-white font-black text-xl">{activePlayerToken.name.charAt(0)}</span>
+                    <span className="text-white font-black text-2xl">{activePlayerToken.name.charAt(0)}</span>
                   )}
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-slate-100">{activePlayerToken.name}</h3>
-                  <span className="px-2 py-0.5 rounded bg-slate-800 text-amber-400 text-[10px] font-bold uppercase">
-                    {activePlayerToken.type === 'hero' ? 'Kahraman Kartı' : activePlayerToken.type === 'monster' ? 'Canavar Kartı' : 'Eşya / Obje'}
-                  </span>
+                  <h3 className="text-lg font-black text-slate-100">{activePlayerToken.name}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="px-2 py-0.5 rounded-full bg-slate-800 text-amber-400 text-[10px] font-bold uppercase border border-slate-700">
+                      {activePlayerToken.type === 'hero' ? '🛡️ Kahraman' : activePlayerToken.type === 'monster' ? '⚔️ Canavar' : '📦 Eşya / Obje'}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded-full border border-slate-800">
+                      Salt Okunur
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <button 
                 onClick={() => setPlayerViewTokenId(null)}
-                className="text-slate-400 hover:text-white p-1 cursor-pointer"
+                className="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Interactive HP Manager */}
+            {/* Read-Only HP Bar */}
             {activePlayerToken.hp && (
-              <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-2">
+              <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-300 font-bold flex items-center gap-1.5">
-                    <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-                    <span>Can Puanı (HP)</span>
+                  <span className="text-slate-300 font-bold flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+                    <span className="font-black">Can Puanı (HP)</span>
                   </span>
-                  <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      value={activePlayerToken.hp.current}
-                      onChange={(e) => {
-                        const nextCurrent = Number(e.target.value);
-                        updateToken(activePlayerToken.id, {
-                          hp: { ...activePlayerToken.hp!, current: Math.min(activePlayerToken.hp!.max, Math.max(0, nextCurrent)) }
-                        });
-                      }}
-                      className="w-12 px-1 py-0.5 bg-slate-900 border border-slate-700 rounded text-center font-mono font-bold text-rose-300 text-xs focus:outline-none focus:border-rose-500"
-                    />
-                    <span className="text-slate-500 font-mono">/ {activePlayerToken.hp.max}</span>
+                  <div className="flex items-center gap-1 font-mono font-black text-sm text-rose-300">
+                    <span>{activePlayerToken.hp.current}</span>
+                    <span className="text-slate-500">/</span>
+                    <span className="text-slate-400">{activePlayerToken.hp.max}</span>
                   </div>
                 </div>
 
-                <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-slate-800/80 p-0.5">
                   <div 
-                    className="h-full bg-gradient-to-r from-rose-600 to-rose-400 rounded-full transition-all"
+                    className="h-full bg-gradient-to-r from-rose-600 via-rose-500 to-rose-400 rounded-full transition-all duration-300 shadow-sm"
                     style={{ width: `${Math.min(100, Math.max(0, (activePlayerToken.hp.current / activePlayerToken.hp.max) * 100))}%` }}
                   />
                 </div>
+              </div>
+            )}
 
-                {/* Quick HP Adjustment Steppers */}
-                <div className="flex items-center justify-between gap-1 pt-1">
-                  <button
-                    onClick={() => {
-                      updateToken(activePlayerToken.id, {
-                        hp: { ...activePlayerToken.hp!, current: Math.max(0, activePlayerToken.hp!.current - 5) }
-                      });
-                    }}
-                    className="flex-1 py-1 bg-rose-950/60 hover:bg-rose-900 text-rose-300 font-bold rounded-lg border border-rose-800 cursor-pointer text-[11px]"
-                  >
-                    -5 HP
-                  </button>
-                  <button
-                    onClick={() => {
-                      updateToken(activePlayerToken.id, {
-                        hp: { ...activePlayerToken.hp!, current: Math.max(0, activePlayerToken.hp!.current - 1) }
-                      });
-                    }}
-                    className="flex-1 py-1 bg-rose-950/60 hover:bg-rose-900 text-rose-300 font-bold rounded-lg border border-rose-800 cursor-pointer text-[11px]"
-                  >
-                    -1 HP
-                  </button>
-                  <button
-                    onClick={() => {
-                      updateToken(activePlayerToken.id, {
-                        hp: { ...activePlayerToken.hp!, current: Math.min(activePlayerToken.hp!.max, activePlayerToken.hp!.current + 1) }
-                      });
-                    }}
-                    className="flex-1 py-1 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold rounded-lg border border-emerald-800 cursor-pointer text-[11px]"
-                  >
-                    +1 HP
-                  </button>
-                  <button
-                    onClick={() => {
-                      updateToken(activePlayerToken.id, {
-                        hp: { ...activePlayerToken.hp!, current: Math.min(activePlayerToken.hp!.max, activePlayerToken.hp!.current + 5) }
-                      });
-                    }}
-                    className="flex-1 py-1 bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold rounded-lg border border-emerald-800 cursor-pointer text-[11px]"
-                  >
-                    +5 HP
-                  </button>
+            {/* Active Status Effects (Read-Only Badges) */}
+            {activePlayerToken.statusEffects && activePlayerToken.statusEffects.length > 0 && (
+              <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  Aktif Durumlar & Efektler
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {activePlayerToken.statusEffects.map((eff, i) => (
+                    <span 
+                      key={i}
+                      className="px-2.5 py-1 rounded-xl bg-purple-950/80 border border-purple-700/80 text-purple-200 font-bold text-xs shadow-sm flex items-center gap-1"
+                    >
+                      <span>{eff}</span>
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* Status Effects Selector / Toggles */}
-            <div className="space-y-1.5">
-              <label className="block text-[11px] font-bold text-slate-400">Durum Efektleri (Tıklayarak Aç/Kapat)</label>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  '🤢 Zehirlendi',
-                  '⚡ Hızlandı',
-                  '🛡️ Kalkanlı',
-                  '🔥 Yanıyor',
-                  '💤 Uyuyor',
-                  '🩸 Kanamalı',
-                  '💫 Sersemledi',
-                  '👁️ Görünmez',
-                  '❄️ Dondu'
-                ].map((eff) => {
-                  const isActive = (activePlayerToken.statusEffects || []).includes(eff);
-                  return (
-                    <button
-                      key={eff}
-                      onClick={() => toggleTokenStatusEffect(activePlayerToken.id, eff)}
-                      className={`px-2.5 py-1 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                        isActive
-                          ? 'bg-purple-950 border-purple-500 text-purple-300 shadow-md scale-105'
-                          : 'bg-slate-950 border-slate-800 text-slate-500 hover:text-slate-300'
-                      }`}
+            {/* Custom Attributes (Read-Only Grid) */}
+            {activePlayerToken.customAttributes && activePlayerToken.customAttributes.length > 0 && (
+              <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2.5">
+                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>Nitelikler & Statlar</span>
+                  <span className="text-[9px] font-mono text-slate-500">DM Kontrollü</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {activePlayerToken.customAttributes.map((attr) => (
+                    <div 
+                      key={attr.id}
+                      className="p-2.5 bg-slate-900/90 rounded-xl border border-slate-800 flex items-center justify-between"
                     >
-                      {eff}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Custom Attributes (Para, Altın, Mana, AC, vb.) with Live Editing */}
-            <div className="space-y-2 pt-1 border-t border-slate-800">
-              <div className="flex items-center justify-between">
-                <label className="block text-[11px] font-bold text-slate-400">Özel Nitelikler & Değerler</label>
-                <button
-                  onClick={() => {
-                    const name = window.prompt('Yeni Nitelik Adı (Örn: Mana, Hız, Ok Sayısı):', 'Yeni Stat');
-                    if (name && name.trim()) {
-                      addTokenAttribute(activePlayerToken.id, {
-                        name: name.trim(),
-                        type: 'number',
-                        value: 10,
-                        isPublic: true
-                      });
-                    }
-                  }}
-                  className="px-2 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/50 rounded-lg text-[10px] font-bold flex items-center gap-1 cursor-pointer"
-                >
-                  <Plus className="w-3 h-3" />
-                  <span>Nitelik Ekle</span>
-                </button>
-              </div>
-
-              <div className="space-y-1.5">
-                {(activePlayerToken.customAttributes || []).map((attr) => (
-                  <div key={attr.id} className="bg-slate-950 p-2 rounded-xl border border-slate-800 flex items-center justify-between gap-2">
-                    <span className="text-slate-300 font-bold text-xs truncate max-w-[100px]">{attr.name}</span>
-                    
-                    <div className="flex items-center gap-1">
-                      {attr.type === 'number' ? (
-                        <>
-                          <button
-                            onClick={() => {
-                              updateTokenAttribute(activePlayerToken.id, attr.id, {
-                                value: Math.max(0, Number(attr.value || 0) - 1)
-                              });
-                            }}
-                            className="w-6 h-6 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                          >
-                            -
-                          </button>
-                          <input
-                            type="number"
-                            value={attr.value}
-                            onChange={(e) => {
-                              updateTokenAttribute(activePlayerToken.id, attr.id, {
-                                value: Number(e.target.value)
-                              });
-                            }}
-                            className="w-14 px-1.5 py-0.5 bg-slate-900 border border-slate-700 rounded text-center font-mono font-bold text-amber-300 text-xs focus:outline-none focus:border-amber-500"
-                          />
-                          <button
-                            onClick={() => {
-                              updateTokenAttribute(activePlayerToken.id, attr.id, {
-                                value: Number(attr.value || 0) + 1
-                              });
-                            }}
-                            className="w-6 h-6 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                          >
-                            +
-                          </button>
-                        </>
-                      ) : (
-                        <input
-                          type="text"
-                          value={String(attr.value)}
-                          onChange={(e) => {
-                            updateTokenAttribute(activePlayerToken.id, attr.id, {
-                              value: e.target.value
-                            });
-                          }}
-                          className="px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-slate-200 text-xs focus:outline-none focus:border-amber-500"
-                        />
-                      )}
-
-                      <button
-                        onClick={() => deleteTokenAttribute(activePlayerToken.id, attr.id)}
-                        className="text-slate-500 hover:text-rose-400 p-1 cursor-pointer ml-1"
-                        title="Niteliği Sil"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <span className="font-bold text-slate-300 truncate mr-2">{attr.name}</span>
+                      <span className="px-2 py-0.5 bg-slate-950 text-amber-300 font-mono font-black rounded-lg border border-slate-800">
+                        {attr.value}
+                      </span>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Character Backstory / Notes */}
-            {activePlayerToken.notes && (
-              <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 italic">
-                "{activePlayerToken.notes}"
+                  ))}
+                </div>
               </div>
             )}
+
+            {/* Public Notes (Read-Only) */}
+            {activePlayerToken.notes && (
+              <div className="bg-slate-950/80 p-3.5 rounded-2xl border border-slate-800 space-y-1">
+                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Açıklama & Notlar</div>
+                <p className="text-slate-300 italic leading-relaxed text-xs">
+                  "{activePlayerToken.notes}"
+                </p>
+              </div>
+            )}
+
+            <div className="pt-2 border-t border-slate-800 text-center">
+              <button
+                onClick={() => setPlayerViewTokenId(null)}
+                className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs cursor-pointer transition-colors"
+              >
+                Kapat
+              </button>
+            </div>
           </div>
         </div>
       )}

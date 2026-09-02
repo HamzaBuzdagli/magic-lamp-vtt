@@ -834,6 +834,7 @@ export const useGameStore = create<GameState>()(
           activeEncounterPresetId: stateUpdates.activeEncounterPresetId || get().activeEncounterPresetId,
           lampChatHistory: stateUpdates.lampChatHistory || get().lampChatHistory,
           npcProfiles: stateUpdates.npcProfiles || get().npcProfiles,
+          rulebookNotes: stateUpdates.rulebookNotes || get().rulebookNotes,
           activeNpcProfileId: stateUpdates.activeNpcProfileId || get().activeNpcProfileId,
         };
 
@@ -907,6 +908,7 @@ export const useGameStore = create<GameState>()(
           activeEncounterPresetId: payload.activeEncounterPresetId !== undefined ? payload.activeEncounterPresetId : get().activeEncounterPresetId,
           lampChatHistory: payload.lampChatHistory !== undefined ? payload.lampChatHistory : get().lampChatHistory,
           npcProfiles: payload.npcProfiles !== undefined ? payload.npcProfiles : get().npcProfiles,
+          rulebookNotes: payload.rulebookNotes !== undefined ? payload.rulebookNotes : get().rulebookNotes,
           activeNpcProfileId: payload.activeNpcProfileId !== undefined ? payload.activeNpcProfileId : get().activeNpcProfileId,
         });
       });

@@ -33,13 +33,13 @@ export const Toolbar: React.FC = () => {
   } = useGameStore();
 
   const TOOLS: { id: ToolMode; label: string; subLabel: string; icon: React.ComponentType<{ className?: string }>; dmOnly?: boolean }[] = [
-    { id: 'select', label: 'Token Seç & Taşı', subLabel: 'Karakter ve eşyaları sürükle', icon: MousePointer },
+    { id: 'select', label: 'Token Seç & Taşı', subLabel: 'Karakter ve eşyaları sürükle', icon: MousePointer, dmOnly: true },
     { id: 'fog_reveal', label: 'Savaş Sisi Aç', subLabel: 'Odayı görünür yap (Sisi Kaldır)', icon: Eye },
     { id: 'fog_hide', label: 'Savaş Sisi Kapat', subLabel: 'Odayı karart (Sis Getir)', icon: EyeOff },
-    { id: 'room_edit', label: 'Oda Düzenle & Bağla', subLabel: 'Odaları taşı, Shift ile çoklu seç & sağ tıkla bağla', icon: Boxes },
+    { id: 'room_edit', label: 'Oda Düzenle & Bağla', subLabel: 'Odaları taşı, Shift ile çoklu seç & sağ tıkla bağla', icon: Boxes, dmOnly: true },
     { id: 'pan', label: 'Haritayı Kaydır', subLabel: 'Görünümü taşı (Pan)', icon: Hand },
-    { id: 'draw', label: 'Haritaya Çiz', subLabel: 'Canlı kalem', icon: Paintbrush },
-    { id: 'laser', label: 'Lazer İşaretleyici', subLabel: 'Yayında dikkat çek', icon: Flame },
+    { id: 'draw', label: 'Haritaya Çiz', subLabel: 'Canlı kalem', icon: Paintbrush, dmOnly: true },
+    { id: 'laser', label: 'Lazer İşaretleyici', subLabel: 'Yayında dikkat çek', icon: Flame, dmOnly: true },
   ];
 
   return (
