@@ -30,12 +30,22 @@ export const DiceRoller: React.FC = () => {
     diceHistory, 
     addDiceRoll, 
     clearDiceHistory,
-    setWheelModalOpen
+    setWheelModalOpen,
+    localPlayerName,
+    isStreamerMode
   } = useGameStore();
 
   const [modifier, setModifier] = useState<number>(0);
-  const [rollerName, setRollerName] = useState<string>('Yayıncı / DM');
+  const [rollerName, setRollerName] = useState<string>(() => (typeof window !== 'undefined' && localStorage.getItem('magic_lamp_player_name')) || 'Oyuncu');
   const [rollingDice, setRollingDice] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isStreamerMode) {
+      setRollerName(localPlayerName || 'Oyuncu');
+    } else {
+      setRollerName('🛡️ Zindan Efendisi (DM)');
+    }
+  }, [localPlayerName, isStreamerMode]);
   const [lastAnimatedResult, setLastAnimatedResult] = useState<{ result: number; total: number; isCrit?: boolean; isFumble?: boolean } | null>(null);
 
   // Draggable Window Position State

@@ -941,6 +941,14 @@ export const useGameStore = create<GameState>()(
           }
           set({ connectedPlayers: updated });
           notifyChannel({ connectedPlayers: updated });
+        } else if (action === 'DICE_ROLL') {
+          const currentHistory = get().diceHistory || [];
+          const updated = [payload, ...currentHistory.slice(0, 19)];
+          set({ diceHistory: updated });
+          notifyChannel({ diceHistory: updated });
+        } else if (action === 'CLEAR_DICE_HISTORY') {
+          set({ diceHistory: [] });
+          notifyChannel({ diceHistory: [] });
         }
       });
 
