@@ -48,6 +48,14 @@ export function App() {
     const mode = params.get('mode');
     const roomParam = params.get('room');
 
+        // Auto restore DM hosting if page was refreshed
+    const savedHostRoom = typeof window !== 'undefined' ? localStorage.getItem('magic_lamp_active_host_room_id') : null;
+    if (mode !== 'player' && !roomParam && savedHostRoom) {
+      peerSyncService.initHost(savedHostRoom, () => useGameStore.getState()).catch((err) => {
+        console.warn('Could not auto-restore host room:', err);
+      });
+    }
+
     if (mode === 'player' || roomParam) {
       setStreamerMode(true);
       setLockedPlayerMode(true);

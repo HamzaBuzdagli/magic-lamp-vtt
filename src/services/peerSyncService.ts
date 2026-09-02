@@ -31,6 +31,8 @@ class PeerSyncService {
   public connectedPeersCount: number = 0;
   private snapshotProvider: (() => any) | null = null;
   private pingInterval: any = null;
+  private reconnectTimeout: any = null;
+  private isExplicitDisconnect: boolean = false;
 
   private statusListeners: Set<(status: PeerConnectionStatus, roomId?: string) => void> = new Set();
   private peerCountListeners: Set<(count: number) => void> = new Set();
@@ -78,17 +80,19 @@ class PeerSyncService {
     return `lamba-${randomDigits}`;
   }
 
-  // Initialize as Host (DM)
+  // Initialize as Host (DM) with persistent room ID
   public async initHost(customRoomId?: string, getFullStateSnapshot?: () => any): Promise<string> {
+    this.isExplicitDisconnect = false;
     if (this.peer) {
-      this.disconnect();
+      this.disconnect(false);
     }
 
     if (getFullStateSnapshot) {
       this.snapshotProvider = getFullStateSnapshot;
     }
 
-    const targetRoomId = customRoomId || this.generateRoomId();
+    const savedRoomId = typeof window !== 'undefined' ? localStorage.getItem('magic_lamp_active_host_room_id') : null;
+    const targetRoomId = customRoomId || savedRoomId || this.generateRoomId();
     this.roomId = targetRoomId;
     this.isHost = true;
     this.setStatus('connecting');
@@ -100,6 +104,9 @@ class PeerSyncService {
 
         peer.on('open', (id) => {
           this.roomId = id;
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('magic_lamp_active_host_room_id', id);
+          }
           this.setStatus('hosting');
           this.startHeartbeat();
           resolve(id);
@@ -112,6 +119,7 @@ class PeerSyncService {
         peer.on('error', (err: any) => {
           console.warn('[PeerJS Host Error]:', err);
           if (err.type === 'unavailable-id') {
+            // If ID is already taken or stale, re-generate
             const newId = this.generateRoomId();
             this.initHost(newId, getFullStateSnapshot).then(resolve).catch(reject);
           } else {
@@ -121,7 +129,11 @@ class PeerSyncService {
         });
 
         peer.on('disconnected', () => {
-          this.setStatus('disconnected');
+          if (!this.isExplicitDisconnect) {
+            this.peer?.reconnect();
+          } else {
+            this.setStatus('disconnected');
+          }
         });
       } catch (err) {
         this.setStatus('error');
@@ -165,10 +177,11 @@ class PeerSyncService {
     });
   }
 
-  // Connect as Player (Client) to DM Host
+  // Connect as Player (Client) with Auto-Reconnect on Host reload
   public async connectToHost(hostRoomId: string): Promise<void> {
+    this.isExplicitDisconnect = false;
     if (this.peer) {
-      this.disconnect();
+      this.disconnect(false);
     }
 
     this.roomId = hostRoomId;
@@ -181,68 +194,94 @@ class PeerSyncService {
         this.peer = peer;
 
         peer.on('open', () => {
-          const conn = peer.connect(hostRoomId, {
-            reliable: true,
-          });
-          this.hostConnection = conn;
-
-          conn.on('open', () => {
-            this.setStatus('connected');
-            this.startHeartbeat();
-
-            // Send PLAYER_JOIN to host immediately upon connection!
-            const pName = typeof window !== 'undefined' 
-              ? (localStorage.getItem('magic_lamp_player_name') || `Oyuncu-${Math.floor(1000 + Math.random() * 9000)}`)
-              : 'Oyuncu';
-
-            conn.send({
-              type: 'PLAYER_ACTION',
-              action: 'PLAYER_JOIN',
-              payload: {
-                id: conn.peer || pName,
-                name: pName
-              }
-            } as PeerSyncMessage);
-
-            resolve();
-          });
-
-          conn.on('data', (data: any) => {
-            const msg = data as PeerSyncMessage;
-            if (!msg) return;
-
-            if (msg.type === 'FULL_STATE' || msg.type === 'SYNC_STATE') {
-              if (msg.payload) {
-                this.stateListeners.forEach((cb) => cb(msg.payload));
-              }
-            }
-          });
-
-          conn.on('close', () => {
-            this.setStatus('disconnected');
-            this.hostConnection = null;
-          });
-
-          conn.on('error', (err) => {
-            console.warn('[PeerJS Connection Error]:', err);
-            this.setStatus('error');
-          });
+          this.attemptHostConnection(peer, hostRoomId, resolve);
         });
 
         peer.on('error', (err) => {
           console.warn('[PeerJS Client Error]:', err);
-          this.setStatus('error');
-          reject(err);
+          this.schedulePlayerReconnect(hostRoomId);
         });
 
         peer.on('disconnected', () => {
-          this.setStatus('disconnected');
+          if (!this.isExplicitDisconnect) {
+            this.schedulePlayerReconnect(hostRoomId);
+          } else {
+            this.setStatus('disconnected');
+          }
         });
       } catch (err) {
         this.setStatus('error');
         reject(err);
       }
     });
+  }
+
+  private attemptHostConnection(peer: Peer, hostRoomId: string, onConnected?: () => void) {
+    const conn = peer.connect(hostRoomId, {
+      reliable: true,
+    });
+    this.hostConnection = conn;
+
+    conn.on('open', () => {
+      this.setStatus('connected');
+      this.startHeartbeat();
+
+      // Send PLAYER_JOIN to host immediately upon connection!
+      const pName = typeof window !== 'undefined' 
+        ? (localStorage.getItem('magic_lamp_player_name') || `Oyuncu-${Math.floor(1000 + Math.random() * 9000)}`)
+        : 'Oyuncu';
+
+      conn.send({
+        type: 'PLAYER_ACTION',
+        action: 'PLAYER_JOIN',
+        payload: {
+          id: conn.peer || pName,
+          name: pName
+        }
+      } as PeerSyncMessage);
+
+      if (onConnected) onConnected();
+    });
+
+    conn.on('data', (data: any) => {
+      const msg = data as PeerSyncMessage;
+      if (!msg) return;
+
+      if (msg.type === 'FULL_STATE' || msg.type === 'SYNC_STATE') {
+        if (msg.payload) {
+          this.stateListeners.forEach((cb) => cb(msg.payload));
+        }
+      }
+    });
+
+    conn.on('close', () => {
+      if (!this.isExplicitDisconnect) {
+        this.schedulePlayerReconnect(hostRoomId);
+      } else {
+        this.setStatus('disconnected');
+        this.hostConnection = null;
+      }
+    });
+
+    conn.on('error', (err) => {
+      console.warn('[PeerJS Connection Error]:', err);
+      if (!this.isExplicitDisconnect) {
+        this.schedulePlayerReconnect(hostRoomId);
+      }
+    });
+  }
+
+  private schedulePlayerReconnect(hostRoomId: string) {
+    if (this.isExplicitDisconnect) return;
+    this.setStatus('connecting');
+    if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
+    this.reconnectTimeout = setTimeout(() => {
+      if (this.peer && !this.peer.destroyed) {
+        this.attemptHostConnection(this.peer, hostRoomId);
+      } else {
+        this.connectToHost(hostRoomId).catch(() => {});
+      }
+    }, 2500);
   }
 
   private startHeartbeat() {
@@ -287,11 +326,21 @@ class PeerSyncService {
     this.hostConnection.send(msg);
   }
 
-  // Disconnect
-  public disconnect() {
+  // Disconnect & End Room
+  public disconnect(isManual: boolean = true) {
+    this.isExplicitDisconnect = isManual;
+
     if (this.pingInterval) {
       clearInterval(this.pingInterval);
       this.pingInterval = null;
+    }
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
+
+    if (isManual && typeof window !== 'undefined') {
+      localStorage.removeItem('magic_lamp_active_host_room_id');
     }
 
     this.connections.forEach((conn) => conn.close());
