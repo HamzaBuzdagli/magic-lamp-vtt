@@ -25,7 +25,7 @@ const DICE_TYPES: { type: DiceRoll['diceType']; max: number; label: string; colo
 ];
 
 export const DiceRoller: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { 
     isDicePanelOpen, 
     setDicePanelOpen, 
@@ -164,7 +164,7 @@ export const DiceRoller: React.FC = () => {
           <div className="flex items-center gap-2">
             <input
               type="text"
-              placeholder="Zar atan ismi..."
+              placeholder={t('dice.who')}
               value={rollerName}
               onChange={(e) => setRollerName(e.target.value)}
               className="flex-1 px-2.5 py-1 bg-slate-950 border border-slate-700 rounded-lg text-slate-200 text-xs focus:outline-none focus:border-amber-500"
@@ -202,7 +202,7 @@ export const DiceRoller: React.FC = () => {
               title="Özelleştirilebilir Şans Çarkını Aç"
             >
               <RotateCw className="w-3.5 h-3.5 mb-0.5" />
-              <span>Çark</span>
+              <span>{t('nav.wheel')}</span>
             </button>
           </div>
 
@@ -216,7 +216,7 @@ export const DiceRoller: React.FC = () => {
                 : 'bg-slate-950 border-slate-800 text-slate-200'
             }`}>
               <div className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">
-                {lastAnimatedResult.isCrit ? '🌟 KRİTİK BAŞARI (NAT 20)!' : lastAnimatedResult.isFumble ? '💀 KRİTİK HATA (NAT 1)!' : 'Zar Sonucu'}
+                {lastAnimatedResult.isCrit ? t('dice.crit') : lastAnimatedResult.isFumble ? t('dice.fumble') : (language === 'tr' ? 'Zar Sonucu' : 'Roll Result')}
               </div>
               <div className="text-xl font-black font-mono my-0.5">
                 {lastAnimatedResult.result} {modifier !== 0 ? `(${modifier >= 0 ? '+' : ''}${modifier}) = ${lastAnimatedResult.total}` : ''}
@@ -227,14 +227,14 @@ export const DiceRoller: React.FC = () => {
           {/* Roll History Log */}
           <div>
             <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 font-bold">
-              <span>Son Atılan Zarlar</span>
+              <span>{t('dice.history')}</span>
               {diceHistory.length > 0 && (
                 <button
                   onClick={clearDiceHistory}
                   className="text-[10px] text-slate-500 hover:text-rose-400 flex items-center gap-0.5 transition-colors cursor-pointer"
                 >
                   <RotateCcw className="w-3 h-3" />
-                  <span>Temizle</span>
+                  <span>{t('dice.clearHistory')}</span>
                 </button>
               )}
             </div>

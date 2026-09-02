@@ -124,13 +124,13 @@ export const MultiplayerModal: React.FC = () => {
             </div>
             <div>
               <h2 className="text-sm font-black text-amber-300 flex items-center gap-2">
-                <span>Canlı Çok Oyunculu Oda</span>
+                <span>{t('mp.title')}</span>
                 <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   WebRTC P2P
                 </span>
               </h2>
               <p className="text-[10px] text-slate-400">
-                Oyuncuları davet edin, isimlerini düzenleyin ve çizim izinlerini yönetin.
+                {t('mp.subtitle')}
               </p>
             </div>
           </div>
@@ -149,7 +149,7 @@ export const MultiplayerModal: React.FC = () => {
           {/* Player Name / Tag Input */}
           <form onSubmit={handleSaveName} className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
             <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">İsminiz / Karakter Unvanınız</span>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">{t('mp.yourName')}</span>
               <span className="font-black text-slate-200 text-xs">{localPlayerName}</span>
             </div>
 
@@ -158,7 +158,7 @@ export const MultiplayerModal: React.FC = () => {
                 type="text"
                 value={editingName}
                 onChange={(e) => setEditingName(e.target.value)}
-                placeholder="İsim değiştir..."
+                placeholder={t('mp.changeName')}
                 className="w-32 px-2.5 py-1 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-500 font-bold"
               />
               <button
@@ -176,7 +176,7 @@ export const MultiplayerModal: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                  <span className="font-black text-slate-100 text-sm">Odanız Canlı Yayında!</span>
+                  <span className="font-black text-slate-100 text-sm">{t('mp.liveStatus')}</span>
                 </div>
                 <span className="px-2.5 py-1 bg-slate-900 border border-slate-700 rounded-xl font-mono font-bold text-amber-400 text-xs">
                   {roomId}
@@ -186,7 +186,7 @@ export const MultiplayerModal: React.FC = () => {
               {/* Invite Link Card */}
               <div className="space-y-1.5">
                 <label className="block text-[11px] font-bold text-slate-300">
-                  🔗 Oyuncular İçin Güvenli Davet Linki:
+                  {t('mp.inviteLink')}
                 </label>
                 <div className="flex items-center gap-2 bg-slate-950 p-2 rounded-xl border border-slate-800">
                   <input
@@ -200,7 +200,7 @@ export const MultiplayerModal: React.FC = () => {
                     className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shrink-0 flex items-center gap-1 cursor-pointer transition-all shadow-md"
                   >
                     {copiedPlayer ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedPlayer ? 'Kopyalandı!' : 'Kopyala'}</span>
+                    <span>{copiedPlayer ? t('mp.copied') : t('mp.copy')}</span>
                   </button>
                 </div>
               </div>
@@ -210,13 +210,13 @@ export const MultiplayerModal: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-slate-300 flex items-center gap-1.5">
                     <Users className="w-4 h-4 text-amber-400" />
-                    <span>Bağlı Oyuncular ({peersCount})</span>
+                    <span>{t('mp.connectedPlayers')} ({peersCount})</span>
                   </span>
                 </div>
 
                 {peersCount === 0 ? (
                   <div className="text-center py-4 text-slate-500 text-xs bg-slate-950 rounded-xl border border-slate-800">
-                    Henüz odaya katılan oyuncu yok. Yukarıdaki linki arkadaşlarınıza gönderin!
+                    {t('mp.noPlayers')}
                   </div>
                 ) : (
                   <div className="space-y-1.5">
@@ -273,7 +273,7 @@ export const MultiplayerModal: React.FC = () => {
                             title="Oyuncunun Çizim Tahtasını kullanabilmesini sağlar"
                           >
                             <Palette className="w-3 h-3" />
-                            <span>{player.canDrawWhiteboard ? '✏️ Çizim Açık' : '🔒 Çizim Kapalı'}</span>
+                            <span>{player.canDrawWhiteboard ? t('mp.drawOpen') : t('mp.drawClosed')}</span>
                           </button>
                         )}
                       </div>
@@ -289,7 +289,7 @@ export const MultiplayerModal: React.FC = () => {
                   className="w-full py-2 bg-rose-950/60 hover:bg-rose-900 text-rose-300 font-bold rounded-xl border border-rose-800 flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>Odayı Kapat & Yayını Sonlandır</span>
+                  <span>{t('mp.endRoom')}</span>
                 </button>
               </div>
 

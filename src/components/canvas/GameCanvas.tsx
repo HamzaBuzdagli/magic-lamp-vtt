@@ -1477,10 +1477,10 @@ export const GameCanvas: React.FC = () => {
                               deleteCustomStatusPreset(preset.id);
                             }
                           }}
-                          className="opacity-0 group-hover/st:opacity-100 absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center text-[9px] font-bold shadow cursor-pointer transition-opacity"
-                          title="Bu özel durum efektini tamamen sil"
+                          className="ml-1 p-0.5 text-slate-500 hover:text-rose-400 hover:bg-rose-950/60 rounded-md transition-colors cursor-pointer"
+                          title="Bu özel durum efektini listeden sil"
                         >
-                          ✕
+                          <span className="text-[10px] font-black leading-none">✕</span>
                         </button>
                       )}
                     </div>
