@@ -283,6 +283,7 @@ interface GameState {
   setConnectedPlayers: (players: ConnectedPlayer[]) => void;
   togglePlayerDrawingPermission: (playerId: string) => void;
   renameConnectedPlayer: (playerId: string, newName: string) => void;
+  kickPlayer: (playerId: string) => void;
 
   // Combat Initiative Tracker
   initiativeList: InitiativeItem[];
@@ -2504,7 +2505,13 @@ export const useGameStore = create<GameState>()(
           notifyChannel(nextState);
           return nextState;
         }),
-                renameConnectedPlayer: (playerId: string, newName: string) => set((state) => {
+        kickPlayer: (playerId: string) => {
+          peerSyncService.kickPeer(playerId);
+          const updated = get().connectedPlayers.filter((p) => p.id !== playerId);
+          set({ connectedPlayers: updated });
+          notifyChannel({ connectedPlayers: updated });
+        },
+        renameConnectedPlayer: (playerId: string, newName: string) => set((state) => {
           const updated = state.connectedPlayers.map((p) =>
             p.id === playerId ? { ...p, name: newName } : p
           );

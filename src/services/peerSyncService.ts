@@ -161,6 +161,14 @@ class PeerSyncService {
       const msg = data as PeerSyncMessage;
       if (!msg) return;
 
+      if (msg.type === 'PLAYER_ACTION' && msg.action === 'KICKED') {
+        this.disconnect(true);
+        if (typeof window !== 'undefined') {
+          alert('🛡️ Zindan Efendisi (DM) tarafından odadan çıkarıldınız.');
+        }
+        return;
+      }
+
       if (msg.type === 'PLAYER_ACTION' && msg.action) {
         this.actionListeners.forEach((cb) => cb(msg.action!, msg.payload));
       }
@@ -247,6 +255,14 @@ class PeerSyncService {
       const msg = data as PeerSyncMessage;
       if (!msg) return;
 
+      if (msg.type === 'PLAYER_ACTION' && msg.action === 'KICKED') {
+        this.disconnect(true);
+        if (typeof window !== 'undefined') {
+          alert('🛡️ Zindan Efendisi (DM) tarafından odadan çıkarıldınız.');
+        }
+        return;
+      }
+
       if (msg.type === 'FULL_STATE' || msg.type === 'SYNC_STATE') {
         if (msg.payload) {
           this.stateListeners.forEach((cb) => cb(msg.payload));
@@ -311,6 +327,34 @@ class PeerSyncService {
         conn.send(msg);
       }
     });
+  }
+
+  // Kick a specific peer from the room (DM only)
+  public kickPeer(peerId: string) {
+    if (!this.isHost) return;
+
+    let targetConn: DataConnection | undefined;
+    for (const [id, conn] of this.connections.entries()) {
+      if (id === peerId || (conn as any).peer === peerId) {
+        targetConn = conn;
+        break;
+      }
+    }
+
+    if (targetConn) {
+      try {
+        targetConn.send({
+          type: 'PLAYER_ACTION',
+          action: 'KICKED',
+          payload: { reason: 'DM tarafından odadan çıkarıldınız.' }
+        } as PeerSyncMessage);
+        targetConn.close();
+      } catch (e) {
+        console.warn('Error kicking peer:', e);
+      }
+      this.connections.delete(peerId);
+      this.updatePeerCount();
+    }
   }
 
   // Send player action (dice roll, chat, token move) to Host

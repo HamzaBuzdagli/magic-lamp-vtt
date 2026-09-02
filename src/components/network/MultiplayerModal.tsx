@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
@@ -7,12 +8,14 @@ import {
   Sparkles, 
   X, 
   LogOut,
-  Palette
+  Palette,
+  UserX
 } from 'lucide-react';
 import { useGameStore } from '../../hooks/useGameStore';
 import { peerSyncService } from '../../services/peerSyncService';
 
 export const MultiplayerModal: React.FC = () => {
+  const { t } = useTranslation();
   const {
     isMultiplayerModalOpen,
     setMultiplayerModalOpen,
@@ -21,6 +24,7 @@ export const MultiplayerModal: React.FC = () => {
     connectedPlayers,
     togglePlayerDrawingPermission,
     renameConnectedPlayer,
+    kickPlayer,
     isStreamerMode
   } = useGameStore();
 
@@ -241,6 +245,21 @@ export const MultiplayerModal: React.FC = () => {
                             <span className="font-bold text-slate-200 truncate text-xs">{player.name}</span>
                           )}
                         </div>
+
+                                                {/* Kick Player Button for DM */}
+                        {isDm && (
+                          <button
+                            onClick={() => {
+                              if (window.confirm(t('mp.kickConfirm', { name: player.name }))) {
+                                kickPlayer(player.id);
+                              }
+                            }}
+                            className="p-1 hover:bg-rose-950/80 border border-slate-700 hover:border-rose-700 text-slate-500 hover:text-rose-400 rounded-lg text-[10px] flex items-center gap-1 transition-all cursor-pointer shrink-0"
+                            title={t('mp.kick')}
+                          >
+                            <UserX className="w-3.5 h-3.5" />
+                          </button>
+                        )}
 
                         {/* Drawing Permission Toggle Button for DM */}
                         {isDm && (
