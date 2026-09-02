@@ -3,7 +3,8 @@ import {
   MessageSquare, 
   Send, 
   X, 
-  Lock 
+  Lock,
+  GripHorizontal
 } from 'lucide-react';
 import { useGameStore } from '../../hooks/useGameStore';
 import type { ChatMessage } from '../../types/game';
@@ -23,6 +24,25 @@ export const PartyChatDrawer: React.FC = () => {
   const [recipient, setRecipient] = useState<string>('all');
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Draggable window coordinates
+  const [pos, setPos] = useState<{ x: number; y: number }>(() => {
+    if (typeof window !== 'undefined') {
+      return {
+        x: Math.max(16, window.innerWidth - 390),
+        y: Math.max(70, window.innerHeight - 490)
+      };
+    }
+    return { x: 500, y: 300 };
+  });
+
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef<{ mouseX: number; mouseY: number; startX: number; startY: number }>({
+    mouseX: 0,
+    mouseY: 0,
+    startX: 0,
+    startY: 0
+  });
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -32,6 +52,41 @@ export const PartyChatDrawer: React.FC = () => {
       scrollToBottom();
     }
   }, [chatMessages, isChatOpen]);
+
+  // Mouse Dragging Logic
+  const handleMouseDownHeader = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    dragStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      startX: pos.x,
+      startY: pos.y
+    };
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartRef.current.mouseX;
+      const dy = e.clientY - dragStartRef.current.mouseY;
+      const newX = Math.max(10, Math.min(window.innerWidth - 380, dragStartRef.current.startX + dx));
+      const newY = Math.max(10, Math.min(window.innerHeight - 480, dragStartRef.current.startY + dy));
+      setPos({ x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+      if (isDragging) setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +115,7 @@ export const PartyChatDrawer: React.FC = () => {
     return (
       <button
         onClick={() => setChatOpen(true)}
-        className="fixed bottom-5 right-5 z-40 px-3.5 py-2.5 bg-slate-900/95 hover:bg-slate-800 text-amber-400 border border-amber-500/60 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-2 font-bold text-xs cursor-pointer transition-all hover:scale-105"
+        className="fixed bottom-5 right-5 z-40 px-3.5 py-2.5 bg-slate-900/95 hover:bg-slate-800 text-amber-400 border border-amber-500/60 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-2 font-bold text-xs cursor-pointer transition-all hover:scale-105 select-none"
       >
         <MessageSquare className="w-4 h-4" />
         <span>Sohbet & Fısılda</span>
@@ -81,12 +136,19 @@ export const PartyChatDrawer: React.FC = () => {
   });
 
   return (
-    <div className="fixed bottom-5 right-5 z-40 w-80 md:w-96 h-[460px] bg-slate-900/95 border-2 border-amber-500/70 rounded-3xl shadow-2xl backdrop-blur-md flex flex-col overflow-hidden select-none animate-in slide-in-from-bottom-5 text-xs">
-      
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-slate-950 border-b border-slate-800 shrink-0">
+    <div 
+      style={{ left: `${pos.x}px`, top: `${pos.y}px` }}
+      className="fixed z-50 w-80 md:w-96 h-[460px] bg-slate-900/95 border-2 border-amber-500/70 rounded-3xl shadow-2xl backdrop-blur-md flex flex-col overflow-hidden select-none text-xs pointer-events-auto"
+    >
+      {/* Draggable Header */}
+      <div 
+        onMouseDown={handleMouseDownHeader}
+        className="flex items-center justify-between px-4 py-3 bg-slate-950 border-b border-slate-800 shrink-0 cursor-move"
+        title="Pencereyi ekranda taşımak için buraya basıp sürükleyin"
+      >
         <div className="flex items-center gap-2 text-amber-400 font-bold">
-          <MessageSquare className="w-4 h-4" />
+          <GripHorizontal className="w-4 h-4 text-slate-500" />
+          <MessageSquare className="w-4 h-4 text-amber-400" />
           <span>Canlı Sohbet & Fısıldama</span>
         </div>
 

@@ -16,10 +16,11 @@ import {
   Coins,
   Heart,
   Upload,
-  Palette
+  Palette,
+  Swords
 } from 'lucide-react';
 import { useGameStore } from '../../hooks/useGameStore';
-import type { Token, DrawPoint, DungeonRoom } from '../../types/game';
+import type { Token, DrawPoint, DungeonRoom, InitiativeItem } from '../../types/game';
 
 const COMMON_STATUS_EFFECTS = [
   '🤢 Zehirlendi',
@@ -36,6 +37,9 @@ const COMMON_STATUS_EFFECTS = [
 export const GameCanvas: React.FC = () => {
   const {
     isStreamerMode,
+    initiativeList,
+    setInitiativeList,
+    setInitiativeOpen,
     layers,
     activeLayerId,
     activeTool,
@@ -1416,6 +1420,35 @@ export const GameCanvas: React.FC = () => {
               <X className="w-3 h-3" />
             </button>
           </div>
+
+                    {/* Add to Combat Initiative */}
+          <button
+            onClick={() => {
+              const tok = tokenContextMenu.token;
+              const existing = (initiativeList || []).find((i: InitiativeItem) => i.tokenId === tok.id);
+              if (!existing) {
+                const newItem = {
+                  id: `init-${tok.id}-${Date.now()}`,
+                  tokenId: tok.id,
+                  name: tok.name,
+                  image: tok.image,
+                  color: tok.color,
+                  score: Math.floor(1 + Math.random() * 20),
+                  currentHp: tok.hp?.current,
+                  maxHp: tok.hp?.max,
+                  isMonster: tok.type === 'monster'
+                };
+                setInitiativeList([...(initiativeList || []), newItem]);
+              }
+              setInitiativeOpen(true);
+              setTokenContextMenu(null);
+            }}
+            className="w-full px-2 py-1.5 text-left text-amber-300 hover:bg-amber-950/80 hover:text-white rounded-lg flex items-center gap-2 transition-colors font-bold cursor-pointer"
+            title="Token'ı savaş sırasına (inisiyatife) ekler"
+          >
+            <Swords className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span>⚔️ Savaş Sırasına Ekle</span>
+          </button>
 
           {/* Send to Backstage Vault */}
           <button

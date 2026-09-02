@@ -61,64 +61,67 @@ export const TopNavbar: React.FC = () => {
   };
 
   return (
-    <header className="h-14 px-4 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between z-40 backdrop-blur-md select-none shrink-0 shadow-lg">
+    <header className="h-14 px-3 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between z-40 backdrop-blur-md select-none shrink-0 shadow-lg overflow-x-auto scrollbar-none gap-2">
       
-      {/* Brand & Scene Switcher */}
-      <div className="flex items-center gap-4">
+      {/* Left: Brand & Scene Switcher */}
+      <div className="flex items-center gap-2 shrink-0">
         <div 
           onClick={() => setLampModalOpen(true)}
-          className="flex items-center gap-2 cursor-pointer group"
+          className="flex items-center gap-1.5 cursor-pointer group shrink-0"
           title="Sihirli Lambayı Aç"
         >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-xl shadow-md group-hover:scale-110 transition-transform shadow-amber-500/20">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center text-lg shadow-md group-hover:scale-105 transition-transform shadow-amber-500/20">
             🪔
           </div>
-          <div>
-            <div className="flex items-center gap-1 font-black text-xs text-slate-100 tracking-wider uppercase">
-              <span>SİHİRLİ LAMBA</span>
+          <div className="hidden sm:block">
+            <div className="font-black text-[11px] text-slate-100 tracking-wider uppercase leading-none">
+              SİHİRLİ LAMBA
             </div>
-            <p className="text-[9px] text-slate-400 font-mono">VTT PLATFORM</p>
+            <p className="text-[8px] text-slate-400 font-mono leading-tight">VTT</p>
           </div>
         </div>
 
-        <div className="w-px h-6 bg-slate-800" />
+        <div className="w-px h-5 bg-slate-800 mx-0.5" />
 
-        {/* 3 Scene View Tabs: Map, Whiteboard, Roleplay */}
-        <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+        {/* 3 Scene View Tabs */}
+        <div className="flex items-center gap-0.5 bg-slate-950 p-0.5 rounded-xl border border-slate-800 shrink-0">
           <button
             onClick={() => setActiveView('map')}
-            className={`flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'map'
-                ? 'bg-amber-500 text-slate-950 shadow-md'
+                ? 'bg-amber-500 text-slate-950 shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Harita Sahnesi"
           >
             <Map className="w-3.5 h-3.5" />
-            <span>Harita</span>
+            <span className="hidden md:inline">Harita</span>
           </button>
 
           <button
             onClick={() => setActiveView('whiteboard')}
-            className={`flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'whiteboard'
-                ? 'bg-amber-500 text-slate-950 shadow-md'
+                ? 'bg-amber-500 text-slate-950 shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Çizim Tahtası Sahnesi"
           >
             <Palette className="w-3.5 h-3.5" />
-            <span>Çizim Tahtası</span>
+            <span className="hidden md:inline">Tahta</span>
           </button>
 
           <button
             onClick={() => setActiveView('roleplay')}
-            className={`flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'roleplay'
-                ? 'bg-amber-500 text-slate-950 shadow-md'
+                ? 'bg-amber-500 text-slate-950 shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
+            title="Rol Yapma & Görseller"
           >
             <ImageIcon className="w-3.5 h-3.5" />
-            <span>Rol Yapma & Görseller</span>
+            <span className="hidden md:inline">Görseller</span>
           </button>
         </div>
 
@@ -126,146 +129,150 @@ export const TopNavbar: React.FC = () => {
         {!isStreamerMode && (
           <button
             onClick={() => setSessionModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950 hover:bg-slate-800/90 border border-amber-500/40 hover:border-amber-500 text-amber-300 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm group"
-            title="Oturumları ve Farklı Maceraları Yönet"
+            className="flex items-center gap-1 px-2 py-1 bg-slate-950 hover:bg-slate-800 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
+            title="Oturumları Yönet"
           >
-            <Scroll className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
-            <span className="truncate max-w-[130px]">{activeSession?.name || 'Oturumlar'}</span>
+            <Scroll className="w-3.5 h-3.5 text-amber-400" />
+            <span className="truncate max-w-[90px] hidden xl:inline">{activeSession?.name || 'Oturumlar'}</span>
             <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
         )}
       </div>
 
-      {/* Center Action Buttons */}
-      <div className="flex items-center gap-1.5">
+      {/* Center: Tools & Action Buttons */}
+      <div className="flex items-center gap-1 shrink-0 overflow-x-auto">
         {/* Magic Lamp Trigger */}
         <button
           onClick={() => setLampModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+          className="flex items-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all cursor-pointer shrink-0"
+          title="AI Sihirli Lamba"
         >
-          <Sparkles className="w-4 h-4" />
-          <span>Lambayı Ov</span>
+          <Sparkles className="w-3.5 h-3.5" />
+          <span className="hidden lg:inline">Lamba</span>
         </button>
-
-        {/* Wheel of Fortune Button */}
-        <button
-          onClick={() => setWheelModalOpen(true)}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer"
-          title="Şans Çarkı / Çarkıfelek"
-        >
-          <RotateCw className="w-4 h-4 animate-spin-slow" />
-          <span>Şans Çarkı</span>
-        </button>
-
-        {/* Doodle to Asset */}
-        <button
-          onClick={() => setPaintModalOpen(true)}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs rounded-xl border border-amber-500/30 transition-all cursor-pointer"
-        >
-          <Paintbrush className="w-4 h-4 text-amber-400" />
-          <span>Varlık Çiz</span>
-        </button>
-
-        {/* Dungeon Room Drawer */}
-        {!isStreamerMode && activeView === 'map' && (
-          <button
-            onClick={() => setRoomDrawerOpen(!isRoomDrawerOpen)}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
-              isRoomDrawerOpen 
-                ? 'bg-amber-500/20 border-amber-500 text-amber-300' 
-                : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
-            }`}
-          >
-            <LayoutGrid className="w-4 h-4 text-amber-400" />
-            <span>Zindan Şablonları</span>
-          </button>
-        )}
-
-        {/* Dice Roller Toggle */}
-        <button
-          onClick={() => setDicePanelOpen(!isDicePanelOpen)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
-            isDicePanelOpen 
-              ? 'bg-purple-950/80 border-purple-500 text-purple-300' 
-              : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
-          }`}
-        >
-          <Dices className="w-4 h-4 text-purple-400" />
-          <span>Zarlar</span>
-        </button>
-
 
         {/* Initiative Tracker Button */}
         <button
           onClick={() => setInitiativeOpen(!isInitiativeOpen)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
+          className={`flex items-center gap-1 px-2 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer shrink-0 ${
             isInitiativeOpen 
               ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm' 
               : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
           }`}
           title="Savaş İnisiyatif Sırası Takipçisi"
         >
-          <Swords className="w-4 h-4 text-amber-400" />
-          <span>İnisiyatif</span>
+          <Swords className="w-3.5 h-3.5 text-amber-400" />
+          <span className="hidden lg:inline">İnisiyatif</span>
+        </button>
+
+        {/* Dice Roller Toggle */}
+        <button
+          onClick={() => setDicePanelOpen(!isDicePanelOpen)}
+          className={`flex items-center gap-1 px-2 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer shrink-0 ${
+            isDicePanelOpen 
+              ? 'bg-purple-950/80 border-purple-500 text-purple-300' 
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+          }`}
+          title="Zar Atıcı"
+        >
+          <Dices className="w-3.5 h-3.5 text-purple-400" />
+          <span className="hidden lg:inline">Zarlar</span>
         </button>
 
         {/* Ambient Soundboard Button */}
         {!isStreamerMode && (
           <button
             onClick={() => setSoundboardOpen(!isSoundboardOpen)}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer shrink-0 ${
               isSoundboardOpen 
                 ? 'bg-purple-950/80 border-purple-500 text-purple-300 shadow-sm' 
                 : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
             }`}
             title="Zindan Ambiyansları ve Ses Efektleri"
           >
-            <Volume2 className="w-4 h-4 text-purple-400" />
-            <span>Ambiyans</span>
+            <Volume2 className="w-3.5 h-3.5 text-purple-400" />
+            <span className="hidden lg:inline">Ambiyans</span>
           </button>
         )}
 
         {/* Chat Button */}
         <button
           onClick={() => setChatOpen(!isChatOpen)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
+          className={`flex items-center gap-1 px-2 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer shrink-0 ${
             isChatOpen 
               ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm' 
               : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
           }`}
           title="Canlı Parti Sohbeti ve DM Fısıldama"
         >
-          <MessageSquare className="w-4 h-4 text-amber-400" />
-          <span>Sohbet</span>
+          <MessageSquare className="w-3.5 h-3.5 text-amber-400" />
+          <span className="hidden lg:inline">Sohbet</span>
         </button>
 
         {/* Rulebook & Notes */}
         <button
           onClick={() => setRulebookOpen(!isRulebookOpen)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer ${
+          className={`flex items-center gap-1 px-2 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer shrink-0 ${
             isRulebookOpen 
               ? 'bg-blue-950/80 border-blue-500 text-blue-300' 
               : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
           }`}
+          title="Oyun Kuralları & Not Defteri"
         >
-          <BookOpen className="w-4 h-4 text-blue-400" />
-          <span>Kurallar & Notlar</span>
+          <BookOpen className="w-3.5 h-3.5 text-blue-400" />
+          <span className="hidden lg:inline">Kurallar</span>
         </button>
+
+        {/* Wheel of Fortune Button */}
+        <button
+          onClick={() => setWheelModalOpen(true)}
+          className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer shrink-0"
+          title="Şans Çarkı"
+        >
+          <RotateCw className="w-3.5 h-3.5 animate-spin-slow" />
+          <span className="hidden lg:inline">Çark</span>
+        </button>
+
+        {/* Doodle to Asset */}
+        <button
+          onClick={() => setPaintModalOpen(true)}
+          className="flex items-center gap-1 px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs rounded-xl border border-amber-500/30 transition-all cursor-pointer shrink-0"
+          title="Özel Varlık Çizimi"
+        >
+          <Paintbrush className="w-3.5 h-3.5 text-amber-400" />
+          <span className="hidden lg:inline">Varlık</span>
+        </button>
+
+        {/* Dungeon Room Drawer */}
+        {!isStreamerMode && activeView === 'map' && (
+          <button
+            onClick={() => setRoomDrawerOpen(!isRoomDrawerOpen)}
+            className={`flex items-center gap-1 px-2 py-1.5 font-bold text-xs rounded-xl border transition-all cursor-pointer shrink-0 ${
+              isRoomDrawerOpen 
+                ? 'bg-amber-500/20 border-amber-500 text-amber-300' 
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+            }`}
+            title="Zindan Oda Şablonları"
+          >
+            <LayoutGrid className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden lg:inline">Şablonlar</span>
+          </button>
+        )}
       </div>
 
-      {/* Right Controls: Player Popout, Streamer Mode & Reset */}
-      <div className="flex items-center gap-2">
+      {/* Right: Controls, Mode Switch & Reset */}
+      <div className="flex items-center gap-1.5 shrink-0">
         
         {/* Live Multiplayer Room Button */}
         <button
           onClick={() => setMultiplayerModalOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 text-amber-300 border border-amber-500/50 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-sm group"
-          title="Canlı Çok Oyunculu Masa & Oyuncu Davet Et"
+          className="flex items-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 text-amber-300 border border-amber-500/50 rounded-xl font-bold text-xs transition-all cursor-pointer shrink-0 shadow-sm"
+          title="Çok Oyunculu Canlı Oda"
         >
-          <Radio className="w-3.5 h-3.5 text-amber-400 group-hover:animate-pulse" />
-          <span>{peerSyncService.status === 'hosting' ? `🔴 Canlı: ${peerSyncService.roomId}` : peerSyncService.status === 'connected' ? `🟢 Bağlı: ${peerSyncService.roomId}` : '🔗 Oyuncu Davet Et'}</span>
+          <Radio className="w-3.5 h-3.5 text-amber-400" />
+          <span className="hidden sm:inline">{peerSyncService.status === 'hosting' ? `🔴 ${peerSyncService.roomId}` : peerSyncService.status === 'connected' ? `🟢 ${peerSyncService.roomId}` : 'Davet Et'}</span>
           {peerSyncService.connectedPeersCount > 0 && (
-            <span className="px-1.5 py-0.2 bg-amber-500 text-slate-950 rounded-full text-[10px] font-black">
+            <span className="px-1.5 py-0.2 bg-amber-500 text-slate-950 rounded-full text-[9px] font-black">
               {peerSyncService.connectedPeersCount}
             </span>
           )}
@@ -275,32 +282,32 @@ export const TopNavbar: React.FC = () => {
         {!isStreamerMode && (
           <button
             onClick={handleOpenPlayerWindow}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-950/70 hover:bg-emerald-900/90 text-emerald-300 border border-emerald-700 rounded-xl font-bold text-xs transition-all cursor-pointer"
-            title="Discord Yayını için ayrı temiz pencere aç"
+            className="flex items-center gap-1 px-2 py-1.5 bg-emerald-950/70 hover:bg-emerald-900/90 text-emerald-300 border border-emerald-700 rounded-xl font-bold text-xs transition-all cursor-pointer shrink-0"
+            title="Yayın Penceresi Aç"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            <span>Yayın Penceresi</span>
+            <span className="hidden xl:inline">Yayın</span>
           </button>
         )}
 
         {/* Streamer / DM Mode Switch OR Locked Player Mode Badge */}
         {isLockedPlayerMode || (typeof window !== 'undefined' && window.location.search.includes('room=')) ? (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-500/40 bg-amber-950/50 text-amber-300 font-bold text-xs shadow-sm font-mono">
+          <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-amber-500/40 bg-amber-950/50 text-amber-300 font-bold text-xs font-mono shrink-0">
             <LockIcon className="w-3.5 h-3.5 text-amber-400" />
-            <span>Oyuncu: {localPlayerName}</span>
+            <span className="truncate max-w-[90px]">{localPlayerName}</span>
           </div>
         ) : (
           <button
             onClick={() => setStreamerMode(!isStreamerMode)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition-all shadow-md cursor-pointer ${
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border font-bold text-xs transition-all shadow-md cursor-pointer shrink-0 ${
               isStreamerMode
                 ? 'bg-emerald-950/80 border-emerald-500 text-emerald-300'
                 : 'bg-indigo-950/80 border-indigo-500 text-indigo-300'
             }`}
             title={isStreamerMode ? 'Oyuncu / Discord Görünümü' : 'DM / Yönetici Modu'}
           >
-            {isStreamerMode ? <Tv className="w-4 h-4 text-emerald-400" /> : <UserCheck className="w-4 h-4 text-indigo-400" />}
-            <span>{isStreamerMode ? '📺 Oyuncu Görünümü' : '🎭 DM Modu'}</span>
+            {isStreamerMode ? <Tv className="w-3.5 h-3.5 text-emerald-400" /> : <UserCheck className="w-3.5 h-3.5 text-indigo-400" />}
+            <span className="hidden md:inline">{isStreamerMode ? 'Oyuncu' : 'DM'}</span>
           </button>
         )}
 
@@ -312,10 +319,10 @@ export const TopNavbar: React.FC = () => {
                 resetScene();
               }
             }}
-            className="p-2 bg-slate-800 hover:bg-rose-950/50 text-slate-400 hover:text-rose-400 border border-slate-700 rounded-xl transition-colors cursor-pointer"
+            className="p-1.5 bg-slate-800 hover:bg-rose-950/50 text-slate-400 hover:text-rose-400 border border-slate-700 rounded-xl transition-colors cursor-pointer shrink-0"
             title="Haritayı Sıfırla"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
           </button>
         )}
 
