@@ -34,6 +34,7 @@ export function App() {
   }, [activeAmbientTrack, customSoundTracks]);
 
   const { 
+    isKicked,
     activeView, 
     setStreamerMode, 
     setLockedPlayerMode 
@@ -115,6 +116,29 @@ export function App() {
       <InitiativeTracker />
       <PartyChatDrawer />
       <SoundboardModal />
+
+      {/* Kicked from Room Overlay Modal */}
+      {isKicked && (
+        <div className="fixed inset-0 z-[9999] bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-slate-900 border border-rose-500/60 rounded-3xl p-6 shadow-2xl text-center space-y-4 animate-in zoom-in-95">
+            <div className="w-16 h-16 rounded-3xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center mx-auto text-3xl shadow-lg shadow-rose-500/20">
+              🛡️
+            </div>
+            <h3 className="text-xl font-black text-rose-300">Odadan Çıkarıldınız</h3>
+            <p className="text-sm text-slate-300 leading-relaxed">
+              Zindan Efendisi (DM) tarafından çok oyunculu odadan çıkarıldınız.
+            </p>
+            <button
+              onClick={() => {
+                window.location.href = window.location.origin + window.location.pathname;
+              }}
+              className="w-full py-2.5 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold rounded-xl transition-all shadow-lg cursor-pointer"
+            >
+              Ana Sayfaya Dön
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

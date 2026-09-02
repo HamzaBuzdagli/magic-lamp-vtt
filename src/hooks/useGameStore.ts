@@ -278,6 +278,8 @@ interface GameState {
   connectedPlayers: ConnectedPlayer[];
   localPlayerName: string;
   isLockedPlayerMode: boolean;
+  isKicked: boolean;
+  setKicked: (kicked: boolean) => void;
   setLocalPlayerName: (name: string) => void;
   setLockedPlayerMode: (locked: boolean) => void;
   setConnectedPlayers: (players: ConnectedPlayer[]) => void;
@@ -949,6 +951,8 @@ export const useGameStore = create<GameState>()(
           const updated = [...currentChats, payload];
           set({ chatMessages: updated });
           notifyChannel({ chatMessages: updated });
+        } else if (action === 'KICKED') {
+          set({ isKicked: true });
         } else if (action === 'PLAYER_JOIN') {
           const players = get().connectedPlayers || [];
           const existing = players.find((p) => p.id === payload.id);
@@ -2495,6 +2499,8 @@ export const useGameStore = create<GameState>()(
         connectedPlayers: [],
         localPlayerName: (typeof window !== 'undefined' && localStorage.getItem('magic_lamp_player_name')) || `Oyuncu-${Math.floor(1000 + Math.random() * 9000)}`,
         isLockedPlayerMode: false,
+        isKicked: false,
+        setKicked: (kicked: boolean) => set({ isKicked: kicked }),
         setLocalPlayerName: (name: string) => {
           if (typeof window !== 'undefined') localStorage.setItem('magic_lamp_player_name', name.trim());
           set({ localPlayerName: name.trim() });
@@ -2507,9 +2513,10 @@ export const useGameStore = create<GameState>()(
         }),
         kickPlayer: (playerId: string) => {
           peerSyncService.kickPeer(playerId);
-          const updated = get().connectedPlayers.filter((p) => p.id !== playerId);
+          const updated = (get().connectedPlayers || []).filter((p) => p.id !== playerId);
           set({ connectedPlayers: updated });
           notifyChannel({ connectedPlayers: updated });
+          peerSyncService.broadcastToPeers({ connectedPlayers: updated });
         },
         renameConnectedPlayer: (playerId: string, newName: string) => set((state) => {
           const updated = state.connectedPlayers.map((p) =>
