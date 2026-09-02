@@ -94,21 +94,16 @@ import {
   Swords
 } from 'lucide-react';
 import { useGameStore } from '../../hooks/useGameStore';
-import type { Token, DrawPoint, DungeonRoom, InitiativeItem } from '../../types/game';
+import type { Token, DrawPoint, DungeonRoom, InitiativeItem, StatusConditionPreset } from '../../types/game';
 
-const COMMON_STATUS_EFFECTS = [
-  '🤢 Zehirlendi',
-  '⚡ Hızlandı',
-  '🛡️ Kalkanlı',
-  '🔥 Yanıyor',
-  '💤 Uyuyor',
-  '🩸 Kanamalı',
-  '💫 Sersemledi',
-  '👁️ Görünmez',
-  '❄️ Dondu'
-];
+
 
 export const GameCanvas: React.FC = () => {
+  const [isAddingStatus, setIsAddingStatus] = useState(false);
+  const [newStatusName, setNewStatusName] = useState('');
+  const [newStatusIcon, setNewStatusIcon] = useState('✨');
+  const [newStatusColor] = useState('#a855f7');
+
   const {
     isStreamerMode,
     initiativeList,
@@ -142,6 +137,9 @@ export const GameCanvas: React.FC = () => {
     updateTokenAttribute,
     deleteTokenAttribute,
     toggleTokenStatusEffect,
+    customStatusPresets,
+    addCustomStatusPreset,
+    deleteCustomStatusPreset,
     selectedRoomIds,
     setSelectedRoomIds,
     toggleSelectRoom,
@@ -1380,24 +1378,112 @@ export const GameCanvas: React.FC = () => {
               </div>
             )}
 
-            {/* Status Effects Toggles */}
-            <div>
-              <label className="block text-slate-400 font-bold mb-1.5">Durum Efektleri (Tıkla & Aç/Kapat)</label>
-              <div className="flex flex-wrap gap-1.5">
-                {COMMON_STATUS_EFFECTS.map((eff) => {
-                  const isActive = activeInspectorToken.statusEffects?.includes(eff);
-                  return (
+            {/* Status Effects Toggles & Custom Condition Manager */}
+            <div className="space-y-2 bg-slate-950/80 p-3 rounded-2xl border border-slate-800/80">
+              <div className="flex items-center justify-between">
+                <label className="text-slate-300 font-bold text-xs flex items-center gap-1.5">
+                  <span>🎭 Durum Efektleri (Statuses)</span>
+                </label>
+                <button
+                  onClick={() => setIsAddingStatus(!isAddingStatus)}
+                  className="px-2 py-0.5 bg-purple-950 hover:bg-purple-900 text-purple-300 border border-purple-700/60 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                  title="Yeni Özel Durum Efekti Oluştur"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Özel Efekt Ekle</span>
+                </button>
+              </div>
+
+              {/* Add Custom Status Form */}
+              {isAddingStatus && (
+                <div className="p-2.5 bg-slate-900 border border-purple-500/50 rounded-xl space-y-2 animate-in fade-in">
+                  <div className="text-[11px] font-bold text-purple-300">Yeni Durum Efekti Tanımla:</div>
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={newStatusIcon}
+                      onChange={(e) => setNewStatusIcon(e.target.value)}
+                      className="w-10 px-1 py-1 bg-slate-950 border border-slate-700 rounded-lg text-center text-sm font-bold"
+                      placeholder="Icon"
+                      title="Emoji / Simge (Örn: 👁️, 🤢, ⚡, 🩸)"
+                    />
+                    <input
+                      type="text"
+                      value={newStatusName}
+                      onChange={(e) => setNewStatusName(e.target.value)}
+                      className="flex-1 px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs font-bold text-slate-200"
+                      placeholder="Efekt İsmi (Örn: Kör, Lanetli, Uyuşmuş...)"
+                    />
+                  </div>
+                  <div className="flex items-center justify-end gap-1.5 pt-1">
                     <button
-                      key={eff}
-                      onClick={() => toggleTokenStatusEffect(activeInspectorToken.id, eff)}
-                      className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-                        isActive
-                          ? 'bg-purple-950 border-purple-500 text-purple-300 shadow-md scale-105'
-                          : 'bg-slate-950 border-slate-800 text-slate-500 hover:text-slate-300 hover:bg-slate-800'
-                      }`}
+                      onClick={() => setIsAddingStatus(false)}
+                      className="px-2 py-1 bg-slate-800 text-slate-400 hover:text-white rounded-lg text-[11px] font-bold cursor-pointer"
                     >
-                      {eff}
+                      İptal
                     </button>
+                    <button
+                      onClick={() => {
+                        if (!newStatusName.trim()) return;
+                        const fullLabel = `${newStatusIcon.trim()} ${newStatusName.trim()}`;
+                        addCustomStatusPreset({
+                          id: `status-${Date.now()}`,
+                          name: fullLabel,
+                          icon: newStatusIcon.trim() || '✨',
+                          color: newStatusColor,
+                          isDefault: false
+                        });
+                        setNewStatusName('');
+                        setIsAddingStatus(false);
+                      }}
+                      className="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-[11px] font-bold transition-all shadow-md cursor-pointer"
+                    >
+                      Kaydet & Listeye Ekle
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Status Effects List */}
+              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pr-1">
+                {(customStatusPresets || []).map((preset: StatusConditionPreset) => {
+                  const label = preset.name.includes(preset.icon) ? preset.name : `${preset.icon} ${preset.name}`;
+                  const isActive = activeInspectorToken.statusEffects?.includes(label) || activeInspectorToken.statusEffects?.includes(preset.name);
+
+                  return (
+                    <div
+                      key={preset.id}
+                      className="group/st relative flex items-center"
+                    >
+                      <button
+                        onClick={() => toggleTokenStatusEffect(activeInspectorToken.id, label)}
+                        className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer border flex items-center gap-1.5 ${
+                          isActive
+                            ? 'bg-purple-950 border-purple-500 text-purple-300 shadow-md scale-105 ring-1 ring-purple-400'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
+                        }`}
+                        title={preset.description || label}
+                      >
+                        <span>{preset.icon}</span>
+                        <span>{preset.name.replace(preset.icon, '').trim()}</span>
+                      </button>
+
+                      {/* Delete Custom Preset Button for DM (if not default) */}
+                      {!preset.isDefault && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm(`"${preset.name}" durum efektini silmek istediğinize emin misiniz?`)) {
+                              deleteCustomStatusPreset(preset.id);
+                            }
+                          }}
+                          className="opacity-0 group-hover/st:opacity-100 absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rose-600 text-white flex items-center justify-center text-[9px] font-bold shadow cursor-pointer transition-opacity"
+                          title="Bu özel durum efektini tamamen sil"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
                   );
                 })}
               </div>

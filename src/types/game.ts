@@ -315,6 +315,15 @@ export interface ChatMessage {
   diceDetail?: string;
 }
 
+export interface StatusConditionPreset {
+  id: string;
+  name: string;
+  icon: string;
+  color?: string;
+  description?: string;
+  isDefault?: boolean;
+}
+
 export interface CustomSoundTrack {
   id: string;
   name: string;

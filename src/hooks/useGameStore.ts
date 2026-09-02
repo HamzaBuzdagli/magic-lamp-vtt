@@ -1,9 +1,27 @@
+export const DEFAULT_STATUS_PRESETS: StatusConditionPreset[] = [
+  { id: 'blinded', name: 'Kör (Blinded)', icon: '👁️', color: '#94a3b8', description: 'Görüşü tamamen engellendi, saldırı zarlarında dezavantaj.', isDefault: true },
+  { id: 'poisoned', name: 'Zehirli (Poisoned)', icon: '🤢', color: '#22c55e', description: 'Zehirlendi, saldırı ve yetenek kontrollerinde dezavantaj.', isDefault: true },
+  { id: 'burning', name: 'Yanıyor (Burning)', icon: '🔥', color: '#f97316', description: 'Her tur başında ateş hasarı alır.', isDefault: true },
+  { id: 'paralyzed', name: 'Felçli (Paralyzed)', icon: '⚡', color: '#eab308', description: 'Hareket edemez veya konuşamaz.', isDefault: true },
+  { id: 'unconscious', name: 'Baygın / Uyuyor (Unconscious)', icon: '💤', color: '#64748b', description: 'Bilinçsiz ve savunmasız durumda.', isDefault: true },
+  { id: 'frightened', name: 'Korkmuş (Frightened)', icon: '😱', color: '#a855f7', description: 'Korku kaynağını gördüğü sürece dezavantajlı.', isDefault: true },
+  { id: 'charmed', name: 'Büyülenmiş (Charmed)', icon: '💖', color: '#ec4899', description: 'Büyüleyene saldıramaz.', isDefault: true },
+  { id: 'shielded', name: 'Kalkanlı / Korumalı (Shielded)', icon: '🛡️', color: '#3b82f6', description: 'Zırh veya koruma aurası aktif.', isDefault: true },
+  { id: 'invisible', name: 'Görünmez (Invisible)', icon: '✨', color: '#06b6d4', description: 'Gözle görülemez, gizlilik avantajı.', isDefault: true },
+  { id: 'haste', name: 'Hızlandı (Haste)', icon: '💨', color: '#10b981', description: 'Ekstra hareket hızı ve aksiyon.', isDefault: true },
+  { id: 'bleeding', name: 'Kanamalı (Bleeding)', icon: '🩸', color: '#ef4444', description: 'Sürekli kanama hasarı alır.', isDefault: true },
+  { id: 'frozen', name: 'Dondu (Frozen)', icon: '❄️', color: '#38bdf8', description: 'Buzla kaplandı, yavaşladı.', isDefault: true },
+  { id: 'stunned', name: 'Sersemledi (Stunned)', icon: '💫', color: '#fbbf24', description: 'Sersemledi, aksiyon alamaz.', isDefault: true },
+  { id: 'prone', name: 'Yere Yıkılmış (Prone)', icon: '🪓', color: '#78716c', description: 'Yerde yatıyor, yakın dövüş saldırıları avantajlı.', isDefault: true },
+];
+
 import { peerSyncService } from '../services/peerSyncService';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { 
   ConnectedPlayer,
   CustomSoundTrack,
+  StatusConditionPreset,
   InitiativeItem,
   ChatMessage,
   ToolMode, 
@@ -107,6 +125,11 @@ interface GameState {
   customSoundTracks: CustomSoundTrack[];
   addCustomSoundTrack: (track: Omit<CustomSoundTrack, 'id'>) => void;
   deleteCustomSoundTrack: (id: string) => void;
+
+  // Custom Status Conditions (Kör, Zehirli vb.)
+  customStatusPresets: StatusConditionPreset[];
+  addCustomStatusPreset: (preset: StatusConditionPreset) => void;
+  deleteCustomStatusPreset: (id: string) => void;
 
   // Token ↔ Whiteboard Dual Bridge
   transferTokenToWhiteboard: (tokenId: string) => void;
@@ -1245,6 +1268,20 @@ export const useGameStore = create<GameState>()(
         }),
 
         // Custom Soundtracks
+                customStatusPresets: DEFAULT_STATUS_PRESETS,
+        addCustomStatusPreset: (preset: StatusConditionPreset) => {
+          const updated = [...(get().customStatusPresets || DEFAULT_STATUS_PRESETS), preset];
+          set({ customStatusPresets: updated });
+          notifyChannel({ customStatusPresets: updated });
+          peerSyncService.broadcastToPeers({ customStatusPresets: updated });
+        },
+        deleteCustomStatusPreset: (id: string) => {
+          const updated = (get().customStatusPresets || DEFAULT_STATUS_PRESETS).filter((p) => p.id !== id);
+          set({ customStatusPresets: updated });
+          notifyChannel({ customStatusPresets: updated });
+          peerSyncService.broadcastToPeers({ customStatusPresets: updated });
+        },
+
         customSoundTracks: [],
         addCustomSoundTrack: (trackData) => set((state) => {
           const newTrack: CustomSoundTrack = {
