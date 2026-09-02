@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState } from 'react';
 import { 
   X, 
@@ -37,6 +38,7 @@ const QUICK_LOOT = [
 ];
 
 export const MagicLampModal: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     isLampModalOpen, 
     setLampModalOpen, 
@@ -314,7 +316,7 @@ export const MagicLampModal: React.FC = () => {
             </div>
             <div>
               <h2 className="text-sm font-black text-amber-300 flex items-center gap-1.5">
-                <span>Sihirli Lamba: Akıllı Zindan & Oda Doldurucu</span>
+                <span>{t('lamp.title')}</span>
               </h2>
               <p className="text-[10px] text-amber-400/80 font-semibold">
                 Özelleştirilebilir canavarlar, tuzaklar ve sandıklar ile tek tıkla oda dizilimi.

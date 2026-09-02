@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useRef, useState, useEffect } from 'react';
 import { 
   X, 
@@ -53,6 +54,7 @@ type TransformMode = 'none' | 'move' | 'rotate' | 'resize-se' | 'resize-sw' | 'r
 
 export const DoodleToAssetModal: React.FC = () => {
   const { isPaintModalOpen, setPaintModalOpen, addToken, isStreamerMode, preloadedDoodleImage, setPreloadedDoodleImage } = useGameStore();
+  const { t } = useTranslation();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -1208,7 +1210,7 @@ export const DoodleToAssetModal: React.FC = () => {
 
               {/* Asset Name */}
               <div className="mb-3">
-                <label className="block text-slate-400 font-bold mb-1">Varlık İsmi</label>
+                <label className="block text-slate-400 font-bold mb-1">{t('doodle.tokenName')}</label>
                 <input
                   type="text"
                   placeholder="Örn: Zehirli Mağara Örümceği, Ateş Büyücüsü..."

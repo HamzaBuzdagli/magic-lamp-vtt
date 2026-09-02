@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { 
   X, 
@@ -19,6 +20,7 @@ const PALETTE = [
 ];
 
 export const WheelOfFortuneModal: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     isWheelModalOpen, 
     setWheelModalOpen, 
@@ -303,7 +305,7 @@ export const WheelOfFortuneModal: React.FC = () => {
             className="w-full max-w-xs py-3.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/30 flex items-center justify-center gap-2 transition-all transform active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             <RotateCw className={`w-5 h-5 ${isSpinning ? 'animate-spin' : ''}`} />
-            <span>{isSpinning ? 'Çark Dönüyor...' : 'ÇARKI ÇEVİR!'}</span>
+            <span>{isSpinning ? t('wheel.spinning') : t('wheel.spin')}</span>
           </button>
         </div>
 

@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React from 'react';
 import { 
   Swords, 
@@ -11,6 +12,7 @@ import { useGameStore } from '../../hooks/useGameStore';
 import type { InitiativeItem } from '../../types/game';
 
 export const InitiativeTracker: React.FC = () => {
+  const { t } = useTranslation();
   const {
     initiativeList,
     setInitiativeList,
@@ -89,9 +91,9 @@ export const InitiativeTracker: React.FC = () => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black text-slate-100">İnisiyatif & Savaş Takipçisi</span>
+              <span className="text-xs font-black text-slate-100">{t('combat.title')}</span>
               <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px] shadow-sm">
-                Tur: {roundNumber}
+                {t('combat.round')}: {roundNumber}
               </span>
             </div>
             <span className="text-[10px] text-slate-400">
@@ -118,7 +120,7 @@ export const InitiativeTracker: React.FC = () => {
                 title="Herkes için 1d20 zar at"
               >
                 <Dices className="w-3.5 h-3.5" />
-                <span>Zarları At</span>
+                <span>{t('combat.rollAll')}</span>
               </button>
 
               <button
@@ -126,7 +128,7 @@ export const InitiativeTracker: React.FC = () => {
                 disabled={sortedList.length === 0}
                 className="px-3 py-1 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1 shadow-md cursor-pointer disabled:opacity-50"
               >
-                <span>Sıradaki</span>
+                <span>{t('combat.nextTurn')}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
 

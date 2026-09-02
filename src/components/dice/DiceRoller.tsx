@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState, useEffect } from 'react';
 import { 
   Dices, 
@@ -24,6 +25,7 @@ const DICE_TYPES: { type: DiceRoll['diceType']; max: number; label: string; colo
 ];
 
 export const DiceRoller: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     isDicePanelOpen, 
     setDicePanelOpen, 
@@ -143,7 +145,7 @@ export const DiceRoller: React.FC = () => {
         <div className="flex items-center gap-2 text-amber-400 font-bold text-xs">
           <GripHorizontal className="w-4 h-4 text-slate-500" />
           <Dices className="w-4 h-4 text-amber-400" />
-          <span>Zar Masası (Sürüklenebilir)</span>
+          <span>{t('dice.title')}</span>
         </div>
 
         <div className="flex items-center gap-1">
@@ -239,7 +241,7 @@ export const DiceRoller: React.FC = () => {
 
             <div className="space-y-1 max-h-36 overflow-y-auto pr-1">
               {diceHistory.length === 0 ? (
-                <p className="text-[11px] text-slate-600 text-center py-2 italic">Henüz zar atılmadı.</p>
+                <p className="text-[11px] text-slate-600 text-center py-2 italic">{t('dice.noHistory')}</p>
               ) : (
                 diceHistory.map((roll) => (
                   <div

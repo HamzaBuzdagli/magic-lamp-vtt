@@ -87,6 +87,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'combat.insBadge': 'İns:',
     'combat.score': 'Skor:',
     'combat.hp': 'HP:',
+    'combat.addCustom': 'Yeni Savaşçı Ekle',
+    'combat.namePlaceholder': 'Savaşçı Adı...',
+    'combat.initBonus': 'İnisiyatif Bonusu (+DEX)',
 
     // Dice Roller
     'dice.title': 'Zar Masası (Sürüklenebilir)',
@@ -97,6 +100,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'dice.noHistory': 'Henüz zar atılmadı.',
     'dice.crit': 'KRİTİK BAŞARI! (DOĞAL 20)',
     'dice.fumble': 'KRİTİK BAŞARISIZLIK! (DOĞAL 1)',
+    'dice.rollAdvantage': 'Avantajlı At (2d20 Büyük)',
+    'dice.rollDisadvantage': 'Dezavantajlı At (2d20 Küçük)',
 
     // Soundboard
     'sound.title': 'Ambiyans & Ses Efektleri',
@@ -164,14 +169,88 @@ export const translations: Record<Language, Record<string, string>> = {
     'wb.toTokenTooltip': 'Çizim tahtasındaki resmi alıp yeni bir Token / Varlık oluşturun',
     'wb.exportPng': 'PNG Olarak İndir',
     'wb.clear': 'Tahtayı Sıfırla (Temizle)',
+    'wb.brush': 'Fırça (Canlı Kalem)',
+    'wb.highlighter': 'Fosforlu Kalem',
+    'wb.eraser': 'Silgi',
+    'wb.fillBucket': 'Boya Kovası (Doldur)',
+    'wb.shapes': 'Geometrik Şekiller',
+    'wb.textTool': 'Metin Yaz',
+    'wb.selectTool': 'Seç & Taşı & Döndür',
+    'wb.uploadImage': 'Resim / Harita Yükle',
+    'wb.panTool': 'Tahtayı Kaydır',
+    'wb.pages': 'Sayfalar / Katmanlar',
+    'wb.newPage': 'Yeni Sayfa Ekle',
+    'wb.assetsVault': 'Varlık Çantası (Assets)',
 
-    // Token Right Click Menu
+    // Token Right Click Menu & Inspector
     'tokenMenu.initiative': '⚔️ Savaş Sırasına Ekle',
     'tokenMenu.toWhiteboard': '🎨 Çizim Tahtasına Aktar',
     'tokenMenu.toVault': '🧰 Gizli Kasaya Al (Statlarıyla)',
     'tokenMenu.inspect': 'Tokenı İncele & Düzenle',
     'tokenMenu.duplicate': 'Kopyasını Çoğalt (+1)',
     'tokenMenu.delete': 'Tokenı Haritadan Sil',
+    'tokenInspector.title': 'Token İnceleme & Özellikler',
+    'tokenInspector.name': 'Karakter / Yaratık Adı',
+    'tokenInspector.hp': 'Can Puanı (HP)',
+    'tokenInspector.initiativeBonus': 'İnisiyatif Statı (DEX Bonusu)',
+    'tokenInspector.statuses': '🎭 Durum Efektleri (Statuses)',
+    'tokenInspector.addCustomStatus': 'Özel Efekt Ekle',
+    'tokenInspector.notes': 'Gizli DM Notları (Sadece DM Görür)',
+
+    // Backstage Vault Drawer
+    'vault.title': 'DM Gizli Kasası & Varlıklar',
+    'vault.subtitle': 'Hazırladığınız tüm canavarlar, NPCler ve tuzaklar burada saklanır.',
+    'vault.search': 'Varlık ara...',
+    'vault.empty': 'Kasada henüz kayıtlı varlık yok. "Varlık Çiz" ile oluşturabilir veya haritadaki bir tokenı sağ tıklayıp kasaya alabilirsiniz.',
+    'vault.summon': 'Haritaya Çağır',
+    'vault.delete': 'Kasadan Sil',
+
+    // Magic Lamp AI Modal
+    'lamp.title': '🪔 AI Sihirli Lamba: FRP Zindan & Hikaye Üretici',
+    'lamp.tabEncounter': '⚔️ Savaş & Karşılaşma',
+    'lamp.tabStory': '📜 Zindan Hikayesi & Oda',
+    'lamp.tabNpc': '👤 NPC & Karakter',
+    'lamp.tabLoot': '💎 Hazine & Tuzak',
+    'lamp.generate': 'Lamba İllüzyonunu Yarat (Üret)',
+    'lamp.generating': 'Cin Zindanı Dokuyor...',
+    'lamp.promptPlaceholder': 'Nasıl bir sahne veya canavar istiyorsunuz? (Örn: 3. seviye parti için antik mezarlık pususu)',
+
+    // Rulebook & Campaign Notes Modal
+    'rules.title': '📖 Kural Kitabı & Kampanya Notları',
+    'rules.tabQuick': '⚡ Hızlı FRP Kuralları',
+    'rules.tabNotes': '📝 Özel Not Defteri',
+    'rules.tabConditions': '🎭 Durumlar & Efektler',
+    'rules.addNote': 'Yeni Not Ekle',
+    'rules.noteTitlePlaceholder': 'Not Başlığı...',
+    'rules.noteContentPlaceholder': 'Not içeriği, mekanikler veya hikaye ipuçları...',
+
+    // Wheel of Fortune Modal
+    'wheel.title': '🎡 Şans Çarkı',
+    'wheel.spin': 'ÇARKINI ÇEVİR!',
+    'wheel.spinning': 'Çark Dönüyor...',
+    'wheel.addOption': 'Seçenek Ekle',
+    'wheel.presets': 'Hazır Çark Şablonları:',
+    'wheel.winnerTitle': '🎉 Kazanan Sonuç:',
+
+    // Doodle to Asset Modal
+    'doodle.title': '🎨 Özel Varlık & Token Çizim Stüdyosu',
+    'doodle.tokenName': 'Varlık / Token Adı:',
+    'doodle.size': 'Harita Boyutu:',
+    'doodle.folder': 'Kasa Klasörü:',
+    'doodle.hpLabel': 'Başlangıç Can Puanı (HP):',
+    'doodle.initLabel': 'İnisiyatif Statı (DEX):',
+    'doodle.saveToVault': 'Sadece Kasaya Kaydet',
+    'doodle.saveAndSummon': 'Kaydet & Haritaya Çağır',
+
+    // Room Templates Drawer
+    'roomTemplates.title': 'Zindan Oda Şablonları',
+    'roomTemplates.dragHint': 'Haritaya sürükleyip bırakın veya tıklayın',
+
+    // Roleplay Board
+    'roleplay.title': '🎭 Rol & Görsel Panosu',
+    'roleplay.addHandout': 'Yeni Belge / Resim Paylaş',
+    'roleplay.revealAll': 'Tüm Oyunculara Göster',
+    'roleplay.hideAll': 'Gizle',
   },
 
   en: {
@@ -260,6 +339,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'combat.insBadge': 'Init:',
     'combat.score': 'Score:',
     'combat.hp': 'HP:',
+    'combat.addCustom': 'Add Combatant',
+    'combat.namePlaceholder': 'Combatant name...',
+    'combat.initBonus': 'Initiative Bonus (+DEX)',
 
     // Dice Roller
     'dice.title': 'Dice Tray (Draggable)',
@@ -270,6 +352,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'dice.noHistory': 'No dice rolled yet.',
     'dice.crit': 'CRITICAL SUCCESS! (NATURAL 20)',
     'dice.fumble': 'CRITICAL FAILURE! (NATURAL 1)',
+    'dice.rollAdvantage': 'Roll with Advantage (2d20 High)',
+    'dice.rollDisadvantage': 'Roll with Disadvantage (2d20 Low)',
 
     // Soundboard
     'sound.title': 'Ambience & Sound Effects',
@@ -337,13 +421,87 @@ export const translations: Record<Language, Record<string, string>> = {
     'wb.toTokenTooltip': 'Capture whiteboard drawing and create a new Token / Asset',
     'wb.exportPng': 'Download as PNG',
     'wb.clear': 'Clear Whiteboard',
+    'wb.brush': 'Brush (Live Pen)',
+    'wb.highlighter': 'Highlighter',
+    'wb.eraser': 'Eraser',
+    'wb.fillBucket': 'Paint Bucket (Fill)',
+    'wb.shapes': 'Geometric Shapes',
+    'wb.textTool': 'Write Text',
+    'wb.selectTool': 'Select, Move & Rotate',
+    'wb.uploadImage': 'Upload Image / Map',
+    'wb.panTool': 'Pan Whiteboard',
+    'wb.pages': 'Pages / Layers',
+    'wb.newPage': 'Add New Page',
+    'wb.assetsVault': 'Asset Vault',
 
-    // Token Right Click Menu
+    // Token Right Click Menu & Inspector
     'tokenMenu.initiative': '⚔️ Add to Initiative Order',
     'tokenMenu.toWhiteboard': '🎨 Send to Whiteboard',
     'tokenMenu.toVault': '🧰 Store to Secret Vault (with Stats)',
     'tokenMenu.inspect': 'Inspect & Edit Token',
     'tokenMenu.duplicate': 'Duplicate Token (+1)',
     'tokenMenu.delete': 'Remove Token from Map',
+    'tokenInspector.title': 'Token Inspector & Stats',
+    'tokenInspector.name': 'Character / Monster Name',
+    'tokenInspector.hp': 'Hit Points (HP)',
+    'tokenInspector.initiativeBonus': 'Initiative Stat (DEX Modifier)',
+    'tokenInspector.statuses': '🎭 Status Conditions',
+    'tokenInspector.addCustomStatus': 'Add Custom Status',
+    'tokenInspector.notes': 'Secret DM Notes (Only DM Sees)',
+
+    // Backstage Vault Drawer
+    'vault.title': 'DM Secret Vault & Assets',
+    'vault.subtitle': 'All your prepared monsters, NPCs, and traps are stored here.',
+    'vault.search': 'Search assets...',
+    'vault.empty': 'No assets in vault yet. Create using "Draw Asset" or right-click any token on map to store.',
+    'vault.summon': 'Summon to Map',
+    'vault.delete': 'Delete from Vault',
+
+    // Magic Lamp AI Modal
+    'lamp.title': '🪔 AI Magic Lamp: TTRPG Dungeon & Story Generator',
+    'lamp.tabEncounter': '⚔️ Combat & Encounter',
+    'lamp.tabStory': '📜 Dungeon Lore & Room',
+    'lamp.tabNpc': '👤 NPC & Personality',
+    'lamp.tabLoot': '💎 Treasure & Trap',
+    'lamp.generate': 'Create Illusion (Generate)',
+    'lamp.generating': 'Genie is weaving the dungeon...',
+    'lamp.promptPlaceholder': 'What kind of scene or monster do you want? (e.g. Level 3 party ambush in an ancient crypt)',
+
+    // Rulebook & Campaign Notes Modal
+    'rules.title': '📖 Rulebook & Campaign Notes',
+    'rules.tabQuick': '⚡ Quick TTRPG Rules',
+    'rules.tabNotes': '📝 Custom Campaign Notepad',
+    'rules.tabConditions': '🎭 Conditions & Effects',
+    'rules.addNote': 'Add New Note',
+    'rules.noteTitlePlaceholder': 'Note Title...',
+    'rules.noteContentPlaceholder': 'Notes, game mechanics, or story secrets...',
+
+    // Wheel of Fortune Modal
+    'wheel.title': '🎡 Wheel of Fortune',
+    'wheel.spin': 'SPIN THE WHEEL!',
+    'wheel.spinning': 'Wheel Spinning...',
+    'wheel.addOption': 'Add Option',
+    'wheel.presets': 'Preset Wheel Templates:',
+    'wheel.winnerTitle': '🎉 Winning Result:',
+
+    // Doodle to Asset Modal
+    'doodle.title': '🎨 Custom Asset & Token Art Studio',
+    'doodle.tokenName': 'Asset / Token Name:',
+    'doodle.size': 'Map Grid Size:',
+    'doodle.folder': 'Vault Category:',
+    'doodle.hpLabel': 'Starting Hit Points (HP):',
+    'doodle.initLabel': 'Initiative Stat (DEX):',
+    'doodle.saveToVault': 'Save to Vault Only',
+    'doodle.saveAndSummon': 'Save & Summon to Map',
+
+    // Room Templates Drawer
+    'roomTemplates.title': 'Dungeon Room Templates',
+    'roomTemplates.dragHint': 'Drag & drop onto map or click to add',
+
+    // Roleplay Board
+    'roleplay.title': '🎭 Roleplay & Handouts Board',
+    'roleplay.addHandout': 'Share New Handout / Art',
+    'roleplay.revealAll': 'Reveal to All Players',
+    'roleplay.hideAll': 'Hide',
   }
 };

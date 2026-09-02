@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState, useEffect } from 'react';
 import { 
   X, 
@@ -28,6 +29,7 @@ interface PersonalNote {
 const LOCAL_STORAGE_PERSONAL_NOTES = 'magic_lamp_personal_player_notes';
 
 export const RulebookModal: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     isRulebookOpen, 
     setRulebookOpen, 
@@ -140,7 +142,7 @@ export const RulebookModal: React.FC = () => {
             </div>
             <div>
               <h2 className="text-sm font-black text-slate-100 flex items-center gap-2">
-                <span>Kurallar & Not Defteri</span>
+                <span>{t('rules.title')}</span>
                 {activeScope === 'dm' ? (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
                     <Globe className="w-3 h-3" />

@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   MessageSquare, 
@@ -10,6 +11,7 @@ import { useGameStore } from '../../hooks/useGameStore';
 import type { ChatMessage } from '../../types/game';
 
 export const PartyChatDrawer: React.FC = () => {
+  const { t } = useTranslation();
   const {
     isChatOpen,
     setChatOpen,
@@ -150,15 +152,15 @@ export const PartyChatDrawer: React.FC = () => {
 
       {/* Channel Selector */}
       <div className="px-3 py-2 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between shrink-0">
-        <span className="text-[10px] text-slate-400 font-bold">Kanal:</span>
+        <span className="text-[10px] text-slate-400 font-bold">{t('chat.channel')}</span>
         <select
           value={recipient}
           onChange={(e) => setRecipient(e.target.value)}
           className="bg-slate-900 text-slate-200 border border-slate-700 rounded-xl px-2 py-1 text-[11px] font-bold focus:outline-none focus:border-amber-500 cursor-pointer"
         >
-          <option value="all">📢 Herkese Açık (Genel)</option>
+          <option value="all">{t('chat.global')}</option>
           {isStreamerMode ? (
-            <option value="DM">🤫 Sadece DM'e Fısılda</option>
+            <option value="DM">{t('chat.whisperDm')}</option>
           ) : (
             connectedPlayers.map((p) => (
               <option key={p.id} value={p.id}>🤫 {p.name}'e Fısılda</option>
@@ -172,7 +174,7 @@ export const PartyChatDrawer: React.FC = () => {
         {filteredMessages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-600 text-[11px] text-center p-4">
             <MessageSquare className="w-8 h-8 mb-2 opacity-30" />
-            <span>Henüz mesaj yok. Arkadaşlarına selam ver veya DM'e gizlice fısılda!</span>
+            <span>{t('chat.noMessages')}</span>
           </div>
         ) : (
           filteredMessages.map((msg) => {

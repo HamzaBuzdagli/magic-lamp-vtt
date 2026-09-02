@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState } from 'react';
 import { 
   Eye, 
@@ -25,6 +26,7 @@ const DEFAULT_FOLDERS = [
 ];
 
 export const BackstageDrawer: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     isStreamerMode, 
     isBackstageOpen, 
@@ -108,7 +110,7 @@ export const BackstageDrawer: React.FC = () => {
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse" />
           <span className="text-xs font-bold tracking-wider text-purple-300 uppercase">
-            🎭 DM Sahne Arkası (Gizli Kasa)
+            {t('vault.title')}
           </span>
           <span className="text-[11px] px-2 py-0.5 rounded-full bg-purple-950/80 text-purple-400 border border-purple-800">
             {backstageTokens.length} Gizli Varlık

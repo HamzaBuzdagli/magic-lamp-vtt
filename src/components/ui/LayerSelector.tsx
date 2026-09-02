@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState } from 'react';
 import { 
   Layers, 
@@ -27,6 +28,7 @@ const TEXTURE_PRESETS: Array<{ id: NonNullable<MapLayer['backgroundTexture']>; n
 ];
 
 export const LayerSelector: React.FC = () => {
+  const { t } = useTranslation();
   const {
     layers,
     activeLayerId,
@@ -123,7 +125,7 @@ export const LayerSelector: React.FC = () => {
             <div className="flex items-center justify-between px-1.5 py-1 border-b border-slate-800 text-[11px] font-bold text-amber-400">
               <span className="flex items-center gap-1.5">
                 <Building className="w-3.5 h-3.5" />
-                <span>Bina Katları & Zeminler</span>
+                <span>{t('layer.floors')}</span>
               </span>
               <span className="text-[10px] text-slate-500 font-mono">({layers.length} Kat)</span>
             </div>
@@ -208,7 +210,7 @@ export const LayerSelector: React.FC = () => {
                   className="w-full py-1.5 bg-gradient-to-r from-purple-950/70 to-indigo-950/70 hover:from-purple-900 hover:to-indigo-900 text-purple-300 border border-purple-700/60 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                 >
                   <Palette className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Zemin Dokusu & Harita Arka Planı</span>
+                  <span>{t('layer.bgSettings')}</span>
                 </button>
 
                 {isAdding ? (
@@ -234,7 +236,7 @@ export const LayerSelector: React.FC = () => {
                     className="w-full py-1.5 bg-slate-950 hover:bg-slate-800 text-amber-300 border border-slate-800 rounded-xl font-bold text-xs flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
-                    <span>Yeni Kat Ekle</span>
+                    <span>{t('layer.add')}</span>
                   </button>
                 )}
               </div>
@@ -255,7 +257,7 @@ export const LayerSelector: React.FC = () => {
                   <h3 className="font-black text-slate-100 text-sm">
                     {currentLayer.name} - Zemin Arka Planı
                   </h3>
-                  <p className="text-[10px] text-slate-400">Bu kata özel zemin dokusu veya battlemap görseli atayın.</p>
+                  <p className="text-[10px] text-slate-400">{t('layer.bgModalSub')}</p>
                 </div>
               </div>
               <button onClick={() => setIsBgModalOpen(false)} className="text-slate-400 hover:text-white p-1">
@@ -268,7 +270,7 @@ export const LayerSelector: React.FC = () => {
               {/* Presets Grid */}
               <div className="space-y-2">
                 <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">
-                  Hazır Zemin Dokusu Seçin:
+                  {t('layer.presets')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {TEXTURE_PRESETS.map((preset) => {
@@ -294,26 +296,26 @@ export const LayerSelector: React.FC = () => {
               {/* Custom Battlemap Image Upload */}
               <div className="space-y-2 pt-2 border-t border-slate-800">
                 <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">
-                  Veya Özel Harita Görseli Yükleyin (Battlemap JPG/PNG):
+                  {t('layer.uploadBattlemap')}
                 </label>
                 
                 <label className="block p-3 border-2 border-dashed border-slate-700 hover:border-purple-500 rounded-xl text-center cursor-pointer bg-slate-950 transition-colors">
                   <Upload className="w-5 h-5 mx-auto text-purple-400 mb-1" />
-                  <span className="font-bold text-slate-300 block">Harita Resmi Seç</span>
-                  <span className="text-[10px] text-slate-500">Kendi çizdiğiniz veya indirdiğiniz haritayı arkaya koyun</span>
+                  <span className="font-bold text-slate-300 block">{t('layer.chooseImage')}</span>
+                  <span className="text-[10px] text-slate-500">{t('layer.chooseImageSub')}</span>
                   <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                 </label>
 
                 {currentLayer.backgroundImageUrl && (
                   <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-300">Yüklü Görsel Saydamlığı:</span>
+                      <span className="text-xs font-bold text-slate-300">{t('layer.opacity')}</span>
                       <button
                         onClick={() => updateLayerBackground(currentLayer.id, { backgroundImageUrl: undefined })}
                         className="text-rose-400 hover:text-rose-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
                       >
                         <Trash2 className="w-3 h-3" />
-                        <span>Görseli Kaldır</span>
+                        <span>{t('layer.removeImage')}</span>
                       </button>
                     </div>
                     <input
@@ -335,7 +337,7 @@ export const LayerSelector: React.FC = () => {
                   onClick={() => setIsBgModalOpen(false)}
                   className="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl text-xs shadow-lg cursor-pointer"
                 >
-                  Tamam & Kaydet
+                  {t('layer.save')}
                 </button>
               </div>
             </div>
