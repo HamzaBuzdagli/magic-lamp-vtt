@@ -970,6 +970,20 @@ export const GameCanvas: React.FC = () => {
               </button>
             </div>
 
+            
+            {/* Player View Initiative Stat */}
+            {activePlayerToken.initiativeBonus !== undefined && activePlayerToken.initiativeBonus !== 0 && (
+              <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex items-center justify-between">
+                <span className="text-slate-300 font-bold flex items-center gap-2">
+                  <Swords className="w-4 h-4 text-amber-400" />
+                  <span>İnisiyatif Bonusu</span>
+                </span>
+                <span className="font-mono font-black text-amber-300 text-sm">
+                  {activePlayerToken.initiativeBonus > 0 ? `+${activePlayerToken.initiativeBonus}` : activePlayerToken.initiativeBonus}
+                </span>
+              </div>
+            )}
+
             {/* Read-Only HP Bar */}
             {activePlayerToken.hp && (
               <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2.5">
@@ -1115,6 +1129,25 @@ export const GameCanvas: React.FC = () => {
               >
                 <X className="w-4 h-4" />
               </button>
+            </div>
+
+            
+            {/* Base Initiative Stat / Modifier */}
+            <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex items-center justify-between">
+              <span className="text-slate-300 font-bold flex items-center gap-1.5">
+                <Swords className="w-4 h-4 text-amber-400" />
+                <span>Temel İnisiyatif Bonusu / Statı</span>
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-500 font-mono">Bonus / Mod:</span>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={activeInspectorToken.initiativeBonus ?? 0}
+                  onChange={(e) => updateToken(activeInspectorToken.id, { initiativeBonus: parseInt(e.target.value) || 0 })}
+                  className="w-16 px-2 py-1 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-bold font-mono text-center text-xs focus:outline-none focus:border-amber-500"
+                />
+              </div>
             </div>
 
             {/* Visual & Appearance Customization Panel */}
@@ -1433,7 +1466,7 @@ export const GameCanvas: React.FC = () => {
                   name: tok.name,
                   image: tok.image,
                   color: tok.color,
-                  score: Math.floor(1 + Math.random() * 20),
+                  score: Math.floor(1 + Math.random() * 20) + (tok.initiativeBonus ?? 0),
                   currentHp: tok.hp?.current,
                   maxHp: tok.hp?.max,
                   isMonster: tok.type === 'monster'

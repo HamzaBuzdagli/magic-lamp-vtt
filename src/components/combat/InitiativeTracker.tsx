@@ -61,7 +61,7 @@ export const InitiativeTracker: React.FC = () => {
           name: t.name,
           image: t.image,
           color: t.color,
-          score: Math.floor(1 + Math.random() * 20),
+          score: Math.floor(1 + Math.random() * 20) + (t.initiativeBonus ?? 0),
           currentHp: t.hp?.current,
           maxHp: t.hp?.max,
           isMonster: t.type === 'monster'
@@ -186,11 +186,24 @@ export const InitiativeTracker: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="truncate flex-1">
+                                    <div className="truncate flex-1">
                     <div className="font-bold text-slate-100 truncate text-[11px]">{combatant.name}</div>
-                    <div className="flex items-center gap-1 font-mono text-[9px] text-amber-400 font-bold">
+                    <div className="flex items-center gap-1 font-mono text-[9px] text-amber-400 font-bold mt-0.5">
                       <span>İnisiyatif:</span>
-                      <span>{combatant.score}</span>
+                      {!isStreamerMode ? (
+                        <input
+                          type="number"
+                          value={combatant.score}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 0;
+                            const updated = initiativeList.map((c) => c.id === combatant.id ? { ...c, score: val } : c);
+                            setInitiativeList(updated);
+                          }}
+                          className="w-9 px-1 py-0.2 bg-slate-900 border border-slate-700 rounded text-center text-[10px] text-amber-300 font-black focus:outline-none focus:border-amber-400"
+                        />
+                      ) : (
+                        <span className="text-amber-300 font-black">{combatant.score}</span>
+                      )}
                     </div>
                   </div>
 

@@ -68,6 +68,7 @@ export interface Token {
   image?: string; // Data URL or image link
   color?: string;
   notes?: string;
+  initiativeBonus?: number; // Base Initiative stat / DEX modifier
   statuses?: string[];
   statusEffects?: string[]; // e.g. ["🤢 Zehirlendi", "⚡ Hızlandı", "🛡️ Kalkanlı"]
   customAttributes?: TokenAttribute[];
