@@ -428,8 +428,8 @@ export const GameCanvas: React.FC = () => {
       ctx.setLineDash([]);
     }
 
-    // 7. Render Ruler Measurement
-    if (rulerStart && rulerCurrent) {
+    // 7. Render Ruler Measurement (Only when activeTool === 'ruler')
+    if (activeTool === 'ruler' && rulerStart && rulerCurrent) {
       const startX = rulerStart.x * cell;
       const startY = rulerStart.y * cell;
       const endX = rulerCurrent.x * cell;

@@ -270,11 +270,11 @@ export const TopNavbar: React.FC = () => {
         {/* Live Multiplayer Room Button */}
         <button
           onClick={() => setMultiplayerModalOpen(true)}
-          className="flex items-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 text-amber-300 border border-amber-500/50 rounded-xl font-bold text-xs transition-all cursor-pointer shrink-0 shadow-sm"
-          title="Çok Oyunculu Canlı Oda"
+          className="flex items-center gap-1 px-2 py-1.5 bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 text-amber-300 border border-amber-500/50 rounded-xl font-bold text-xs transition-all cursor-pointer shrink-0 shadow-sm"
+          title={`Çok Oyunculu Canlı Oda ${peerSyncService.roomId ? `(${peerSyncService.roomId})` : ''}`}
         >
-          <Radio className="w-3.5 h-3.5 text-amber-400" />
-          <span className="hidden sm:inline">{peerSyncService.status === 'hosting' ? `🔴 ${peerSyncService.roomId}` : peerSyncService.status === 'connected' ? `🟢 ${peerSyncService.roomId}` : 'Davet Et'}</span>
+          <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+          <span className="hidden lg:inline">{peerSyncService.status === 'hosting' ? 'Oda' : peerSyncService.status === 'connected' ? 'Bağlı' : 'Davet'}</span>
           {peerSyncService.connectedPeersCount > 0 && (
             <span className="px-1.5 py-0.2 bg-amber-500 text-slate-950 rounded-full text-[9px] font-black">
               {peerSyncService.connectedPeersCount}
