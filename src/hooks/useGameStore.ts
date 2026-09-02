@@ -2306,12 +2306,14 @@ export const useGameStore = create<GameState>()(
             notifyChannel(nextState);
             return nextState;
           });
+          peerSyncService.sendActionToHost('DICE_ROLL', newRoll);
           return newRoll;
         },
 
         clearDiceHistory: () => set(() => {
           const nextState = { diceHistory: [] };
           notifyChannel(nextState);
+          peerSyncService.sendActionToHost('CLEAR_DICE_HISTORY', {});
           return nextState;
         }),
 

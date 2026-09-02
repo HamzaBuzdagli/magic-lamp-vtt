@@ -111,7 +111,7 @@ export const DiceRoller: React.FC = () => {
           diceType: type,
           result: finalResult,
           modifier,
-          rollerName: rollerName || 'Oyuncu',
+          rollerName: rollerName || (isStreamerMode ? localPlayerName : '🛡️ Zindan Efendisi (DM)'),
           isCrit,
           isFumble,
         });
