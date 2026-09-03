@@ -170,10 +170,10 @@ export const SoundboardModal: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-2.5">
               {[
-                { id: 'rain', name: 'Fırtına & Yağmur', sub: 'Kasvetli ve şimşekli', icon: CloudRain, color: 'from-blue-600/30 to-slate-900' },
-                { id: 'tavern', name: 'Taverna & Şömine', sub: 'Sıcak ateş çatırtısı', icon: Beer, color: 'from-amber-600/30 to-slate-900' },
-                { id: 'cave', name: 'Karanlık Mağara', sub: 'Derin zindan uğultusu', icon: Compass, color: 'from-purple-600/30 to-slate-900' },
-                { id: 'war', name: 'Savaş Davulları', sub: 'Epik savaş ritmi', icon: Swords, color: 'from-rose-600/30 to-slate-900' },
+                { id: 'rain', name: t('sound.rain'), sub: t('sound.rainSub'), icon: CloudRain, color: 'from-blue-600/30 to-slate-900' },
+                { id: 'tavern', name: t('sound.tavern'), sub: t('sound.tavernSub'), icon: Beer, color: 'from-amber-600/30 to-slate-900' },
+                { id: 'cave', name: t('sound.cave'), sub: t('sound.caveSub'), icon: Compass, color: 'from-purple-600/30 to-slate-900' },
+                { id: 'war', name: t('sound.war'), sub: t('sound.warSub'), icon: Swords, color: 'from-rose-600/30 to-slate-900' },
               ].map((t) => {
                 const Icon = t.icon;
                 const isPlaying = activeAmbientTrack === t.id;
@@ -321,12 +321,12 @@ export const SoundboardModal: React.FC = () => {
             </label>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { name: 'Kılıç & Çarpışma', icon: Swords, fn: () => soundService.playSwordSound() },
-                { name: 'Büyü Patlaması', icon: Sparkles, fn: () => soundService.playMagicSound() },
-                { name: 'Meşale Ateşi', icon: Flame, fn: () => soundService.playTorchSound() },
-                { name: 'Canavar Kükremesi', icon: Skull, fn: () => soundService.playMonsterSound() },
-                { name: 'Zafer Fanfarı', icon: Trophy, fn: () => soundService.playVictorySound() },
-                { name: 'Zar Yuvarlanışı', icon: Volume2, fn: () => soundService.playDiceSound() },
+                { name: t('sound.sfxSword'), icon: Swords, fn: () => soundService.playSwordSound() },
+                { name: t('sound.sfxMagic'), icon: Sparkles, fn: () => soundService.playMagicSound() },
+                { name: t('sound.sfxTorch'), icon: Flame, fn: () => soundService.playTorchSound() },
+                { name: t('sound.sfxMonster'), icon: Skull, fn: () => soundService.playMonsterSound() },
+                { name: t('sound.sfxVictory'), icon: Trophy, fn: () => soundService.playVictorySound() },
+                { name: t('sound.sfxDice'), icon: Volume2, fn: () => soundService.playDiceSound() },
               ].map((sfx, idx) => {
                 const Icon = sfx.icon;
                 return (

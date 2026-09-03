@@ -1,0 +1,495 @@
+=== SoundboardModal.tsx (12 lines) ===
+  173: { id: 'rain', name: 'Fırtına & Yağmur', sub: 'Kasvetli ve şimşekli', icon: CloudRain, color: 'from-blue-600/30 to-slate-900' },
+  174: { id: 'tavern', name: 'Taverna & Şömine', sub: 'Sıcak ateş çatırtısı', icon: Beer, color: 'from-amber-600/30 to-slate-900' },
+  175: { id: 'cave', name: 'Karanlık Mağara', sub: 'Derin zindan uğultusu', icon: Compass, color: 'from-purple-600/30 to-slate-900' },
+  176: { id: 'war', name: 'Savaş Davulları', sub: 'Epik savaş ritmi', icon: Swords, color: 'from-rose-600/30 to-slate-900' },
+  229: <span className="font-bold text-slate-200 text-xs">Yeni Ses veya Müzik Ekle:</span>
+  239: <span className="text-[10px] text-slate-500">Ses dosyası seçin</span>
+  324: { name: 'Kılıç & Çarpışma', icon: Swords, fn: () => soundService.playSwordSound() },
+  325: { name: 'Büyü Patlaması', icon: Sparkles, fn: () => soundService.playMagicSound() },
+  326: { name: 'Meşale Ateşi', icon: Flame, fn: () => soundService.playTorchSound() },
+  327: { name: 'Canavar Kükremesi', icon: Skull, fn: () => soundService.playMonsterSound() },
+  328: { name: 'Zafer Fanfarı', icon: Trophy, fn: () => soundService.playVictorySound() },
+  329: { name: 'Zar Yuvarlanışı', icon: Volume2, fn: () => soundService.playDiceSound() },
+=== GameCanvas.tsx (76 lines) ===
+  431: ctx.fillText(`🎯 [OLUŞUM NOKTASI]`, rx + rw - (130 / zoom), ry + 15 / zoom);
+  464: ctx.fillText('🌫️ Keşfedilmemiş Alan', rx + rw / 2, ry + rh / 2);
+  471: ctx.fillText('🌫️ [SİSLİ - DM]', rx + 8, ry + rh - 8);
+  923: const goldAttr = token.customAttributes?.find((a) => a.name.toLowerCase().includes('para') || a.name.toLowerCase().includes('altın'));
+  924: const acAttr = token.customAttributes?.find((a) => a.name.toLowerCase().includes('ac') || a.name.toLowerCase().includes('zırh'));
+  1054: {activePlayerToken.type === 'hero' ? '🛡️ Kahraman' : activePlayerToken.type === 'monster' ? '⚔️ Canavar' : '📦 Eşya / Obje'}
+  1077: <span>İnisiyatif Bonusu</span>
+  1133: <span className="text-[9px] font-mono text-slate-500">DM Kontrollü</span>
+  1155: <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Açıklama & Notlar</div>
+  1203: placeholder="Varlık İsmi..."
+  1206: <span className="text-[10px] text-slate-400 font-mono">Tür:</span>
+  1217: {t === 'hero' ? 'Kahraman' : t === 'monster' ? 'Canavar' : t === 'npc' ? 'NPC' : 'Eşya'}
+  1237: <span>Temel İnisiyatif Bonusu / Statı</span>
+  1256: <span>Görsel & Boyut Ayarları</span>
+  1263: Resmi Kaldır (Harfe Dön)
+  1271: <label className="block text-[10px] text-slate-400 font-bold mb-1">Resim Dosyası Yükle</label>
+  1274: <span>Dosya Seç / Yükle</span>
+  1392: title="Yeni Özel Durum Efekti Oluştur"
+  1402: <div className="text-[11px] font-bold text-purple-300">Yeni Durum Efekti Tanımla:</div>
+  1410: title="Emoji / Simge (Örn: 👁️, 🤢, ⚡, 🩸)"
+  1417: placeholder="Efekt İsmi (Örn: Kör, Lanetli, Uyuşmuş...)"
+  1425: İptal
+  1478: if (window.confirm(`"${preset.name}" durum efektini silmek istediğinize emin misiniz?`)) {
+  1483: title="Bu özel durum efektini listeden sil"
+  1496: <label className="block text-slate-400 font-bold mb-1.5">Özel Nitelikler & Değerler (Para, Mana, AC vb.)</label>
+  1534: title="Niteliği Sil"
+  1547: placeholder="Nitelik Adı (Örn: Para, Mana, AC)..."
+  1558: <option value="number">Sayı (Integer)</option>
+  1559: <option value="text">Yazı (String)</option>
+  1564: placeholder="Değer..."
+  1590: {/* Bottom Actions: Sahne Arkası & Sil */}
+  1598: title="Token'ı haritadan gizler ve alttaki gizli DM kasasına taşır."
+  1601: <span>🎭 Sahne Arkasına At (Gizle)</span>
+  1666: title="Token'ı savaş sırasına (inisiyatife) ekler"
+  1679: title="Token görselini Çizim Tahtasına aktarır"
+  1692: title="Token'ı tüm statları, canı ve zırhıyla beraber gizli kasaya kaldırır (Tek seferlik olarak saklanır)."
+  1725: <span>Klonla / Çoğalt</span>
+  1741: <span>Oyunculara Göster</span>
+  1801: title="İki oda arasına koridor çek"
+  1804: <span>Odaları Bağla</span>
+  1810: title="İki oda arasındaki koridoru kes"
+  1813: <span>Bağlantıyı Kes</span>
+  1828: <span>Oda İşlemleri ({selectedRoomIds.length} Seçili)</span>
+  1846: <span>Odaları Bağla (Koridor Çek)</span>
+  1857: <span>Bağlantıyı Ayır / Kes</span>
+  1876: <span>Seçili Odaları Sırayla Bağla</span>
+  1891: <span>Tüm Bağlantıları Kes</span>
+  1906: <span>Oda(ları) Kopyala (Ctrl+C)</span>
+  1927: <span>Odaları Yapıştır (Ctrl+V)</span>
+  1941: <span>Odayı Düzenle & Yazı Yaz</span>
+  1955: <span>Seçili Oda(ları) Sil</span>
+  1968: <span>Oda Düzenle & Yazı Yaz</span>
+  1977: <label className="block text-slate-400 mb-1">Oda Başlığı</label>
+  1988: <label className="block text-slate-400 mb-1">Zeminde Gözükecek Yazı (Floor Label)</label>
+  1991: placeholder="Örn: ⚠️ Tuzaklı Zemin / Kadim Kütüphane / Boss Alanı"
+  2005: Bu zemin yazısını oyuncular da görsün
+  2012: <label className="block text-slate-400 mb-1 font-bold">🏢 Bulunduğu Kat / Katman</label>
+  2028: <label className="block text-slate-400 mb-1">DM Hikaye Açıklaması / Gizli Notlar</label>
+  2030: placeholder="Odaya girildiğinde yapılacak betimleme veya tuzak notları..."
+  2056: <label className="block text-slate-400 font-bold">🖼️ Oda Zemin Görseli / Harita Resmi</label>
+  2064: title="Görseli Kaldır"
+  2066: Görseli Sil
+  2092: <span>Resim Yükle</span>
+  2097: placeholder="Veya Resim URL'si yapıştır..."
+  2114: <span className="text-rose-300 font-bold block">🎯 Doğuş / Oluşum Noktası</span>
+  2115: <span className="text-slate-400 text-[10px]">Gizli kasadan çağrılan varlıklar bu odanın merkezine doğar.</span>
+  2122: <label className="block text-slate-400 mb-1">Genişlik x Yükseklik</label>
+  2145: <label className="block text-slate-400 mb-1">Zemin Teması</label>
+  2151: <option value="stone">Taş Zemin</option>
+  2153: <option value="magma">Lav Akıntısı</option>
+  2154: <option value="nature">Sarmaşık / Doğa</option>
+  2155: <option value="gold">Altın / Mermer</option>
+  2171: <span>{activeInspectorRoom.isRevealed ? 'Sisi Kapat' : 'Sisi Aç (Görünür Yap)'}</span>
+  2179: <span>Odayı Sil</span>
+  2191: title="Uzaklaş"
+  2201: title="Yakınlaş"
+=== PartyChatDrawer.tsx (4 lines) ===
+  137: title="Pencereyi ekranda taşımak için buraya basıp sürükleyin"
+  142: <span>Canlı Sohbet & Fısıldama</span>
+  166: <option key={p.id} value={p.id}>🤫 {p.name}'e Fısılda</option>
+  222: placeholder={recipient === 'all' ? "Mesajınızı yazın..." : ('🤫 ' + (recipient === 'DM' ? 'DM' : 'Oyuncu') + "'e fısıldayın...")}
+=== InitiativeTracker.tsx (10 lines) ===
+  100: {sortedList.length > 0 ? ('Sıradaki: ' + (activeCombatant?.name || '-')) : 'Henüz savaşta savaşçı yok'}
+  111: title="Haritadaki tüm tokenları savaşa ekle"
+  114: <span>Haritadan Çek</span>
+  120: title="Herkes için 1d20 zar at"
+  138: title="Savaşı Bitir / Sıfırla"
+  158: {isStreamerMode ? 'DM savaşı başlattığında savaş sırası burada görünecek.' : 'Haritadan token eklemek için "Haritadan Çek" butonuna basın.'}
+  175: Sıra Sende
+  213: <span className="text-[8px] text-slate-300 bg-slate-950 px-1 py-0.2 rounded border border-slate-800 font-mono" title="Temel İnisiyatif Statı / DEX">
+  214: İns:{base >= 0 ? `+${base}` : base}
+  225: title="Sıradan Çıkar"
+=== DiceRoller.tsx (1 lines) ===
+  202: title="Özelleştirilebilir Şans Çarkını Aç"
+=== BackstageDrawer.tsx (25 lines) ===
+  21: 'Tümü',
+  24: '📦 Eşyalar & Sandıklar',
+  25: '🧝 NPC & Yoldaşlar',
+  43: const [activeFolder, setActiveFolder] = useState('Tümü');
+  52: { name: 'İskelet Savaşçı', type: 'monster', hp: 13, size: 1, color: '#94a3b8', folder: '🧟 Canavarlar', isTemplate: true, notes: 'Kılıç vuruşu: 1d6+2' },
+  53: { name: 'Orman Haydutu', type: 'monster', hp: 16, size: 1, color: '#ea580c', folder: '🧟 Canavarlar', isTemplate: true, notes: 'Hançer & Zehir' },
+  55: { name: 'Altın Sandık', type: 'item', size: 1, color: '#eab308', folder: '📦 Eşyalar & Sandıklar', isTemplate: true, notes: '100 Altın + Şans Yüzüğü' },
+  56: { name: 'Büyücü Çırağı', type: 'npc', hp: 15, size: 1, color: '#8b5cf6', folder: '🧝 NPC & Yoldaşlar', isTemplate: true, notes: 'Rehber NPC' },
+  76: const name = window.prompt('Yeni Klasör Adı (Örn: Goblin Kampı, Zindan Kat 2):');
+  95: if (activeFolder === 'Tümü' || activeFolder === 'All') return true;
+  98: if (activeFolder === '📦 Eşyalar & Sandıklar' || activeFolder === '📦 Items & Chests') return token.folder === '📦 Eşyalar & Sandıklar' || token.folder === '📦 Items & Chests' || token.type === 'item';
+  99: if (activeFolder === '🧝 NPC & Yoldaşlar' || activeFolder === '🧝 NPCs & Allies') return token.folder === '🧝 NPC & Yoldaşlar' || token.folder === '🧝 NPCs & Allies' || token.type === 'npc' || token.type === 'hero';
+  116: {backstageTokens.length} Gizli Varlık
+  126: <span>Yeni Varlık Çiz</span>
+  149: placeholder="Kasada canavar / eşya ara..."
+  179: title="Yeni Klasör Oluştur"
+  182: <span>+ Klasör</span>
+  192: <span className="text-[11px] font-semibold text-slate-400">Hızlı Hazır Varlıklar:</span>
+  212: <span>Bu klasörde veya aramada eşleşen varlık bulunamadı.</span>
+  213: <span className="text-[10px] text-slate-600 mt-0.5">Soldan hazır varlık ekleyebilir veya yeni çizebilirsin.</span>
+  257: value={token.folder || 'Tümü'}
+  261: {allFolders.filter((f) => f !== 'Tümü').map((f) => (
+  273: title={token.isTemplate ? "📦 Şablon Varlık: Haritaya atılsa bile kasada kalır (Sonsuz çağrılır)" : "🎯 Tek Seferlik: Haritaya atılınca kasadan çıkar"}
+  275: {token.isTemplate ? '📦 Şablon (∞)' : '🎯 Tek Seferlik'}
+  302: <span>{token.isTemplate ? '✨ Sahneye Çağır (Kopya)' : 'Sahneye At'}</span>
+=== MagicLampModal.tsx (84 lines) ===
+  24: { name: 'Zehirli Ok Düzeneği', dc: 'DC 13 Pasif Algı', effect: '2d6 Zehir Hasarı ve 1 tur sersemleme.' },
+  25: { name: 'Paslı Kazık Çukuru', dc: 'DC 12 Pasif Algı', effect: '1d6 Delici Hasar ve DC 11 Çeviklik zarı.' },
+  26: { name: 'Zemine Çizilmiş Alev Rünü', dc: 'DC 14 Pasif Algı', effect: '3d6 Alev Hasarı (3 metre yarıçap).' },
+  27: { name: 'Yapışkan Örümcek Ağı', dc: 'DC 12 Pasif Algı', effect: 'DC 12 Güç zarı atılana kadar hareketsiz (Restrained).' },
+  28: { name: 'Taş Sarkaç Giyotini', dc: 'DC 13 Pasif Algı', effect: '2d8 Kesme Hasarı.' },
+  29: { name: 'Boğucu Mezar Gazı', dc: 'DC 14 Pasif Algı', effect: '2d8 Zehir Hasarı ve zehirlenme durumu.' }
+  33: { name: 'Paslı Ahşap Sandık', gold: 35, items: 'Küçük Şifa İksiri (2d4+2 HP), Paslı Hançer' },
+  34: { name: 'Demir Kilitli Muhafız Sandığı', gold: 90, items: '2x Şifa İksiri, Zindan Demir Anahtarı, Gümüş Yüzük' },
+  35: { name: 'Mühürlü Taş Lahit', gold: 120, items: 'Kutsal Su Şişesi, Gümüşlenmiş Hançer, Zümrüt Taşı' },
+  36: { name: 'Obsidyen Büyülü Kasa', gold: 250, items: 'Büyü Parşömeni, Alev Direnç Yüzüğü, Şifa İksiri' },
+  37: { name: 'Kraliyet Hazinesi Dağı', gold: 500, items: 'Büyülü Kılıç +1, Büyük Şifa İksiri (4d4+4), Saf Yakut Taşı' }
+  91: const [formLootItems, setFormLootItems] = useState('Küçük Şifa İksiri, Parşömen');
+  112: alert('Lütfen önce haritada bir oda oluşturun veya seçin!');
+  116: alert('Lütfen bir tema preseti seçin!');
+  168: setBroadcastNotice('"' + activeRoom.name + '" odası "' + activePreset.name + '" temasıyla dolduruldu!');
+  175: setFormName('Yeni Zindan Teması');
+  177: setFormRoomTitle('Karanlık Zindan Odası');
+  179: setFormDescription('Odaya adım attığınızda küf ve rutubet kokusu duyuluyor. Duvarlarda sönük meşaleler var...');
+  181: setFormTrapName('Zehirli Ok Düzeneği');
+  182: setFormTrapDc('DC 13 Pasif Algı');
+  183: setFormTrapEffect('2d6 Zehir Hasarı.');
+  187: setFormLootName('Demir Kilitli Sandık');
+  189: setFormLootItems('Şifa İksiri (2d4+2 HP), Demir Anahtar');
+  196: name: 'Zindan Muhafızı',
+  243: roomTitle: formRoomTitle.trim() || 'Zindan Odası',
+  247: trapDc: formTrapDc.trim() || 'DC 12 Pasif Algı',
+  251: lootName: formLootName.trim() || 'Hazine Sandığı',
+  253: lootItems: itemsArray.length > 0 ? itemsArray : ['Altın'],
+  271: const acAttr = vaultToken.customAttributes?.find((a: any) => a.name.toLowerCase().includes('ac') || a.name.toLowerCase().includes('zırh'));
+  322: Özelleştirilebilir canavarlar, tuzaklar ve sandıklar ile tek tıkla oda dizilimi.
+  338: <span>Odayı Doldur</span>
+  375: <span className="text-[10px] text-slate-400 font-bold block uppercase">Hedef Zindan Odası</span>
+  377: {activeRoom ? ('🏰 ' + activeRoom.name + ' (' + activeRoom.width + 'x' + activeRoom.height + ' Kare)') : 'Haritada Oda Bulunamadı'}
+  402: <span>Zindan Teması & Preset Seçin:</span>
+  441: <span className="text-[10px] text-amber-400 font-bold uppercase block tracking-wider">Oda Önizlemesi</span>
+  452: <span>Bu Temayı Düzenle</span>
+  469: <span>Yaratıklar ({(activePreset.monsters || []).reduce((acc, m) => acc + (m.count || 1), 0)} Adet):</span>
+  510: <span>Hazine Sandığı:</span>
+  518: <span className="text-[10px] text-amber-400 font-bold block">💰 {activePreset.lootGold} Altın</span>
+  537: <span>👾 Canavarları Yerleştir</span>
+  557: <span>🎁 Hazine Sandığı Koy</span>
+  567: <span>🌫️ Savaş Sisi Çek (Gizle)</span>
+  577: <span>🧹 Eski Canavarları Temizle</span>
+  597: {isPopulating ? 'Cin Odayı Büyüyle Dolduruyor...' : ('✨ Lambayı Ov & "' + (activeRoom?.name || 'Seçili Odayı') + '" Doldur!')}
+  614: <span>Tema & Karşılaşma Presetleri ({(encounterPresets || []).length})</span>
+  617: Her tema için canavarları, tuzakları ve sandıkları özelleştirin veya Gizli Kasadan ekleyin.
+  637: {editingPresetId ? '✏️ Temayı Düzenle' : '✨ Yeni Tema Oluştur'}
+  651: <label className="block text-[10px] text-slate-400 font-bold mb-0.5">Tema Adı</label>
+  654: placeholder="Örn: Örümcek Yuvası & Mağara"
+  663: <label className="block text-[10px] text-slate-400 font-bold mb-0.5">İkon (Emoji)</label>
+  673: <label className="block text-[10px] text-slate-400 font-bold mb-0.5">Zemin Teması</label>
+  679: <option value="stone">Taş Zindan</option>
+  681: <option value="nature">Doğa / Mağara</option>
+  683: <option value="gold">Kraliyet / Altın</option>
+  691: <label className="block text-[10px] text-slate-400 font-bold mb-0.5">Oda Başlığı</label>
+  694: placeholder="Örn: Ağlarla Kaplanmış Örümcek Mahzeni"
+  704: placeholder="Odaya girildiğinde oyunculara okunacak hikaye ve çevre tasviri..."
+  718: <span>Odaya Doğacak Canavarlar ({formMonsters.length})</span>
+  726: title="Gizli Kasandaki özel resimli tokenı seç"
+  761: Henüz canavar eklenmedi. Yukarıdan Gizli Kasanızdaki yaratıklardan seçebilirsiniz!
+  834: title="Kaldır"
+  853: <span>Gizli Tuzak Ayarları</span>
+  859: title="Gizli Kasandan tuzak tokenı seç"
+  862: <span>Kasadan Seç</span>
+  894: placeholder="Tuzak Adı"
+  903: placeholder="DC (Örn: DC 13 Pasif Algı)"
+  911: placeholder="Tuzak Etkisi / Hasarı"
+  923: <span>Hazine Sandığı & Ganimet</span>
+  929: title="Gizli Kasandan sandık/eşya tokenı seç"
+  932: <span>Kasadan Seç</span>
+  964: placeholder="Sandık Adı"
+  972: <span className="text-[10px] text-amber-400 font-bold shrink-0">💰 Altın:</span>
+  975: placeholder="Altın Miktarı"
+  984: placeholder="Eşyalar (Virgülle ayırın)"
+  999: {editingPresetId ? 'Değişiklikleri Kaydet' : 'Temayı Kaydet'}
+  1006: İptal
+  1037: title="Düzenle"
+  1045: if (window.confirm('"' + preset.name + '" temasını silmek istediğinize emin misiniz?')) {
+  1066: {/* POPUP: GİZLİ KASADAN TOKEN SEÇİCİ (CANAVAR, TUZAK VEYA SANDIK) */}
+  1080: {vaultPickerTarget === 'monster' ? 'Gizli Kasadan Canavar Seçin' : vaultPickerTarget === 'trap' ? 'Gizli Kasadan Tuzak Tokenı Seçin' : 'Gizli Kasadan Hazine Sandığı Seçin'}
+  1092: Gizli Kasanızda hazırladığınız tokenlardan birine tıklayarak {vaultPickerTarget === 'monster' ? 'canavara' : vaultPickerTarget === 'trap' ? 'tuzağa' : 'sandığa'} bağlayabilirsiniz:
+  1099: Gizli Kasanızda henüz kayıtlı token yok. Alt kısımdaki Gizli Kasa çekmecesinden yeni tokenlar ekleyebilirsiniz!
+  1123: {vt.type === 'monster' ? '👾 Canavar' : vt.type === 'item' ? '📦 Eşya / Sandık' : vt.type === 'trap' ? '⚠️ Tuzak' : 'Karakter'}
+  1133: Seç
+=== SessionManagerModal.tsx (28 lines) ===
+  58: showNotice('"' + newSessionName.trim() + '" oturumu oluşturuldu ve açıldı!');
+  68: showNotice('Oturum adı güncellendi.');
+  109: showNotice('"' + session.name + '" oturum yedeği (tüm şablonlar ve referanslarla) indirildi.');
+  121: showNotice('Yedek oturum başarıyla içe aktarıldı!');
+  123: alert('Geçersiz oturum yedek dosyası!');
+  150: Farklı arkadaş gruplarınız veya ayrı maceralarınız için bağımsız oturumlar.
+  167: title="JSON Yedek Dosyasından Oturum Yükle"
+  193: <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider block">Şu An Oynanan Aktif Oturum</span>
+  200: <span>Canlıda</span>
+  222: <span>+ Yeni Oturum / Kampanya Başlat</span>
+  229: <span>Yeni Oturum Oluştur</span>
+  241: <label className="block text-[10px] text-slate-400 font-bold mb-1">Oturum / Grup Adı</label>
+  244: placeholder="Örn: 2. Arkadaş Grubu - Ravenloft Macerası"
+  268: <span className="font-bold text-xs">✨ Sıfırdan Boş Harita</span>
+  270: <span className="text-[10px] text-slate-400 pl-5">Yeni zindan odaları oluşturabileceğiniz temiz bir sayfa açar.</span>
+  286: <span className="font-bold text-xs">📋 Mevcut Haritayı Kopyala</span>
+  288: <span className="text-[10px] text-slate-400 pl-5">Şu anki odaları ve katmanları yeni oturuma kopyalayarak başlar.</span>
+  297: Oturumu Oluştur & Aç
+  304: İptal
+  313: <span>Kayıtlı Oturumlar ({(sessions || []).length})</span>
+  391: <span>{pageCount} Çizim Sayfası</span>
+  405: showNotice('"' + session.name + '" oturumuna geçiş yapıldı!');
+  410: <span>Oturumu Aç</span>
+  415: <span>Açık</span>
+  426: title="Oturum Adını Değiştir"
+  435: showNotice('Oturum klonlandı.');
+  447: title="JSON Yedek İndir"
+  456: if (window.confirm('"' + session.name + '" oturumunu kalıcı olarak silmek istediğinize emin misiniz?')) {
+=== RoomTemplates.tsx (24 lines) ===
+  34: const [customName, setCustomName] = useState('Yeni Zindan Odası');
+  72: name: customName.trim() || 'Özel Oda',
+  94: <span>Zindan & Oda Editörü</span>
+  108: <span className="text-slate-300 font-medium">Savaş Sisi (Fog of War):</span>
+  113: title="Tüm odaları görünür yap"
+  116: <span>Hepsini Aç</span>
+  121: title="Tüm odaları karanlığa bürü"
+  151: ☀️ Açık (Görünür)
+  160: Hazır Zindan Odası Şablonları
+  194: <h4 className="text-slate-300 font-semibold text-xs">Özel Boyutlu Oda Yarat</h4>
+  197: <label className="block text-slate-500 text-[10px] mb-1">Oda İsmi</label>
+  208: <label className="block text-slate-500 text-[10px] mb-1">Genişlik (Grid): {customWidth}</label>
+  219: <label className="block text-slate-500 text-[10px] mb-1">Yükseklik (Grid): {customHeight}</label>
+  232: <label className="block text-slate-500 text-[10px] mb-1">Zemin Teması</label>
+  235: { id: 'stone', label: 'Taş', icon: Castle },
+  238: { id: 'nature', label: 'Doğa', icon: Trees },
+  239: { id: 'gold', label: 'Altın', icon: Coins },
+  259: <label className="block text-slate-400 text-[10px] font-bold">🖼️ Oda Zemin Görseli (İsteğe Bağlı)</label>
+  268: Kaldır
+  295: <span>Resim Seç</span>
+  316: <span className="text-rose-300 font-bold block">🎯 Oluşum (Doğuş) Noktası Yap</span>
+  325: <span>Haritaya Yerleştir</span>
+  353: title={room.isRevealed ? 'Görünür (Sisi Kapat)' : 'Gizli (Sisi Aç)'}
+  361: title="Odayı Sil"
+=== MultiplayerModal.tsx (12 lines) ===
+  75: setJoinError('Oda başlatılırken bir hata oluştu: ' + (err?.message || err));
+  91: setJoinError("Odaya bağlanılamadı. Oda kodunu kontrol edin veya DM'in odada olduğundan emin olun.");
+  240: placeholder="Oyuncu İsmi / Unvanı..."
+  241: title="DM: Oyuncunun ismini buradan değiştirebilirsiniz"
+  273: title="Oyuncunun Çizim Tahtasını kullanabilmesini sağlar"
+  301: <span>DM'in Odasına Bağlandınız ({roomId})</span>
+  304: Zindan Efendisinin (DM) yaptığı tüm hareketler, sis açılışları ve can barları anlık olarak ekranınıza yansıyor.
+  310: Odadan Ayrıl
+  322: <span>{isJoining ? 'Oda Başlatılıyor...' : '🚀 Yeni Çok Oyunculu Oda Başlat (DM)'}</span>
+  327: <span className="font-bold text-slate-300 text-xs">Veya Bir Odaya Katıl:</span>
+  331: placeholder="Oda Kodu (Örn: lamba-4829)"
+  341: Katıl
+=== DoodleToAssetModal.tsx (50 lines) ===
+  789: const finalName = assetName.trim() || (assetType === 'monster' ? 'Gölge Yaratık' : assetType === 'hero' ? 'Yeni Kahraman' : 'Büyülü Eşya');
+  808: { id: `attr-${Date.now()}`, name: 'Para / Altın', type: 'number', value: 0, isPublic: true }
+  827: <span>Sihirli Varlık Stüdyosu (Çiz / Yükle & Oluştur)</span>
+  849: title="Fırça"
+  863: title="Boya Kovası"
+  870: title="Düz Çizgi"
+  877: title="Dikdörtgen"
+  891: title="Yön Oku (➔)"
+  898: title="Üçgen (🔺)"
+  905: title="Yıldız (⭐)"
+  917: title={isShapeFilled ? "Şekil Modu: İçi Dolu (Tıkla -> Çerçeve Yap)" : "Şekil Modu: İçi Boş Çerçeve (Tıkla -> Dolu Yap)"}
+  919: {isShapeFilled ? '⬛ Dolu' : '🔲 Boş'}
+  928: title="🔲 Kare Seçim (Seç, Kes, Kopyala & Yapıştır)"
+  940: title="Seçimi Kes (Ctrl + X)"
+  950: title="Seçimi Kopyala (Ctrl + C)"
+  960: title="Panodakini Yapıştır (Ctrl + V)"
+  963: <span className="hidden sm:inline">Yapıştır</span>
+  970: title="Seçili Alanı Sil (Delete / Backspace)"
+  973: <span>Alanı Sil</span>
+  992: title="İleri Al (Ctrl+Y)"
+  1009: title="Resim Yükle"
+  1016: title="PNG İndir"
+  1070: title="Sürükleyip Taşı"
+  1077: title="Sol Üstten Boyutlandır"
+  1082: title="Sağ Üstten Boyutlandır"
+  1087: title="Sol Alttan Boyutlandır"
+  1092: title="Sağ Alttan Boyutlandır"
+  1101: title="Döndürmek için tut ve çevir"
+  1116: title="90° Sola Döndür"
+  1124: title="90° Sağa Döndür"
+  1156: <span>Yapıştır</span>
+  1163: İptal
+  1208: <span>Varlık Kartını Oluştur</span>
+  1216: placeholder="Örn: Zehirli Mağara Örümceği, Ateş Büyücüsü..."
+  1225: <label className="block text-slate-400 font-bold mb-1">Varlık Türü</label>
+  1230: { id: 'item', label: 'Eşya / Sandık', icon: Package, color: 'text-amber-400 border-amber-500/50 bg-amber-950/30' },
+  1265: <option value={2}>2x2 (Büyük)</option>
+  1268: <option value="custom">⚙️ Özel Boyut (GxY)</option>
+  1285: <label className="block text-slate-400 font-bold mb-1">⚔️ İnisiyatif (DEX)</label>
+  1295: {/* Custom Dimensions Inputs (When Özel Boyut is selected) */}
+  1299: <label className="block text-[10px] text-amber-400 font-bold mb-0.5">Genişlik (Kare)</label>
+  1311: <label className="block text-[10px] text-amber-400 font-bold mb-0.5">Yükseklik (Kare)</label>
+  1329: placeholder="Özellikler, saldırı bonusları veya tuzak mekaniği..."
+  1359: 🗺️ Doğrudan Haritaya
+  1374: {isTemplate ? '📦 Şablon Varlık (Sonsuz Çağrılır)' : '🎯 Tek Seferlik Varlık (Varsayılan)'}
+  1378: ? 'Haritaya atılsa bile kasada kalır, sınırsız kopyalanır.'
+  1379: : 'Sahneye çağrıldığında kasadan haritaya taşınır.'}
+  1394: <span className="text-amber-300 font-bold block">🌫️ Sis İçinde Gizle</span>
+  1395: <span className="text-slate-400 text-[10px]">Sisli odalarda oyuncu ekranında görünmez.</span>
+  1407: <span>Varlığı Kaydet & Kullan</span>
+=== RoleplayBoard.tsx (17 lines) ===
+  59: setFormTitle('Yeni Görsel Kartı');
+  60: setFormDescription('Panodan yapıştırılan sahne görseli.');
+  194: İnternetten veya Discord'dan bir resim kopyalayıp buraya doğrudan <strong>Ctrl+V</strong> ile yapıştırabilir veya yukarıdan yeni görsel ekleyebilirsin.
+  229: <span>Yayında</span>
+  295: {editingCardId ? 'Sahne Kartını Düzenle' : 'Yeni Sahne / Görsel Kartı Ekle'}
+  304: <label className="block text-slate-400 mb-1">Görsel Başlığı</label>
+  307: placeholder="Örn: Sisli Orman Geçidi, Han Sahibi Durnan..."
+  322: { id: 'item', label: 'Eşya' },
+  341: <label className="block text-slate-400 mb-1">Resim (Dosya Yükle, URL veya Ctrl+V ile yapıştır)</label>
+  345: placeholder="Resim URL'si veya dosya yükleyin..."
+  355: <span>Seç</span>
+  367: <label className="block text-slate-400 mb-1">Oyunculara Açık Hikaye Betimlemesi</label>
+  369: placeholder="Bu mekan veya karakter hakkında oyunculara okunacak açıklama..."
+  379: <label className="block text-slate-400 mb-1">DM Gizli Notları (Sadece siz görürsünüz)</label>
+  381: placeholder="Örn: NPC aslında bir Doppelganger! Zindanın anahtarı cebinde."
+  396: <span>{editingCardId ? 'Güncelle' : 'Kartı Kaydet'}</span>
+  402: İptal
+=== SpotlightOverlay.tsx (2 lines) ===
+  30: <span className="uppercase text-xs">Canlı Yayın Sinematik Görünümü</span>
+  58: <span>{currentHandout.category === 'npc' ? 'Karakter / NPC' : currentHandout.category === 'location' ? 'Mekan & Ortam' : 'Ferman / İpucu'}</span>
+=== RulebookModal.tsx (26 lines) ===
+  59: title: 'Görev & Envanter Notlarım',
+  60: content: '• Kasabadaki demirciden kılıç teslim alınacak.\n• Handaki gizemli yabancıyı araştır.\n• 25 Altın, 3 Sağlık İksiri.',
+  160: ? 'DM tarafından yönetilen ve tüm oyuncuların canlı gördüğü ortak kurallar'
+  161: : 'Sadece senin tarayıcına özel gizli kişisel notların'}
+  177: <span>📜 Ortak DM Kuralları</span>
+  189: <span>📝 Kişisel Notlarım</span>
+  233: <span>DM Tarafından Yayınlanıyor (Salt Okunur)</span>
+  260: {activeScope === 'dm' ? `Yazılar (${filteredDmNotes.length})` : `Notlarım (${filteredPersonalNotes.length})`}
+  284: Bu kategoride henüz kural/not yok.
+  317: Henüz kişisel not eklemedin.
+  354: {activeScope === 'dm' ? 'Yeni DM Kuralı & Kampanya Notu' : 'Yeni Kişisel Not Oluştur'}
+  357: <label className="block text-slate-400 mb-1 font-bold">Başlık</label>
+  360: placeholder="Örn: Görünmezlik Kuralı veya Gizli İpucu..."
+  368: <label className="block text-slate-400 mb-1 font-bold">İçerik & Açıklama</label>
+  370: placeholder="Kuralları, zar zorluklarını veya kişisel notlarını buraya yaz..."
+  383: İptal
+  391: <span>Kaydet & Yayınla</span>
+  401: <span className="text-[10px] text-slate-500">Son Güncelleme: {activeDmNote.updatedAt}</span>
+  414: <span>Düzenle</span>
+  434: <button onClick={() => setIsEditing(false)} className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-xl">İptal</button>
+  442: Değişiklikleri Kaydet
+  455: <span>Görüntülemek için soldan bir kural veya yazı seçin.</span>
+  464: <span className="text-[10px] text-slate-500">Kişisel Not • {activePersonalNote.updatedAt}</span>
+  476: <span>Düzenle</span>
+  495: <button onClick={() => setIsEditing(false)} className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-xl">İptal</button>
+  513: <span>Kişisel notların bu tarayıcıya özel olarak saklanır.</span>
+=== LayerSelector.tsx (6 lines) ===
+  21: { id: 'dungeon-stone', name: 'Zindan Taşı', icon: '🪨', previewColor: '#1e293b' },
+  22: { id: 'grass-forest', name: 'Çimen & Orman', icon: '🌲', previewColor: '#064e3b' },
+  23: { id: 'wood-planks', name: 'Ahşap Döşeme', icon: '🪵', previewColor: '#451a03' },
+  24: { id: 'parchment', name: 'Antik Parşömen', icon: '📜', previewColor: '#78350f' },
+  25: { id: 'cave-rock', name: 'Mağara & Volkan', icon: '🌋', previewColor: '#3b0764' },
+  258: {currentLayer.name} - Zemin Arka Planı
+=== Toolbar.tsx (1 lines) ===
+  116: <span>İleri Al</span>
+=== TopNavbar.tsx (2 lines) ===
+  102: {/* Unified Scene Switcher Dropdown (Harita / Tahta / Görseller) */}
+  312: title={language === 'tr' ? 'Switch to English (EN)' : "Türkçe'ye Geç (TR)"}
+=== WheelOfFortuneModal.tsx (14 lines) ===
+  244: alert('Çarkta en az 2 seçenek bulunmalıdır.');
+  253: const title = window.prompt('Yeni Çark Taslağının Başlığı:', 'Yeni Şans Çarkı');
+  258: { id: '1', text: 'Seçenek A', color: '#3b82f6', weight: 5 },
+  259: { id: '2', text: 'Seçenek B', color: '#ef4444', weight: 5 },
+  260: { id: '3', text: 'Seçenek C', color: '#eab308', weight: 5 },
+  261: { id: '4', text: 'Seçenek D', color: '#10b981', weight: 5 },
+  280: <span>{activePreset?.title || 'Şans Çarkı'}</span>
+  286: <span>Sonuç: {winnerSlice.text}</span>
+  319: <span>Çark Taslakları</span>
+  353: "{searchQuery}" ile eşleşen çark bulunamadı.
+  369: <span className="text-[10px] opacity-70 font-mono">({preset.slices.length} Seçenek)</span>
+  425: placeholder="Yeni seçenek yazısı..."
+  448: if (window.confirm('Bu çark taslağını silmek istediğinize emin misiniz?')) {
+  455: <span>Bu Çark Taslağını Sil</span>
+=== WhiteboardScene.tsx (82 lines) ===
+  606: const defaultName = `Çizim ${new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`;
+  607: const assetName = window.prompt('Referans Kasası için Görsel Adı:', defaultName);
+  612: category: 'Çizimler',
+  724: const text = window.prompt('Tuvale yazılacak metni girin:');
+  953: if (window.confirm(`"${currentPage?.name || 'Mevcut'}" sayfasını tamamen sıfırlamak istediğinize emin misiniz? (Tüm çizimler temizlenir)`)) {
+  1044: name: newAssetName.trim() || 'Yeni Referans Görseli',
+  1116: title="Sürükleyip Taşı"
+  1123: title="Sol Üstten Boyutlandır"
+  1128: title="Sağ Üstten Boyutlandır"
+  1133: title="Sol Alttan Boyutlandır"
+  1138: title="Sağ Alttan Boyutlandır"
+  1152: title="Döndürmek için tut ve çevir"
+  1167: title="90° Sola Döndür"
+  1175: title="90° Sağa Döndür"
+  1203: title="Seçili Alanı Referans Görsel Kasasına Kaydet"
+  1212: title="Seçili Alanı Sil (Delete / Backspace)"
+  1215: <span>Alanı Sil</span>
+  1225: <span>Yapıştır</span>
+  1232: İptal
+  1266: title="Vurgulayıcı / Fosforlu Kalem"
+  1286: title="🪣 Boya Kovası (Alanı Renge Doldur / Flood Fill)"
+  1301: title="Temel Şekiller Menüsü"
+  1310: <span className="text-[11px] hidden sm:inline">Şekil</span>
+  1320: <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1">Temel Şekiller</div>
+  1325: title="Düz Çizgi"
+  1328: <span className="text-[9px]">Çizgi</span>
+  1333: title="Yön Oku"
+  1341: title="Kare / Dikdörtgen"
+  1349: title="Daire / Çember"
+  1357: title="Üçgen"
+  1360: <span className="text-[9px]">Üçgen</span>
+  1365: title="Yıldız"
+  1368: <span className="text-[9px]">Yıldız</span>
+  1381: {isShapeFilled ? '⬛ İçi Dolu Şekiller' : '🔲 İçi Boş Çerçeve'}
+  1404: title="🔲 Kare Seçim (Seç, Kes, Kopyala & Yapıştır)"
+  1414: title="Kaydır (Pan)"
+  1444: title="Seçili Alanı Referans Görsel Kasasına Kaydet"
+  1452: title="Seçili Alanı Sil (Delete / Backspace)"
+  1463: title="Yapıştır (Ctrl+V)"
+  1466: <span>Yapıştır</span>
+  1476: name: 'Yeni Can Barı / Hedef',
+  1487: title="Tuvale İnteraktif Can Barı Ekle"
+  1490: <span className="hidden md:inline">Can Barı</span>
+  1532: <option value="parchment">📜 Parşömen</option>
+  1549: title="İleri Al (Ctrl+Y)"
+  1564: title="Referans Görsel Kasası"
+  1577: title="Tahta Sayfaları / Katmanları"
+  1598: title="Çizim tahtasındaki resmi alıp yeni bir Token / Varlık oluşturun"
+  1648: title="Katman Menüsünü Ekranda İstediğin Yere Sürükle"
+  1663: Tahta Katmanı
+  1684: <span>Çizim Tahtası Sayfaları</span>
+  1733: title="İptal"
+  1743: {page.dataUrl ? '🎨 Çizim Var' : '📄 Boş Sayfa'}
+  1755: title="İsmi Düzenle"
+  1763: if (window.confirm(`"${page.name}" sayfasını silmek istediğinize emin misiniz?`)) {
+  1768: title="Sayfayı Sil"
+  1787: placeholder="Örn: Şehir Haritası, Savaş Planı, Notlar..."
+  1805: İptal
+  1818: <span>+ Yeni Tahta Sayfası / Katman Ekle</span>
+  1827: {/* BOTTOM REFERENCE & ASSET VAULT DRAWER (Gizli Kasa Mantığı) */}
+  1843: <span>🖼️ Referans & Görsel Kasası</span>
+  1865: placeholder="Görsel veya kategori ara..."
+  1882: Tümü
+  1925: title="Dosya Yükle"
+  1928: <span>Dosya Yükle</span>
+  1948: placeholder="Görsel Başlığı..."
+  1955: placeholder="Kategori (Örn: Haritalar, Bosslar...)"
+  1962: placeholder="Görsel URL'si yapıştırın..."
+  1980: İptal
+  1990: Henüz bu kategoride referans görseli yok. Yukarıdan ekleyebilirsin!
+  2002: title="Tuvale sürükle veya tıkla"
+  2025: if (window.confirm(`"${asset.name}" görselini kasadan silmek istediğinize emin misiniz?`)) {
+  2040: 💡 İpucu: Görselleri doğrudan çizim tahtasına sürükleyip bırakabilir veya üzerine tıklayarak tuvale ekleyebilirsin.
+  2084: title="Can Barını Sürükle"
+  2098: placeholder="Can Barı Adı..."
+  2118: title="Renk Değiştir"
+  2127: title={bar.isPublic === false ? "Oyuncudan Gizli (Tıkla -> Göster)" : "Oyunculara Açık (Tıkla -> Gizle)"}
+  2136: title="Can Barını Sil"
+  2162: {isDead ? '💀 YENİLDİ' : `%${pct}`}
+  2218: title="1 İyileşme"
+  2225: title="5 İyileşme"
+  2232: title="10 İyileşme"

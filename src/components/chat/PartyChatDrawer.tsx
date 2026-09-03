@@ -163,7 +163,7 @@ export const PartyChatDrawer: React.FC = () => {
             <option value="DM">{t('chat.whisperDm')}</option>
           ) : (
             connectedPlayers.map((p) => (
-              <option key={p.id} value={p.id}>🤫 {p.name}'e Fısılda</option>
+              <option key={p.id} value={p.id}>{t('chat.whisperTo', { name: p.name })}</option>
             ))
           )}
         </select>
@@ -219,7 +219,7 @@ export const PartyChatDrawer: React.FC = () => {
       <form onSubmit={handleSend} className="p-2.5 bg-slate-950 border-t border-slate-800 flex items-center gap-2 shrink-0">
         <input
           type="text"
-          placeholder={recipient === 'all' ? "Mesajınızı yazın..." : ('🤫 ' + (recipient === 'DM' ? 'DM' : 'Oyuncu') + "'e fısıldayın...")}
+          placeholder={t('chat.placeholder')}
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
           className="flex-1 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-slate-100 text-xs focus:outline-none focus:border-amber-500"

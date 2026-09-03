@@ -108,16 +108,16 @@ export const InitiativeTracker: React.FC = () => {
               <button
                 onClick={handleAddTokensFromMap}
                 className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs flex items-center gap-1 border border-slate-700 cursor-pointer"
-                title="Haritadaki tüm tokenları savaşa ekle"
+                title={t("combat.pullFromMap")}
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Haritadan Çek</span>
+                <span>{t("combat.pullFromMap")}</span>
               </button>
 
               <button
                 onClick={handleRollAll}
                 className="px-2.5 py-1 bg-purple-950 hover:bg-purple-900 text-purple-300 font-bold rounded-xl text-xs flex items-center gap-1 border border-purple-700 cursor-pointer"
-                title="Herkes için 1d20 zar at"
+                title={t("combat.rollAll")}
               >
                 <Dices className="w-3.5 h-3.5" />
                 <span>{t('combat.rollAll')}</span>
@@ -135,7 +135,7 @@ export const InitiativeTracker: React.FC = () => {
               <button
                 onClick={() => { setInitiativeList([]); setCurrentTurnIndex(0); setRoundNumber(1); }}
                 className="p-1.5 text-slate-500 hover:text-rose-400 rounded-xl hover:bg-slate-800 cursor-pointer"
-                title="Savaşı Bitir / Sıfırla"
+                title={t("combat.clear")}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>

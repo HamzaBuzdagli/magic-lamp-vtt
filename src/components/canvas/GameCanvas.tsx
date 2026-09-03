@@ -1598,7 +1598,7 @@ export const GameCanvas: React.FC = () => {
                 title="Token'ı haritadan gizler ve alttaki gizli DM kasasına taşır."
               >
                 <EyeOff className="w-4 h-4" />
-                <span>🎭 Sahne Arkasına At (Gizle)</span>
+                <span>{t('tokenMenu.backstage')}</span>
               </button>
 
               <button
@@ -1722,7 +1722,7 @@ export const GameCanvas: React.FC = () => {
             className="w-full px-2 py-1.5 text-left text-slate-200 hover:bg-slate-800 rounded-lg flex items-center gap-2 transition-colors font-medium cursor-pointer"
           >
             <Copy className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-            <span>Klonla / Çoğalt</span>
+            <span>{t('tokenMenu.clone')}</span>
           </button>
 
           {/* Toggle Hidden from Players */}
@@ -1738,7 +1738,7 @@ export const GameCanvas: React.FC = () => {
             {tokenContextMenu.token.hiddenFromPlayers ? (
               <>
                 <Eye className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>Oyunculara Göster</span>
+                <span>{t('tokenMenu.revealPlayer')}</span>
               </>
             ) : (
               <>
@@ -1801,7 +1801,7 @@ export const GameCanvas: React.FC = () => {
                 title="İki oda arasına koridor çek"
               >
                 <Link className="w-3.5 h-3.5" />
-                <span>Odaları Bağla</span>
+                <span>{t('roomMenu.connect')}</span>
               </button>
             ) : (
               <button
@@ -1810,7 +1810,7 @@ export const GameCanvas: React.FC = () => {
                 title="İki oda arasındaki koridoru kes"
               >
                 <Unlink className="w-3.5 h-3.5" />
-                <span>Bağlantıyı Kes</span>
+                <span>{t('roomMenu.disconnect')}</span>
               </button>
             )}
           </div>
@@ -1843,7 +1843,7 @@ export const GameCanvas: React.FC = () => {
                   className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-amber-500/20 text-amber-300 font-bold flex items-center gap-2 cursor-pointer"
                 >
                   <Link className="w-3.5 h-3.5" />
-                  <span>Odaları Bağla (Koridor Çek)</span>
+                  <span>{t('roomMenu.connect')}</span>
                 </button>
               ) : (
                 <button
@@ -1854,7 +1854,7 @@ export const GameCanvas: React.FC = () => {
                   className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-rose-500/20 text-rose-300 font-bold flex items-center gap-2 cursor-pointer"
                 >
                   <Unlink className="w-3.5 h-3.5" />
-                  <span>Bağlantıyı Ayır / Kes</span>
+                  <span>{t('roomMenu.disconnect')}</span>
                 </button>
               )}
             </>
@@ -1873,7 +1873,7 @@ export const GameCanvas: React.FC = () => {
                 className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-amber-500/20 text-amber-300 font-bold flex items-center gap-2 cursor-pointer"
               >
                 <Link className="w-3.5 h-3.5" />
-                <span>Seçili Odaları Sırayla Bağla</span>
+                <span>{t('roomMenu.connectSeq')}</span>
               </button>
 
               <button
@@ -1888,7 +1888,7 @@ export const GameCanvas: React.FC = () => {
                 className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-rose-500/20 text-rose-300 font-bold flex items-center gap-2 cursor-pointer"
               >
                 <Unlink className="w-3.5 h-3.5" />
-                <span>Tüm Bağlantıları Kes</span>
+                <span>{t('roomMenu.disconnectAll')}</span>
               </button>
             </>
           )}
@@ -1903,7 +1903,7 @@ export const GameCanvas: React.FC = () => {
               className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2 cursor-pointer"
             >
               <Copy className="w-3.5 h-3.5 text-blue-400" />
-              <span>Oda(ları) Kopyala (Ctrl+C)</span>
+              <span>{t('roomMenu.copy')}</span>
             </button>
           )}
 
@@ -1924,7 +1924,7 @@ export const GameCanvas: React.FC = () => {
               className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2 cursor-pointer"
             >
               <Clipboard className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Odaları Yapıştır (Ctrl+V)</span>
+              <span>{t('roomMenu.paste')}</span>
             </button>
           )}
 
@@ -1938,7 +1938,7 @@ export const GameCanvas: React.FC = () => {
               className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2 cursor-pointer"
             >
               <Edit3 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Odayı Düzenle & Yazı Yaz</span>
+              <span>{t('roomMenu.edit')}</span>
             </button>
           )}
 
@@ -1952,7 +1952,7 @@ export const GameCanvas: React.FC = () => {
               className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-rose-950/60 text-rose-300 font-medium flex items-center gap-2 cursor-pointer border-t border-slate-800 pt-1.5 mt-1"
             >
               <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-              <span>Seçili Oda(ları) Sil</span>
+              <span>{t('roomMenu.delete')}</span>
             </button>
           )}
         </div>
@@ -1974,7 +1974,7 @@ export const GameCanvas: React.FC = () => {
 
             {/* Room Name */}
             <div>
-              <label className="block text-slate-400 mb-1">Oda Başlığı</label>
+              <label className="block text-slate-400 mb-1">{t('roomMenu.title')}</label>
               <input
                 type="text"
                 value={activeInspectorRoom.name}
@@ -1985,10 +1985,10 @@ export const GameCanvas: React.FC = () => {
 
             {/* Floor Visual Label */}
             <div>
-              <label className="block text-slate-400 mb-1">Zeminde Gözükecek Yazı (Floor Label)</label>
+              <label className="block text-slate-400 mb-1">{t('roomMenu.floorLabel')}</label>
               <input
                 type="text"
-                placeholder="Örn: ⚠️ Tuzaklı Zemin / Kadim Kütüphane / Boss Alanı"
+                placeholder={t('roomMenu.floorLabelPlaceholder')}
                 value={activeInspectorRoom.label || ''}
                 onChange={(e) => updateRoom(activeInspectorRoom.id, { label: e.target.value })}
                 className="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-amber-300 font-bold focus:outline-none focus:border-amber-500"
@@ -2002,7 +2002,7 @@ export const GameCanvas: React.FC = () => {
                   className="accent-amber-500 rounded cursor-pointer"
                 />
                 <label htmlFor="notePublic" className="text-[11px] text-slate-400 cursor-pointer">
-                  Bu zemin yazısını oyuncular da görsün
+                  {t('roomMenu.floorLabelPublic')}
                 </label>
               </div>
             </div>
@@ -2025,9 +2025,9 @@ export const GameCanvas: React.FC = () => {
 
             {/* Room Story Notes */}
             <div>
-              <label className="block text-slate-400 mb-1">DM Hikaye Açıklaması / Gizli Notlar</label>
+              <label className="block text-slate-400 mb-1">{t('roomMenu.dmNotes')}</label>
               <textarea
-                placeholder="Odaya girildiğinde yapılacak betimleme veya tuzak notları..."
+                placeholder={t('roomMenu.dmNotesPlaceholder')}
                 value={activeInspectorRoom.notes || ''}
                 onChange={(e) => updateRoom(activeInspectorRoom.id, { notes: e.target.value })}
                 rows={3}
@@ -2111,15 +2111,15 @@ export const GameCanvas: React.FC = () => {
                 className="w-4 h-4 rounded accent-rose-500 cursor-pointer"
               />
               <div>
-                <span className="text-rose-300 font-bold block">🎯 Doğuş / Oluşum Noktası</span>
-                <span className="text-slate-400 text-[10px]">Gizli kasadan çağrılan varlıklar bu odanın merkezine doğar.</span>
+                <span className="text-rose-300 font-bold block">{t('roomMenu.spawnTitle')}</span>
+                <span className="text-slate-400 text-[10px]">{t('roomMenu.spawnSub')}</span>
               </div>
             </label>
 
             {/* Theme & Size */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-slate-400 mb-1">Genişlik x Yükseklik</label>
+                <label className="block text-slate-400 mb-1">{t('roomMenu.dimensions')}</label>
                 <div className="flex items-center gap-2 font-mono">
                   <input
                     type="number"
@@ -2142,17 +2142,17 @@ export const GameCanvas: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">Zemin Teması</label>
+                <label className="block text-slate-400 mb-1">{t('roomMenu.theme')}</label>
                 <select
                   value={activeInspectorRoom.theme}
                   onChange={(e) => updateRoom(activeInspectorRoom.id, { theme: e.target.value as DungeonRoom['theme'] })}
                   className="w-full px-2 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-slate-300 cursor-pointer"
                 >
-                  <option value="stone">Taş Zemin</option>
+                  <option value="stone">{t('roomMenu.themeStone')}</option>
                   <option value="crypt">Mahzen (Crypt)</option>
-                  <option value="magma">Lav Akıntısı</option>
-                  <option value="nature">Sarmaşık / Doğa</option>
-                  <option value="gold">Altın / Mermer</option>
+                  <option value="magma">{t('roomMenu.themeMagma')}</option>
+                  <option value="nature">{t('roomMenu.themeNature')}</option>
+                  <option value="gold">{t('roomMenu.themeGold')}</option>
                 </select>
               </div>
             </div>
@@ -2168,7 +2168,7 @@ export const GameCanvas: React.FC = () => {
                 }`}
               >
                 {activeInspectorRoom.isRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                <span>{activeInspectorRoom.isRevealed ? 'Sisi Kapat' : 'Sisi Aç (Görünür Yap)'}</span>
+                <span>{activeInspectorRoom.isRevealed ? t('roomMenu.hideFog') : t('roomMenu.revealFog')}</span>
               </button>
 
               <button
@@ -2176,7 +2176,7 @@ export const GameCanvas: React.FC = () => {
                 className="px-3 py-1.5 bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-800 rounded-lg font-semibold flex items-center gap-1.5 cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Odayı Sil</span>
+                <span>{t('roomMenu.delete')}</span>
               </button>
             </div>
           </div>
