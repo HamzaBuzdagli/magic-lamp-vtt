@@ -687,15 +687,97 @@ export const WhiteboardScene: React.FC = () => {
     };
   };
 
-  // Start Transform on handle or body
+  // Start Transform on handle or body (Drag-and-Hold)
   const startTransform = (e: React.MouseEvent, mode: TransformMode) => {
     e.stopPropagation();
+    e.preventDefault();
     if (!floatingStamp) return;
     const { x, y } = getCanvasCoords(e);
     setTransformMode(mode);
     setStartTransformPos({ x, y });
     setStartStampState({ ...floatingStamp });
   };
+
+  // Global window listener: Drag-and-Hold for resize, move, and rotate
+  useEffect(() => {
+    if (transformMode === 'none') return;
+
+    const handleGlobalMove = (e: MouseEvent | PointerEvent) => {
+      const canvas = canvasRef.current;
+      if (!canvas || !startStampState) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.round(e.clientX - rect.left);
+      const y = Math.round(e.clientY - rect.top);
+
+      const dx = x - startTransformPos.x;
+      const dy = y - startTransformPos.y;
+
+      if (transformMode === 'move') {
+        setFloatingStamp(prev => prev ? ({
+          ...prev,
+          x: Math.round(startStampState.x + dx),
+          y: Math.round(startStampState.y + dy),
+        }) : null);
+      } else if (transformMode === 'resize-se') {
+        setFloatingStamp(prev => prev ? ({
+          ...prev,
+          w: Math.max(24, Math.round(startStampState.w + dx)),
+          h: Math.max(24, Math.round(startStampState.h + dy)),
+        }) : null);
+      } else if (transformMode === 'resize-sw') {
+        const newW = Math.max(24, Math.round(startStampState.w - dx));
+        setFloatingStamp(prev => prev ? ({
+          ...prev,
+          x: Math.round(startStampState.x + (startStampState.w - newW)),
+          w: newW,
+          h: Math.max(24, Math.round(startStampState.h + dy)),
+        }) : null);
+      } else if (transformMode === 'resize-ne') {
+        const newH = Math.max(24, Math.round(startStampState.h - dy));
+        setFloatingStamp(prev => prev ? ({
+          ...prev,
+          y: Math.round(startStampState.y + (startStampState.h - newH)),
+          w: Math.max(24, Math.round(startStampState.w + dx)),
+          h: newH,
+        }) : null);
+      } else if (transformMode === 'resize-nw') {
+        const newW = Math.max(24, Math.round(startStampState.w - dx));
+        const newH = Math.max(24, Math.round(startStampState.h - dy));
+        setFloatingStamp(prev => prev ? ({
+          ...prev,
+          x: Math.round(startStampState.x + (startStampState.w - newW)),
+          y: Math.round(startStampState.y + (startStampState.h - newH)),
+          w: newW,
+          h: newH,
+        }) : null);
+      } else if (transformMode === 'rotate') {
+        const cx = startStampState.x + startStampState.w / 2;
+        const cy = startStampState.y + startStampState.h / 2;
+        const rad = Math.atan2(y - cy, x - cx);
+        let deg = Math.round((rad * 180) / Math.PI + 90);
+        deg = (deg + 360) % 360;
+        setFloatingStamp(prev => prev ? ({
+          ...prev,
+          rotation: deg,
+        }) : null);
+      }
+    };
+
+    const handleGlobalUp = () => {
+      setTransformMode('none');
+    };
+
+    window.addEventListener('pointermove', handleGlobalMove);
+    window.addEventListener('pointerup', handleGlobalUp);
+    window.addEventListener('mousemove', handleGlobalMove);
+    window.addEventListener('mouseup', handleGlobalUp);
+    return () => {
+      window.removeEventListener('pointermove', handleGlobalMove);
+      window.removeEventListener('pointerup', handleGlobalUp);
+      window.removeEventListener('mousemove', handleGlobalMove);
+      window.removeEventListener('mouseup', handleGlobalUp);
+    };
+  }, [transformMode, startTransformPos, startStampState]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target !== canvasRef.current) return;
@@ -1120,22 +1202,22 @@ export const WhiteboardScene: React.FC = () => {
           <div
             onMouseDown={(e) => startTransform(e, 'resize-nw')}
             className="absolute -top-2 -left-2 w-4 h-4 rounded-full bg-amber-400 border-2 border-slate-950 shadow-md cursor-nwse-resize hover:scale-125 transition-transform z-40"
-            title="Sol Üstten Boyutlandır"
+            title="Sol Üstten Boyutlandır (Basılı Tutup Sürükleyin)"
           />
           <div
             onMouseDown={(e) => startTransform(e, 'resize-ne')}
             className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-amber-400 border-2 border-slate-950 shadow-md cursor-nesw-resize hover:scale-125 transition-transform z-40"
-            title="Sağ Üstten Boyutlandır"
+            title="Sağ Üstten Boyutlandır (Basılı Tutup Sürükleyin)"
           />
           <div
             onMouseDown={(e) => startTransform(e, 'resize-sw')}
             className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-amber-400 border-2 border-slate-950 shadow-md cursor-nesw-resize hover:scale-125 transition-transform z-40"
-            title="Sol Alttan Boyutlandır"
+            title="Sol Alttan Boyutlandır (Basılı Tutup Sürükleyin)"
           />
           <div
             onMouseDown={(e) => startTransform(e, 'resize-se')}
             className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-amber-400 border-2 border-slate-950 shadow-md cursor-nwse-resize hover:scale-125 transition-transform z-40"
-            title="Sağ Alttan Boyutlandır"
+            title="Sağ Alttan Boyutlandır (Basılı Tutup Sürükleyin)"
           />
 
           {/* Adaptive Rotation Handle & Attached Action Bar (Below if near top) */}
