@@ -92,11 +92,11 @@ export const BackstageDrawer: React.FC = () => {
 
     if (!matchesSearch) return false;
 
-    if (activeFolder === 'Tümü') return true;
-    if (activeFolder === '🧟 Canavarlar') return token.folder === '🧟 Canavarlar' || token.type === 'monster';
-    if (activeFolder === '👑 Bosslar') return token.folder === '👑 Bosslar' || (token.size && token.size >= 2 && token.type === 'monster');
-    if (activeFolder === '📦 Eşyalar & Sandıklar') return token.folder === '📦 Eşyalar & Sandıklar' || token.type === 'item';
-    if (activeFolder === '🧝 NPC & Yoldaşlar') return token.folder === '🧝 NPC & Yoldaşlar' || token.type === 'npc' || token.type === 'hero';
+    if (activeFolder === 'Tümü' || activeFolder === 'All') return true;
+    if (activeFolder === '🧟 Canavarlar' || activeFolder === '🧟 Monsters') return token.folder === '🧟 Canavarlar' || token.folder === '🧟 Monsters' || token.type === 'monster';
+    if (activeFolder === '👑 Bosslar' || activeFolder === '👑 Bosses') return token.folder === '👑 Bosslar' || token.folder === '👑 Bosses' || (token.size && token.size >= 2 && token.type === 'monster');
+    if (activeFolder === '📦 Eşyalar & Sandıklar' || activeFolder === '📦 Items & Chests') return token.folder === '📦 Eşyalar & Sandıklar' || token.folder === '📦 Items & Chests' || token.type === 'item';
+    if (activeFolder === '🧝 NPC & Yoldaşlar' || activeFolder === '🧝 NPCs & Allies') return token.folder === '🧝 NPC & Yoldaşlar' || token.folder === '🧝 NPCs & Allies' || token.type === 'npc' || token.type === 'hero';
 
     return token.folder === activeFolder;
   });

@@ -146,12 +146,12 @@ export const RulebookModal: React.FC = () => {
                 {activeScope === 'dm' ? (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
                     <Globe className="w-3 h-3" />
-                    <span>Ortak DM Kuralları</span>
+                    <span>{t('rules.dmRules')}</span>
                   </span>
                 ) : (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1">
                     <User className="w-3 h-3" />
-                    <span>Kişisel Oyuncu Notları</span>
+                    <span>{t('rules.personalNotes')}</span>
                   </span>
                 )}
               </h2>
@@ -204,9 +204,9 @@ export const RulebookModal: React.FC = () => {
             <div className="flex items-center gap-1">
               {[
                 { id: 'rules', label: 'Temel Kurallar', icon: Shield },
-                { id: 'homebrew', label: 'Ev Kuralları', icon: Scroll },
-                { id: 'story', label: 'Hikaye Notları', icon: Sparkles },
-                { id: 'quests', label: 'Görev & Questler', icon: Target },
+                { id: 'homebrew', label: t('rules.homebrew'), icon: Scroll },
+                { id: 'story', label: t('rules.story'), icon: Sparkles },
+                { id: 'quests', label: t('rules.quests'), icon: Target },
               ].map((cat) => {
                 const Icon = cat.icon;
                 const isActive = activeCategory === cat.id;

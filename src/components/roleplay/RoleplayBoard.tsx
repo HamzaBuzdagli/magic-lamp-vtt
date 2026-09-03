@@ -132,11 +132,11 @@ export const RoleplayBoard: React.FC = () => {
         {/* Categories */}
         <div className="flex items-center gap-1.5 flex-wrap">
           {[
-            { id: 'all', label: 'Tümü', icon: Sparkles },
-            { id: 'location', label: 'Mekanlar & Manzaralar', icon: MapPin },
-            { id: 'npc', label: 'Karakter / NPC Portreleri', icon: User },
-            { id: 'handout', label: 'Fermanlar & Mektuplar', icon: Scroll },
-            { id: 'item', label: 'Eşyalar & İpuçları', icon: Package },
+            { id: 'all', label: t('roleplay.all'), icon: Sparkles },
+            { id: 'location', label: t('roleplay.locations'), icon: MapPin },
+            { id: 'npc', label: t('roleplay.npcs'), icon: User },
+            { id: 'handout', label: t('roleplay.letters'), icon: Scroll },
+            { id: 'item', label: t('roleplay.items'), icon: Package },
           ].map((cat) => {
             const Icon = cat.icon;
             const isActive = activeFilter === cat.id;
@@ -259,13 +259,13 @@ export const RoleplayBoard: React.FC = () => {
                         }`}
                       >
                         <Tv className="w-3.5 h-3.5" />
-                        <span>{isSpotlighted ? 'Yansıtmayı Bitir' : 'Yayına Yansıt'}</span>
+                        <span>{isSpotlighted ? t('roleplay.stopProject') : t('roleplay.project')}</span>
                       </button>
 
                       <button
                         onClick={() => startEdit(card)}
                         className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
-                        title="Düzenle"
+                        title={t("roleplay.edit")}
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>

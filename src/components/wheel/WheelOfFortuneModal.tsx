@@ -331,7 +331,7 @@ export const WheelOfFortuneModal: React.FC = () => {
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Çark veya seçenek ara..."
+                placeholder={t("wheel.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-8 pr-7 py-1.5 bg-slate-950 border border-slate-700/80 rounded-xl text-slate-200 text-xs focus:outline-none focus:border-amber-500 placeholder:text-slate-500"
@@ -378,7 +378,7 @@ export const WheelOfFortuneModal: React.FC = () => {
                   className="w-full py-2 bg-slate-950 hover:bg-slate-800 text-amber-400 border border-dashed border-amber-500/40 rounded-xl font-bold flex items-center justify-center gap-1 cursor-pointer mt-1"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Yeni Çark Taslağı Ekle</span>
+                  <span>{t("wheel.addNewPreset")}</span>
                 </button>
               )}
             </div>
@@ -387,7 +387,7 @@ export const WheelOfFortuneModal: React.FC = () => {
             {!isStreamerMode && activePreset && (
               <div className="pt-2 border-t border-slate-800 space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="block text-slate-400 font-bold">Çark Seçenekleri / Dilimler</label>
+                  <label className="block text-slate-400 font-bold">{t("wheel.optionsLabel")}</label>
                   <span className="text-[10px] text-slate-500 font-mono">({activePreset.slices.length} Dilim)</span>
                 </div>
                 

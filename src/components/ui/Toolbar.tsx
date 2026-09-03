@@ -92,7 +92,7 @@ export const Toolbar: React.FC = () => {
                 ? 'bg-slate-800 hover:bg-slate-700 text-amber-400 hover:text-white'
                 : 'bg-slate-900/50 text-slate-600 cursor-not-allowed opacity-50'
             }`}
-            title="Geri Al (Ctrl + Z)"
+            title={t("tool.undo")}
           >
             <Undo className="w-4 h-4" />
             <div className="absolute left-full ml-3 px-2.5 py-1 bg-slate-950 text-slate-200 text-[11px] font-semibold rounded-lg shadow-xl border border-slate-800 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 flex flex-col">
@@ -109,7 +109,7 @@ export const Toolbar: React.FC = () => {
                 ? 'bg-slate-800 hover:bg-slate-700 text-amber-400 hover:text-white'
                 : 'bg-slate-900/50 text-slate-600 cursor-not-allowed opacity-50'
             }`}
-            title="İleri Al (Ctrl + Y)"
+            title={t("tool.redo")}
           >
             <Redo className="w-4 h-4" />
             <div className="absolute left-full ml-3 px-2.5 py-1 bg-slate-950 text-slate-200 text-[11px] font-semibold rounded-lg shadow-xl border border-slate-800 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 flex flex-col">
@@ -130,7 +130,7 @@ export const Toolbar: React.FC = () => {
             ? 'bg-slate-800 text-amber-400 border border-amber-500/30'
             : 'bg-slate-800/40 text-slate-500 hover:text-slate-300'
         }`}
-        title="Grid Çizgilerini Aç / Kapat"
+        title={t("tool.grid")}
       >
         <Grid className="w-4 h-4" />
       </button>
@@ -156,7 +156,7 @@ export const Toolbar: React.FC = () => {
         <button
           onClick={clearDrawings}
           className="p-2.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-900 transition-colors cursor-pointer"
-          title="Tüm Çizimleri Temizle"
+          title={t("tool.clearDrawings")}
         >
           <Trash2 className="w-4 h-4" />
         </button>

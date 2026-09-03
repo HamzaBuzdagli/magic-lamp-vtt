@@ -61,6 +61,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'tool.drawSub': 'Canlı kalem',
     'tool.laser': 'Lazer İşaretleyici',
     'tool.laserSub': 'Yayında dikkat çek',
+    'tool.redo': 'İleri Al (Ctrl + Y)',
+    'tool.undo': 'Geri Al (Ctrl + Z)',
+    'tool.grid': 'Grid Çizgilerini Aç / Kapat',
+    'tool.clearDrawings': 'Tüm Çizimleri Temizle',
 
     // Layers & Backgrounds
     'layer.title': 'Katman / Kat',
@@ -76,6 +80,16 @@ export const translations: Record<Language, Record<string, string>> = {
     'layer.opacity': 'Yüklü Görsel Saydamlığı:',
     'layer.removeImage': 'Görseli Kaldır',
     'layer.save': 'Tamam & Kaydet',
+    'layer.editName': 'Kat Adını Düzenle',
+    'layer.delete': 'Katı Sil',
+    'layer.placeholder': 'Kat Adı (Örn: 2. Kat Zindan)',
+    'layer.stone': 'Zindan Taşı',
+    'layer.forest': 'Çimen & Orman',
+    'layer.wood': 'Ahşap Döşeme',
+    'layer.parchment': 'Antik Parşömen',
+    'layer.cave': 'Mağara & Volkan',
+    'layer.water': 'Okyanus / Deniz',
+    'layer.space': 'Derin Uzay',
 
     // Combat & Initiative
     'combat.title': '⚔️ Savaş İnisiyatif Sırası',
@@ -91,6 +105,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'combat.namePlaceholder': 'Savaşçı Adı...',
     'combat.initBonus': 'İnisiyatif Bonusu (+DEX)',
     'combat.pullFromMap': 'Haritadan Çek',
+    'combat.endConfirm': 'Savaşı bitirip inisiyatif sırasını sıfırlamak istediğine emin misin?',
 
     // Dice Roller
     'dice.title': 'Zar Masası (Sürüklenebilir)',
@@ -184,6 +199,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'wb.themeDark': 'Karanlık Tahta',
     'wb.themeGrid': 'Izgaralı Tahta',
     'wb.themeParchment': 'Parşömen',
+    'wb.rotateLeft': '90° Sola Döndür',
+    'wb.rotateRight': '90° Sağa Döndür',
 
     // Token Right Click Menu & Inspector
     'tokenMenu.initiative': '⚔️ Savaş Sırasına Ekle',
@@ -229,8 +246,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'rules.tabNotes': '📝 Özel Not Defteri',
     'rules.tabConditions': '🎭 Durumlar & Efektler',
     'rules.addNote': 'Yeni Not Ekle',
+    'rules.dmRules': 'Ortak DM Kuralları',
+    'rules.personalNotes': 'Kişisel Oyuncu Notları',
     'rules.noteTitlePlaceholder': 'Not Başlığı...',
     'rules.noteContentPlaceholder': 'Kuralları, zar zorluklarını veya kişisel notlarını buraya yaz...',
+    'rules.homebrew': 'Ev Kuralları',
+    'rules.story': 'Hikaye Notları',
+    'rules.quests': 'Görev & Questler',
 
     // Wheel of Fortune Modal
     'wheel.title': '🎡 Şans Çarkı',
@@ -239,6 +261,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'wheel.addOption': 'Seçenek Ekle',
     'wheel.presets': 'Hazır Çark Şablonları:',
     'wheel.winnerTitle': '🎉 Kazanan Sonuç:',
+    'wheel.searchPlaceholder': 'Çark veya seçenek ara...',
+    'wheel.addNewPreset': 'Yeni Çark Taslağı Ekle',
+    'wheel.optionsLabel': 'Çark Seçenekleri / Dilimler',
 
     // Doodle to Asset Modal
     'doodle.title': '🎨 Özel Varlık & Token Çizim Stüdyosu',
@@ -276,7 +301,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'session.delete': 'Sil',
     'session.active': 'Aktif',
 
-    // Roleplay Board
+    // Roleplay Board & Spotlight
     'roleplay.title': '🎭 Rol & Görsel Panosu',
     'roleplay.addHandout': 'Yeni Belge / Resim Paylaş',
     'roleplay.revealAll': 'Tüm Oyunculara Göster',
@@ -285,6 +310,16 @@ export const translations: Record<Language, Record<string, string>> = {
     'roleplay.handoutTitlePlaceholder': 'Görsel / Belge Başlığı...',
     'roleplay.handoutNotesPlaceholder': 'Oyuncuların göreceği açıklama...',
     'roleplay.empty': 'Henüz paylaşılan görsel yok. DM buradan sahne resimleri, mektuplar veya NPC portreleri gösterebilir.',
+    'roleplay.all': 'Tümü',
+    'roleplay.locations': 'Mekanlar & Manzaralar',
+    'roleplay.npcs': 'Karakter / NPC Portreleri',
+    'roleplay.letters': 'Fermanlar & Mektuplar',
+    'roleplay.items': 'Eşyalar & İpuçları',
+    'roleplay.project': 'Yayına Yansıt',
+    'roleplay.stopProject': 'Yansıtmayı Bitir',
+    'roleplay.edit': 'Düzenle',
+    'spotlight.title': 'CANLI YAYIN SİNEMATİK GÖRÜNÜMÜ',
+    'spotlight.close': 'Yansıtmayı Kapat',
   },
 
   en: {
@@ -347,6 +382,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'tool.drawSub': 'Live pen',
     'tool.laser': 'Laser Pointer',
     'tool.laserSub': 'Highlight for stream',
+    'tool.redo': 'Redo (Ctrl + Y)',
+    'tool.undo': 'Undo (Ctrl + Z)',
+    'tool.grid': 'Toggle Grid Lines',
+    'tool.clearDrawings': 'Clear All Map Drawings',
 
     // Layers & Backgrounds
     'layer.title': 'Floor / Layer',
@@ -362,6 +401,16 @@ export const translations: Record<Language, Record<string, string>> = {
     'layer.opacity': 'Loaded Image Opacity:',
     'layer.removeImage': 'Remove Image',
     'layer.save': 'Done & Save',
+    'layer.editName': 'Edit Floor Name',
+    'layer.delete': 'Delete Floor',
+    'layer.placeholder': 'Floor Name (e.g. 2nd Floor Dungeon)',
+    'layer.stone': 'Dungeon Stone',
+    'layer.forest': 'Grass & Forest',
+    'layer.wood': 'Wood Planks',
+    'layer.parchment': 'Ancient Parchment',
+    'layer.cave': 'Cave & Volcanic',
+    'layer.water': 'Ocean / Sea',
+    'layer.space': 'Deep Space',
 
     // Combat & Initiative
     'combat.title': '⚔️ Combat Initiative Order',
@@ -377,6 +426,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'combat.namePlaceholder': 'Combatant name...',
     'combat.initBonus': 'Initiative Bonus (+DEX)',
     'combat.pullFromMap': 'Pull from Map',
+    'combat.endConfirm': 'Are you sure you want to end combat and reset initiative?',
 
     // Dice Roller
     'dice.title': 'Dice Tray (Draggable)',
@@ -470,6 +520,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'wb.themeDark': 'Dark Board',
     'wb.themeGrid': 'Grid Board',
     'wb.themeParchment': 'Parchment',
+    'wb.rotateLeft': 'Rotate 90° Left',
+    'wb.rotateRight': 'Rotate 90° Right',
 
     // Token Right Click Menu & Inspector
     'tokenMenu.initiative': '⚔️ Add to Initiative Order',
@@ -515,8 +567,13 @@ export const translations: Record<Language, Record<string, string>> = {
     'rules.tabNotes': '📝 Custom Campaign Notepad',
     'rules.tabConditions': '🎭 Conditions & Effects',
     'rules.addNote': 'Add New Note',
+    'rules.dmRules': 'Shared DM Rules',
+    'rules.personalNotes': 'Personal Player Notes',
     'rules.noteTitlePlaceholder': 'Note Title...',
     'rules.noteContentPlaceholder': 'Notes, game mechanics, or story secrets...',
+    'rules.homebrew': 'Homebrew Rules',
+    'rules.story': 'Story Notes',
+    'rules.quests': 'Quests & Objectives',
 
     // Wheel of Fortune Modal
     'wheel.title': '🎡 Wheel of Fortune',
@@ -525,6 +582,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'wheel.addOption': 'Add Option',
     'wheel.presets': 'Preset Wheel Templates:',
     'wheel.winnerTitle': '🎉 Winning Result:',
+    'wheel.searchPlaceholder': 'Search wheels or options...',
+    'wheel.addNewPreset': 'Add New Wheel Preset',
+    'wheel.optionsLabel': 'Wheel Options / Slices',
 
     // Doodle to Asset Modal
     'doodle.title': '🎨 Custom Asset & Token Art Studio',
@@ -562,7 +622,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'session.delete': 'Delete',
     'session.active': 'Active',
 
-    // Roleplay Board
+    // Roleplay Board & Spotlight
     'roleplay.title': '🎭 Roleplay & Handouts Board',
     'roleplay.addHandout': 'Share New Handout / Art',
     'roleplay.revealAll': 'Reveal to All Players',
@@ -571,5 +631,15 @@ export const translations: Record<Language, Record<string, string>> = {
     'roleplay.handoutTitlePlaceholder': 'Artwork / Handout Title...',
     'roleplay.handoutNotesPlaceholder': 'Player-visible description or lore notes...',
     'roleplay.empty': 'No handouts shared yet. DM can reveal scene artwork, letters, or NPC portraits here.',
+    'roleplay.all': 'All',
+    'roleplay.locations': 'Locations & Scenery',
+    'roleplay.npcs': 'Character & NPC Portraits',
+    'roleplay.letters': 'Handouts & Letters',
+    'roleplay.items': 'Items & Clues',
+    'roleplay.project': 'Project to Stream',
+    'roleplay.stopProject': 'Stop Projecting',
+    'roleplay.edit': 'Edit',
+    'spotlight.title': 'LIVE STREAM CINEMATIC VIEW',
+    'spotlight.close': 'Close Spotlight',
   }
 };

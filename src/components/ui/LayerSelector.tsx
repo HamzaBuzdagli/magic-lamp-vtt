@@ -182,7 +182,7 @@ export const LayerSelector: React.FC = () => {
                         <button
                           onClick={() => handleStartEdit(layer.id, layer.name)}
                           className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white"
-                          title="Kat Adını Düzenle"
+                          title={t("layer.editName")}
                         >
                           <Edit2 className="w-3 h-3" />
                         </button>
@@ -190,7 +190,7 @@ export const LayerSelector: React.FC = () => {
                           <button
                             onClick={() => deleteLayer(layer.id)}
                             className="p-1 hover:bg-rose-950/50 rounded text-slate-500 hover:text-rose-400"
-                            title="Katı Sil"
+                            title={t("layer.delete")}
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -217,7 +217,7 @@ export const LayerSelector: React.FC = () => {
                   <form onSubmit={handleAdd} className="flex items-center gap-1">
                     <input
                       type="text"
-                      placeholder="Kat Adı (Örn: 2. Kat Zindan)"
+                      placeholder={t("layer.placeholder")}
                       value={newLayerName}
                       onChange={(e) => setNewLayerName(e.target.value)}
                       className="flex-1 px-2.5 py-1 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white"

@@ -1,8 +1,10 @@
+import { useTranslation } from '../../hooks/useTranslation';
 ﻿import React from 'react';
 import { X, Sparkles, Tv } from 'lucide-react';
 import { useGameStore } from '../../hooks/useGameStore';
 
 export const SpotlightOverlay: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     spotlightHandoutId, 
     setSpotlightHandoutId, 
@@ -35,7 +37,7 @@ export const SpotlightOverlay: React.FC = () => {
               className="flex items-center gap-1.5 px-3 py-1 bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800 rounded-xl text-xs font-bold transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
-              <span>Yansıtmayı Kapat</span>
+              <span>{t('spotlight.close')}</span>
             </button>
           )}
         </div>
