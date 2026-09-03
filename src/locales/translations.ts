@@ -80,7 +80,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Combat & Initiative
     'combat.title': '⚔️ Savaş İnisiyatif Sırası',
     'combat.round': 'Tur',
-    'combat.nextTurn': 'Sonraki Hamle (Tur)',
+    'combat.nextTurn': 'Sıradaki Hamle',
     'combat.rollAll': 'Tüm Zarları At',
     'combat.clear': 'Sırayı Temizle',
     'combat.empty': 'Henüz savaşta kimse yok. Haritadaki veya kasadaki tokenlara sağ tıklayıp "Savaş Sırasına Ekle" deyin!',
@@ -90,18 +90,18 @@ export const translations: Record<Language, Record<string, string>> = {
     'combat.addCustom': 'Yeni Savaşçı Ekle',
     'combat.namePlaceholder': 'Savaşçı Adı...',
     'combat.initBonus': 'İnisiyatif Bonusu (+DEX)',
+    'combat.pullFromMap': 'Haritadan Çek',
 
     // Dice Roller
     'dice.title': 'Zar Masası (Sürüklenebilir)',
-    'dice.who': 'Kim Atıyor? (Zar Sahibi)',
-    'dice.mod': 'Zar Modifikatörü (+ / - Stat)',
-    'dice.history': 'Zar Geçmişi Günlüğü',
-    'dice.clearHistory': 'Geçmişi Temizle',
+    'dice.who': 'Zar atan ismi...',
+    'dice.mod': 'Bonus:',
+    'dice.history': 'Son Atılan Zarlar',
+    'dice.clearHistory': 'Temizle',
     'dice.noHistory': 'Henüz zar atılmadı.',
-    'dice.crit': 'KRİTİK BAŞARI! (DOĞAL 20)',
-    'dice.fumble': 'KRİTİK BAŞARISIZLIK! (DOĞAL 1)',
-    'dice.rollAdvantage': 'Avantajlı At (2d20 Büyük)',
-    'dice.rollDisadvantage': 'Dezavantajlı At (2d20 Küçük)',
+    'dice.crit': '🌟 KRİTİK BAŞARI (NAT 20)!',
+    'dice.fumble': '💀 KRİTİK HATA (NAT 1)!',
+    'dice.rollResult': 'Zar Sonucu',
 
     // Soundboard
     'sound.title': 'Ambiyans & Ses Efektleri',
@@ -181,6 +181,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'wb.pages': 'Sayfalar / Katmanlar',
     'wb.newPage': 'Yeni Sayfa Ekle',
     'wb.assetsVault': 'Varlık Çantası (Assets)',
+    'wb.themeDark': 'Karanlık Tahta',
+    'wb.themeGrid': 'Izgaralı Tahta',
+    'wb.themeParchment': 'Parşömen',
 
     // Token Right Click Menu & Inspector
     'tokenMenu.initiative': '⚔️ Savaş Sırasına Ekle',
@@ -200,10 +203,15 @@ export const translations: Record<Language, Record<string, string>> = {
     // Backstage Vault Drawer
     'vault.title': 'DM Gizli Kasası & Varlıklar',
     'vault.subtitle': 'Hazırladığınız tüm canavarlar, NPCler ve tuzaklar burada saklanır.',
-    'vault.search': 'Varlık ara...',
+    'vault.search': 'Varlık ara (ör: Goblin, Sandık)...',
     'vault.empty': 'Kasada henüz kayıtlı varlık yok. "Varlık Çiz" ile oluşturabilir veya haritadaki bir tokenı sağ tıklayıp kasaya alabilirsiniz.',
     'vault.summon': 'Haritaya Çağır',
     'vault.delete': 'Kasadan Sil',
+    'vault.all': 'Tümü',
+    'vault.monsters': '🧟 Canavarlar',
+    'vault.bosses': '👑 Bosslar',
+    'vault.items': '📦 Eşyalar & Sandıklar',
+    'vault.npcs': '🧝 NPC & Yoldaşlar',
 
     // Magic Lamp AI Modal
     'lamp.title': '🪔 AI Sihirli Lamba: FRP Zindan & Hikaye Üretici',
@@ -222,11 +230,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'rules.tabConditions': '🎭 Durumlar & Efektler',
     'rules.addNote': 'Yeni Not Ekle',
     'rules.noteTitlePlaceholder': 'Not Başlığı...',
-    'rules.noteContentPlaceholder': 'Not içeriği, mekanikler veya hikaye ipuçları...',
+    'rules.noteContentPlaceholder': 'Kuralları, zar zorluklarını veya kişisel notlarını buraya yaz...',
 
     // Wheel of Fortune Modal
     'wheel.title': '🎡 Şans Çarkı',
-    'wheel.spin': 'ÇARKINI ÇEVİR!',
+    'wheel.spin': 'ÇARKI ÇEVİR!',
     'wheel.spinning': 'Çark Dönüyor...',
     'wheel.addOption': 'Seçenek Ekle',
     'wheel.presets': 'Hazır Çark Şablonları:',
@@ -245,12 +253,38 @@ export const translations: Record<Language, Record<string, string>> = {
     // Room Templates Drawer
     'roomTemplates.title': 'Zindan Oda Şablonları',
     'roomTemplates.dragHint': 'Haritaya sürükleyip bırakın veya tıklayın',
+    'roomTemplates.roomThrone': 'Kraliyet Taht Salonu',
+    'roomTemplates.roomCrypt': 'Karanlık Mahzen',
+    'roomTemplates.roomMagma': 'Lav Akıntılı Mağara',
+    'roomTemplates.roomNature': 'Sarmaşıklı Zindan',
+    'roomTemplates.roomCorridor': 'Uzun Zindan Koridoru',
+    'roomTemplates.roomTreasure': 'Hazine Odası',
+    'roomTemplates.descThrone': 'Büyük ve görkemli mermer salon.',
+    'roomTemplates.descCrypt': 'İskeletlerin yattığı kasvetli mezar.',
+    'roomTemplates.descMagma': 'Ortasından lav geçen tehlikeli alan.',
+    'roomTemplates.descNature': 'Kadim köklerin kapladığı gizli geçit.',
+    'roomTemplates.descCorridor': 'Odaları bağlayan 2 birimlik koridor.',
+    'roomTemplates.descTreasure': 'Tuzaklı küçük kasa odası.',
+
+    // Session Manager Modal
+    'session.title': 'Kampanya & Oturum Yöneticisi',
+    'session.saveCurrent': 'Mevcut Oturumu Kaydet',
+    'session.namePlaceholder': 'Oturum / Bölüm Başlığı...',
+    'session.exportJson': 'Yedek İndir (JSON)',
+    'session.importJson': 'Yedek Yükle (JSON)',
+    'session.load': 'Yükle',
+    'session.delete': 'Sil',
+    'session.active': 'Aktif',
 
     // Roleplay Board
     'roleplay.title': '🎭 Rol & Görsel Panosu',
     'roleplay.addHandout': 'Yeni Belge / Resim Paylaş',
     'roleplay.revealAll': 'Tüm Oyunculara Göster',
     'roleplay.hideAll': 'Gizle',
+    'roleplay.uploadArt': 'Görsel Yükle (PNG/JPG)',
+    'roleplay.handoutTitlePlaceholder': 'Görsel / Belge Başlığı...',
+    'roleplay.handoutNotesPlaceholder': 'Oyuncuların göreceği açıklama...',
+    'roleplay.empty': 'Henüz paylaşılan görsel yok. DM buradan sahne resimleri, mektuplar veya NPC portreleri gösterebilir.',
   },
 
   en: {
@@ -342,18 +376,18 @@ export const translations: Record<Language, Record<string, string>> = {
     'combat.addCustom': 'Add Combatant',
     'combat.namePlaceholder': 'Combatant name...',
     'combat.initBonus': 'Initiative Bonus (+DEX)',
+    'combat.pullFromMap': 'Pull from Map',
 
     // Dice Roller
     'dice.title': 'Dice Tray (Draggable)',
-    'dice.who': 'Who is Rolling? (Roller Name)',
-    'dice.mod': 'Dice Modifier (+ / - Stat)',
+    'dice.who': 'Who is Rolling?',
+    'dice.mod': 'Bonus:',
     'dice.history': 'Dice Roll Log History',
     'dice.clearHistory': 'Clear History',
     'dice.noHistory': 'No dice rolled yet.',
-    'dice.crit': 'CRITICAL SUCCESS! (NATURAL 20)',
-    'dice.fumble': 'CRITICAL FAILURE! (NATURAL 1)',
-    'dice.rollAdvantage': 'Roll with Advantage (2d20 High)',
-    'dice.rollDisadvantage': 'Roll with Disadvantage (2d20 Low)',
+    'dice.crit': '🌟 CRITICAL SUCCESS (NAT 20)!',
+    'dice.fumble': '💀 CRITICAL FAILURE (NAT 1)!',
+    'dice.rollResult': 'Roll Result',
 
     // Soundboard
     'sound.title': 'Ambience & Sound Effects',
@@ -433,6 +467,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'wb.pages': 'Pages / Layers',
     'wb.newPage': 'Add New Page',
     'wb.assetsVault': 'Asset Vault',
+    'wb.themeDark': 'Dark Board',
+    'wb.themeGrid': 'Grid Board',
+    'wb.themeParchment': 'Parchment',
 
     // Token Right Click Menu & Inspector
     'tokenMenu.initiative': '⚔️ Add to Initiative Order',
@@ -452,10 +489,15 @@ export const translations: Record<Language, Record<string, string>> = {
     // Backstage Vault Drawer
     'vault.title': 'DM Secret Vault & Assets',
     'vault.subtitle': 'All your prepared monsters, NPCs, and traps are stored here.',
-    'vault.search': 'Search assets...',
+    'vault.search': 'Search assets (e.g. Goblin, Chest)...',
     'vault.empty': 'No assets in vault yet. Create using "Draw Asset" or right-click any token on map to store.',
     'vault.summon': 'Summon to Map',
     'vault.delete': 'Delete from Vault',
+    'vault.all': 'All',
+    'vault.monsters': '🧟 Monsters',
+    'vault.bosses': '👑 Bosses',
+    'vault.items': '📦 Items & Chests',
+    'vault.npcs': '🧝 NPCs & Allies',
 
     // Magic Lamp AI Modal
     'lamp.title': '🪔 AI Magic Lamp: TTRPG Dungeon & Story Generator',
@@ -497,11 +539,37 @@ export const translations: Record<Language, Record<string, string>> = {
     // Room Templates Drawer
     'roomTemplates.title': 'Dungeon Room Templates',
     'roomTemplates.dragHint': 'Drag & drop onto map or click to add',
+    'roomTemplates.roomThrone': 'Royal Throne Hall',
+    'roomTemplates.roomCrypt': 'Dark Crypt',
+    'roomTemplates.roomMagma': 'Magma Chamber',
+    'roomTemplates.roomNature': 'Overgrown Dungeon',
+    'roomTemplates.roomCorridor': 'Long Dungeon Corridor',
+    'roomTemplates.roomTreasure': 'Treasure Vault',
+    'roomTemplates.descThrone': 'Grand and majestic marble hall.',
+    'roomTemplates.descCrypt': 'Gloomy crypt where skeletons rest.',
+    'roomTemplates.descMagma': 'Hazardous cavern with flowing lava.',
+    'roomTemplates.descNature': 'Ancient passage overgrown with roots.',
+    'roomTemplates.descCorridor': '2-unit connecting corridor.',
+    'roomTemplates.descTreasure': 'Small trapped treasure vault.',
+
+    // Session Manager Modal
+    'session.title': 'Campaign & Session Manager',
+    'session.saveCurrent': 'Save Current Session',
+    'session.namePlaceholder': 'Session / Chapter Title...',
+    'session.exportJson': 'Download Backup (JSON)',
+    'session.importJson': 'Load Backup (JSON)',
+    'session.load': 'Load',
+    'session.delete': 'Delete',
+    'session.active': 'Active',
 
     // Roleplay Board
     'roleplay.title': '🎭 Roleplay & Handouts Board',
     'roleplay.addHandout': 'Share New Handout / Art',
     'roleplay.revealAll': 'Reveal to All Players',
     'roleplay.hideAll': 'Hide',
+    'roleplay.uploadArt': 'Upload Artwork (PNG/JPG)',
+    'roleplay.handoutTitlePlaceholder': 'Artwork / Handout Title...',
+    'roleplay.handoutNotesPlaceholder': 'Player-visible description or lore notes...',
+    'roleplay.empty': 'No handouts shared yet. DM can reveal scene artwork, letters, or NPC portraits here.',
   }
 };

@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 // Helper to render procedural backgrounds for layers
 function renderLayerBackground(
   ctx: CanvasRenderingContext2D, 
@@ -99,6 +100,7 @@ import type { Token, DrawPoint, DungeonRoom, InitiativeItem, StatusConditionPres
 
 
 export const GameCanvas: React.FC = () => {
+  const { t } = useTranslation();
   const [isAddingStatus, setIsAddingStatus] = useState(false);
   const [newStatusName, setNewStatusName] = useState('');
   const [newStatusIcon, setNewStatusIcon] = useState('✨');
@@ -1086,7 +1088,7 @@ export const GameCanvas: React.FC = () => {
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-300 font-bold flex items-center gap-2">
                     <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
-                    <span className="font-black">Can Puanı (HP)</span>
+                    <span className="font-black">{t('tokenInspector.hp')}</span>
                   </span>
                   <div className="flex items-center gap-1 font-mono font-black text-sm text-rose-300">
                     <span>{activePlayerToken.hp.current}</span>
@@ -1382,7 +1384,7 @@ export const GameCanvas: React.FC = () => {
             <div className="space-y-2 bg-slate-950/80 p-3 rounded-2xl border border-slate-800/80">
               <div className="flex items-center justify-between">
                 <label className="text-slate-300 font-bold text-xs flex items-center gap-1.5">
-                  <span>🎭 Durum Efektleri (Statuses)</span>
+                  <span>{t('tokenInspector.statuses')}</span>
                 </label>
                 <button
                   onClick={() => setIsAddingStatus(!isAddingStatus)}
@@ -1390,7 +1392,7 @@ export const GameCanvas: React.FC = () => {
                   title="Yeni Özel Durum Efekti Oluştur"
                 >
                   <Plus className="w-3 h-3" />
-                  <span>Özel Efekt Ekle</span>
+                  <span>{t('tokenInspector.addCustomStatus')}</span>
                 </button>
               </div>
 
@@ -1664,7 +1666,7 @@ export const GameCanvas: React.FC = () => {
             title="Token'ı savaş sırasına (inisiyatife) ekler"
           >
             <Swords className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span>⚔️ Savaş Sırasına Ekle</span>
+            <span>{t('tokenMenu.initiative')}</span>
           </button>
 
                     {/* Transfer to Whiteboard */}
@@ -1677,7 +1679,7 @@ export const GameCanvas: React.FC = () => {
             title="Token görselini Çizim Tahtasına aktarır"
           >
             <Palette className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-            <span>🎨 Çizim Tahtasına Aktar</span>
+            <span>{t('tokenMenu.toWhiteboard')}</span>
           </button>
 
           {/* Send to Backstage Vault */}
@@ -1690,7 +1692,7 @@ export const GameCanvas: React.FC = () => {
             title="Token'ı tüm statları, canı ve zırhıyla beraber gizli kasaya kaldırır (Tek seferlik olarak saklanır)."
           >
             <FolderOpen className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-            <span>🧰 Gizli Kasaya Al (Statlarıyla)</span>
+            <span>{t('tokenMenu.toVault')}</span>
           </button>
 
           {/* Open Inspector */}
@@ -1702,7 +1704,7 @@ export const GameCanvas: React.FC = () => {
             className="w-full px-2 py-1.5 text-left text-slate-200 hover:bg-slate-800 rounded-lg flex items-center gap-2 transition-colors font-medium cursor-pointer"
           >
             <Edit3 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span>Tokenı İncele & Düzenle</span>
+            <span>{t('tokenMenu.inspect')}</span>
           </button>
 
           {/* Duplicate Token */}

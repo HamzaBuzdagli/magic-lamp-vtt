@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState, useRef } from 'react';
 import { 
   X, 
@@ -19,6 +20,7 @@ import { useGameStore } from '../../hooks/useGameStore';
 import type { CampaignSession } from '../../types/game';
 
 export const SessionManagerModal: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     sessions, 
     activeSessionId, 
@@ -142,7 +144,7 @@ export const SessionManagerModal: React.FC = () => {
             </div>
             <div>
               <h2 className="text-sm font-black text-amber-300 flex items-center gap-1.5">
-                <span>Oturum & Macera Yöneticisi</span>
+                <span>{t('session.title')}</span>
               </h2>
               <p className="text-[10px] text-amber-400/80 font-semibold">
                 Farklı arkadaş gruplarınız veya ayrı maceralarınız için bağımsız oturumlar.
@@ -165,7 +167,7 @@ export const SessionManagerModal: React.FC = () => {
               title="JSON Yedek Dosyasından Oturum Yükle"
             >
               <Upload className="w-3.5 h-3.5 text-amber-400" />
-              <span>Yedek Yükle</span>
+              <span>{t('session.importJson')}</span>
             </button>
 
             <button

@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Plus, 
@@ -17,6 +18,7 @@ import { useGameStore } from '../../hooks/useGameStore';
 import type { HandoutCard } from '../../types/game';
 
 export const RoleplayBoard: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     handouts, 
     addHandout, 
@@ -177,7 +179,7 @@ export const RoleplayBoard: React.FC = () => {
               className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Yeni Sahne / Görsel Ekle</span>
+              <span>{t('roleplay.addHandout')}</span>
             </button>
           </div>
         )}
@@ -187,7 +189,7 @@ export const RoleplayBoard: React.FC = () => {
       {filteredHandouts.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-slate-500 border border-dashed border-slate-800 rounded-3xl p-12">
           <Sparkles className="w-12 h-12 mb-3 text-slate-600 animate-pulse" />
-          <h3 className="text-base font-bold text-slate-400 mb-1">Henüz Sahne Görseli Yok</h3>
+          <h3 className="text-base font-bold text-slate-400 mb-1">{t('roleplay.empty')}</h3>
           <p className="text-xs text-slate-600 max-w-sm text-center">
             İnternetten veya Discord'dan bir resim kopyalayıp buraya doğrudan <strong>Ctrl+V</strong> ile yapıştırabilir veya yukarıdan yeni görsel ekleyebilirsin.
           </p>

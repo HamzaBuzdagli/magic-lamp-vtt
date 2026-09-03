@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useState } from 'react';
 import { 
   X, 
@@ -17,6 +18,7 @@ import { useGameStore } from '../../hooks/useGameStore';
 import type { DungeonRoom } from '../../types/game';
 
 export const RoomTemplates: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     isRoomDrawerOpen, 
     setRoomDrawerOpen, 
@@ -41,12 +43,12 @@ export const RoomTemplates: React.FC = () => {
   if (!isRoomDrawerOpen || isStreamerMode) return null;
 
   const PRESET_ROOMS: { name: string; w: number; h: number; theme: DungeonRoom['theme']; desc: string }[] = [
-    { name: 'Kraliyet Taht Salonu', w: 10, h: 8, theme: 'gold', desc: 'Büyük ve görkemli mermer salon.' },
-    { name: 'Karanlık Mahzen', w: 6, h: 6, theme: 'crypt', desc: 'İskeletlerin yattığı kasvetli mezar.' },
-    { name: 'Lav Akıntılı Mağara', w: 8, h: 6, theme: 'magma', desc: 'Ortasından lav geçen tehlikeli alan.' },
-    { name: 'Sarmaşıklı Zindan', w: 7, h: 5, theme: 'nature', desc: 'Kadim köklerin kapladığı gizli geçit.' },
-    { name: 'Uzun Zindan Koridoru', w: 10, h: 2, theme: 'stone', desc: 'Odaları bağlayan 2 birimlik koridor.' },
-    { name: 'Hazine Odası', w: 4, h: 4, theme: 'gold', desc: 'Tuzaklı küçük kasa odası.' },
+    { name: t('roomTemplates.roomThrone'), w: 10, h: 8, theme: 'gold', desc: t('roomTemplates.descThrone') },
+    { name: t('roomTemplates.roomCrypt'), w: 6, h: 6, theme: 'crypt', desc: t('roomTemplates.descCrypt') },
+    { name: t('roomTemplates.roomMagma'), w: 8, h: 6, theme: 'magma', desc: t('roomTemplates.descMagma') },
+    { name: t('roomTemplates.roomNature'), w: 7, h: 5, theme: 'nature', desc: t('roomTemplates.descNature') },
+    { name: t('roomTemplates.roomCorridor'), w: 10, h: 2, theme: 'stone', desc: t('roomTemplates.descCorridor') },
+    { name: t('roomTemplates.roomTreasure'), w: 4, h: 4, theme: 'gold', desc: t('roomTemplates.descTreasure') },
   ];
 
   const handleAddPreset = (preset: typeof PRESET_ROOMS[0]) => {

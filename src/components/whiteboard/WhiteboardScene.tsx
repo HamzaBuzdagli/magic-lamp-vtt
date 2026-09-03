@@ -1,3 +1,4 @@
+import { useTranslation } from '../../hooks/useTranslation';
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { 
   Paintbrush,
@@ -63,6 +64,7 @@ interface FloatingStamp {
 type TransformMode = 'none' | 'move' | 'rotate' | 'resize-se' | 'resize-sw' | 'resize-ne' | 'resize-nw';
 
 export const WhiteboardScene: React.FC = () => {
+  const { t } = useTranslation();
   const handleExportToToken = () => {
     if (!canvasRef.current) return;
     const dataUrl = canvasRef.current.toDataURL('image/png');
@@ -1251,7 +1253,7 @@ export const WhiteboardScene: React.FC = () => {
               className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                 activeTool === 'brush' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
               }`}
-              title="Fırça (Canlı Kalem)"
+              title={t('wb.brush')}
             >
               <Paintbrush className="w-4 h-4" />
             </button>
@@ -1271,7 +1273,7 @@ export const WhiteboardScene: React.FC = () => {
               className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                 activeTool === 'eraser' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
               }`}
-              title="Silgi"
+              title={t('wb.eraser')}
             >
               <Eraser className="w-4 h-4" />
             </button>
@@ -1389,7 +1391,7 @@ export const WhiteboardScene: React.FC = () => {
               className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                 activeTool === 'text' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
               }`}
-              title="Metin Yaz"
+              title={t('wb.textTool')}
             >
               <TextIcon className="w-4 h-4" />
             </button>
@@ -1584,7 +1586,7 @@ export const WhiteboardScene: React.FC = () => {
             <button
               onClick={() => fileInputRef.current?.click()}
               className="p-1.5 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-950 cursor-pointer transition-colors"
-              title="Resim Yükle"
+              title={t('wb.uploadImage')}
             >
               <Upload className="w-3.5 h-3.5" />
             </button>
@@ -1596,14 +1598,14 @@ export const WhiteboardScene: React.FC = () => {
                 title="Çizim tahtasındaki resmi alıp yeni bir Token / Varlık oluşturun"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Token Yap</span>
+                <span>{t('wb.toToken')}</span>
               </button>
             )}
 
             <button
               onClick={handleExportPNG}
               className="p-1.5 rounded-xl text-slate-400 hover:text-emerald-400 hover:bg-slate-950 cursor-pointer transition-colors"
-              title="PNG Olarak İndir"
+              title={t('wb.exportPng')}
             >
               <Download className="w-3.5 h-3.5" />
             </button>
@@ -1611,7 +1613,7 @@ export const WhiteboardScene: React.FC = () => {
             <button
               onClick={handleResetPage}
               className="p-1.5 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-slate-950 cursor-pointer transition-colors"
-              title="Tahtayı Sıfırla (Temizle)"
+              title={t('wb.clear')}
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
