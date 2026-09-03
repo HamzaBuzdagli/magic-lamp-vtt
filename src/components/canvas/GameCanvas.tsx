@@ -731,7 +731,10 @@ export const GameCanvas: React.FC = () => {
     if (activeTool === 'ruler') {
       // Keep ruler visible or reset on next click
     }
-    if (isDraggingRooms) setIsDraggingRooms(false);
+    if (isDraggingRooms) {
+      setIsDraggingRooms(false);
+      pushMapHistory();
+    }
 
     if (isMarqueeActive) {
       const x1 = Math.min(marqueeStart.x, marqueeCurrent.x);
@@ -1822,6 +1825,9 @@ export const GameCanvas: React.FC = () => {
         <div
           style={{ left: `${roomContextMenu.x}px`, top: `${roomContextMenu.y}px` }}
           className="absolute z-50 w-56 bg-slate-900/95 border border-amber-500/50 rounded-xl shadow-2xl p-1.5 backdrop-blur-md text-xs space-y-1 animate-in fade-in"
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="px-2 py-1 text-[10px] font-bold text-amber-400 uppercase tracking-wider border-b border-slate-800 flex items-center justify-between">
@@ -1943,10 +1949,13 @@ export const GameCanvas: React.FC = () => {
           )}
 
           {/* Delete selected rooms */}
-          {selectedRoomIds.length > 0 && (
+          {(selectedRoomIds.length > 0 || roomContextMenu.clickedRoomId) && (
             <button
               onClick={() => {
-                deleteRooms(selectedRoomIds);
+                const toDelete = selectedRoomIds.length > 0 ? selectedRoomIds : (roomContextMenu.clickedRoomId ? [roomContextMenu.clickedRoomId] : []);
+                if (toDelete.length > 0) {
+                  deleteRooms(toDelete);
+                }
                 setRoomContextMenu(null);
               }}
               className="w-full px-2.5 py-1.5 text-left rounded-lg hover:bg-rose-950/60 text-rose-300 font-medium flex items-center gap-2 cursor-pointer border-t border-slate-800 pt-1.5 mt-1"

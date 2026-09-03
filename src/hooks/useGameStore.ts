@@ -1150,8 +1150,14 @@ export const useGameStore = create<GameState>()(
         copiedConnections: [],
 
         // Map Undo / Redo History
-        mapHistory: [],
-        mapHistoryIndex: -1,
+        mapHistory: [
+          {
+            tokens: DEFAULT_TOKENS,
+            rooms: DEFAULT_ROOMS,
+            connections: DEFAULT_CONNECTIONS,
+          }
+        ],
+        mapHistoryIndex: 0,
 
         pushMapHistory: () => set((state) => {
           const snapshot = {
@@ -1536,8 +1542,20 @@ export const useGameStore = create<GameState>()(
               layerId: roomData.layerId || state.activeLayerId || 'layer-1',
               id: `room-${Date.now()}`,
             };
-            const nextState = { rooms: [...state.rooms, newRoom] };
-            notifyChannel(nextState);
+            const nextRooms = [...state.rooms, newRoom];
+            const snapshot = {
+              tokens: JSON.parse(JSON.stringify(state.tokens)),
+              rooms: JSON.parse(JSON.stringify(nextRooms)),
+              connections: JSON.parse(JSON.stringify(state.connections)),
+            };
+            const nextHistory = [...state.mapHistory.slice(0, state.mapHistoryIndex + 1), snapshot];
+            if (nextHistory.length > 40) nextHistory.shift();
+            const nextState = {
+              rooms: nextRooms,
+              mapHistory: nextHistory,
+              mapHistoryIndex: nextHistory.length - 1,
+            };
+            notifyChannel({ rooms: nextRooms });
             return nextState;
           });
         },
